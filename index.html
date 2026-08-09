@@ -74,7 +74,8 @@ a{text-decoration:none;color:inherit}
 
 /* ===== Stats ===== */
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 24px}
-.stat-card{background:var(--card);border-radius:var(--radius);padding:18px 16px;border:1px solid var(--border);position:relative;overflow:hidden}
+.stat-card{background:var(--card);border-radius:var(--radius);padding:18px 16px;border:1px solid var(--border);position:relative;overflow:hidden;cursor:pointer;transition:transform .15s,border-color .2s}
+.stat-card:active{transform:scale(0.96);border-color:var(--border-strong)}
 .stat-card::after{content:'';position:absolute;top:-12px;right:-12px;width:44px;height:44px;border-radius:50%;opacity:0.06}
 .stat-val{font-family:var(--font);font-size:28px;font-weight:700;letter-spacing:-0.5px}
 .stat-lbl{font-size:12px;color:var(--text-2);margin-top:4px;font-weight:400;letter-spacing:0.5px}
@@ -400,7 +401,6 @@ a{text-decoration:none;color:inherit}
   <!-- All -->
   <div class="page-sec active" id="page-all">
     <div class="stats" id="statsBar"></div>
-    <div class="sec-header"><span class="sec-title">最近记录</span><button class="sec-more" onclick="switchTab('diary')">查看全部 ›</button></div>
     <div class="record-list" id="allDiaryList"></div>
   </div>
 
@@ -408,6 +408,12 @@ a{text-decoration:none;color:inherit}
   <div class="page-sec" id="page-diary">
     <div class="sec-header"><span class="sec-title">我的日记</span><button class="sec-more" onclick="openTypePanel()">新建 ›</button></div>
     <div class="record-list" id="diaryList"></div>
+  </div>
+
+  <!-- Expense -->
+  <div class="page-sec" id="page-expense">
+    <div class="sec-header"><span class="sec-title">消费记录</span><button class="sec-more" onclick="openModal('expense')">添加 ›</button></div>
+    <div class="record-list" id="expenseList"></div>
   </div>
 
   <!-- Asset -->
@@ -424,8 +430,8 @@ a{text-decoration:none;color:inherit}
       <div class="cash-item wechat"><div class="cash-icon" id="iconCashEdit"></div><div class="cash-name">暂无</div><div class="cash-amount">¥0.00</div></div>
     </div>
     <button class="manage-btn" onclick="toast('管理功能开发中')">管理现金账户</button>
-    <div class="sec-header"><span class="sec-title">消费记录</span><button class="sec-more" onclick="openTypePanel()">添加 ›</button></div>
-    <div class="record-list" id="expenseList"></div>
+    <div class="sec-header"><span class="sec-title">消费明细</span><button class="sec-more" onclick="openModal('expense')">添加 ›</button></div>
+    <div class="record-list" id="assetExpenseList"></div>
   </div>
 
   <!-- Todo -->
@@ -565,7 +571,7 @@ const _I={
 function icon(name,sz){const s=sz||20;return `<span class="lucide lucide-${s}"><svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${_I[name]||_I.edit}</svg></span>`}
 
 // ===== Constants =====
-const TABS=[{key:'all',label:'全部'},{key:'diary',label:'日记'},{key:'asset',label:'资产'},{key:'todo',label:'待办'},{key:'countdown',label:'倒数日'}];
+const TABS=[{key:'all',label:'全部'},{key:'diary',label:'日记'},{key:'expense',label:'消费'},{key:'todo',label:'待办'},{key:'countdown',label:'倒数日'}];
 const TYPES=[
   {key:'expense',icon:icon('receipt',20),bg:'rgba(192,72,81,0.12)',label:'消费',desc:'一文一物，皆有所值'},
   {key:'meal',icon:icon('utensils',20),bg:'rgba(196,149,106,0.15)',label:'餐食',desc:'人间烟火，食之有味'},
@@ -714,14 +720,14 @@ function renderStats(){
   const mc=D.diaries.filter(d=>d.time&&d.time.startsWith(fmtDate().slice(0,7))).length;
   const ta=D.todos.filter(t=>!t.done).length;
   $('statsBar').innerHTML=`
-    <div class="stat-card"><div class="stat-val">${mc}</div><div class="stat-lbl">本月记录</div></div>
-    <div class="stat-card"><div class="stat-val">${ta}</div><div class="stat-lbl">待办进行</div></div>
-    <div class="stat-card"><div class="stat-val">${D.countdowns.length}</div><div class="stat-lbl">倒数日</div></div>
-    <div class="stat-card"><div class="stat-val">${D.expenses.length}</div><div class="stat-lbl">消费笔数</div></div>`;
+    <div class="stat-card" onclick="switchTab('diary')" style="cursor:pointer"><div class="stat-val">${mc}</div><div class="stat-lbl">本月记录</div></div>
+    <div class="stat-card" onclick="switchTab('todo')" style="cursor:pointer"><div class="stat-val">${ta}</div><div class="stat-lbl">待办进行</div></div>
+    <div class="stat-card" onclick="switchTab('countdown')" style="cursor:pointer"><div class="stat-val">${D.countdowns.length}</div><div class="stat-lbl">倒数日</div></div>
+    <div class="stat-card" onclick="switchTab('expense')" style="cursor:pointer"><div class="stat-val">${D.expenses.length}</div><div class="stat-lbl">消费笔数</div></div>`;
 }
 
 function diaryHTML(d){
-  return `<div class="diary-card" ontouchstart="startLongPress('diary','${d.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('diary','${d.id}')" onclick="if(!wasLongPress())showDiaryDetail('${d.id}')">
+  return `<div class="diary-card" ontouchstart="startLongPress('diary','${d.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('diary','${d.id}')" onclick="if(!wasLongPress())showActionSheet('diary','${d.id}')">
     <div class="dc-top">
       <div class="dc-mood">${d.mood?d.mood:icon('edit',18)}</div>
       <div class="dc-info"><div class="dc-title">${esc(d.title||'未命名')}</div><div class="dc-meta">${esc(d.source||'手动记录')} · ${esc(d.time||'')}</div></div>
@@ -732,7 +738,7 @@ function diaryHTML(d){
 }
 
 function expenseHTML(e){
-  return `<div class="exp-card" ontouchstart="startLongPress('expense','${e.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('expense','${e.id}')" onclick="if(!wasLongPress())editExpense('${e.id}')">
+  return `<div class="exp-card" ontouchstart="startLongPress('expense','${e.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('expense','${e.id}')" onclick="if(!wasLongPress())showActionSheet('expense','${e.id}')">
     <div class="exp-icon" style="background:${CAT_BG[e.category]||'rgba(184,169,154,0.12)'}">${CAT_EMOJI[e.category]||icon('tag',20)}</div>
     <div class="exp-info"><div class="exp-name">${esc(e.name)}</div><div class="exp-detail">${esc(e.category)} · ${esc(e.date)}</div></div>
     <div class="exp-amount">-¥${e.amount.toFixed(2)}</div>
@@ -758,18 +764,40 @@ function countdownHTML(c){
 
 function emptyHTML(iconName,text){return `<div class="empty"><div class="empty-icon">${icon(iconName,48)}</div><div class="empty-text">${text}</div><div class="empty-hint">点击 + 开始记录</div></div>`}
 
+function renderAllPage(){
+  let h='';
+  if(D.diaries.length){
+    h+=`<div class="sec-header"><span class="sec-title">日记</span><button class="sec-more" onclick="switchTab('diary')">更多 ›</button></div>`;
+    h+=`<div class="record-list">${D.diaries.slice(0,3).map(diaryHTML).join('')}</div>`;
+  }
+  if(D.todos.filter(t=>!t.done).length){
+    h+=`<div class="sec-header"><span class="sec-title">待办</span><button class="sec-more" onclick="switchTab('todo')">更多 ›</button></div>`;
+    h+=`<div class="record-list">${D.todos.filter(t=>!t.done).slice(0,3).map(todoHTML).join('')}</div>`;
+  }
+  if(D.countdowns.length){
+    h+=`<div class="sec-header"><span class="sec-title">倒数日</span><button class="sec-more" onclick="switchTab('countdown')">更多 ›</button></div>`;
+    h+=`<div class="record-list">${D.countdowns.slice(0,3).map(countdownHTML).join('')}</div>`;
+  }
+  if(D.expenses.length){
+    h+=`<div class="sec-header"><span class="sec-title">消费</span><button class="sec-more" onclick="switchTab('expense')">更多 ›</button></div>`;
+    h+=`<div class="record-list">${D.expenses.slice(0,3).map(expenseHTML).join('')}</div>`;
+  }
+  if(!h)h=emptyHTML('inbox','暂无记录');
+  $('allDiaryList').innerHTML=h;
+}
 function renderDiaries(){
   let list=D.diaries;
   if(searchQ)list=list.filter(d=>(d.title||'').toLowerCase().includes(searchQ)||(d.text||'').toLowerCase().includes(searchQ)||(d.tags||[]).some(t=>t.toLowerCase().includes(searchQ)));
-  $('allDiaryList').innerHTML=list.length?list.map(diaryHTML).join(''):emptyHTML('inbox','暂无记录');
   $('diaryList').innerHTML=list.length?list.map(diaryHTML).join(''):emptyHTML('edit','暂无日记');
 }
 function renderExpenses(){
-  const el=$('expenseList');
+  const el=$('expenseList');if(!el)return;
   if(!D.expenses.length){el.innerHTML=emptyHTML('receipt','暂无消费记录');return}
   let list=D.expenses;
   if(searchQ)list=list.filter(e=>(e.name||'').toLowerCase().includes(searchQ)||(e.category||'').toLowerCase().includes(searchQ));
   el.innerHTML=list.map(expenseHTML).join('');
+  const ael=$('assetExpenseList');if(!ael)return;
+  ael.innerHTML=D.expenses.length?D.expenses.map(expenseHTML).join(''):emptyHTML('receipt','暂无消费记录');
 }
 function renderTodos(){
   const el=$('todoList');
@@ -805,13 +833,14 @@ function renderAsset(){
   }
 }
 function renderPage(){
-  if(curTab==='all'){renderStats();renderDiaries()}
+  if(curTab==='all'){renderStats();renderAllPage()}
   else if(curTab==='diary')renderDiaries();
+  else if(curTab==='expense')renderExpenses();
   else if(curTab==='asset'){renderAsset();renderExpenses()}
   else if(curTab==='todo')renderTodos();
   else if(curTab==='countdown')renderCountdowns();
 }
-function renderAll(){renderStats();renderDiaries();renderAsset();renderExpenses();renderTodos();renderCountdowns()}
+function renderAll(){renderStats();renderAllPage();renderDiaries();renderAsset();renderExpenses();renderTodos();renderCountdowns()}
 
 // ===== Action Sheet =====
 let _actionTarget=null,_longPressTimer=null,_longPressFired=false;
