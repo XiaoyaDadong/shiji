@@ -100,10 +100,7 @@ a{text-decoration:none;color:inherit}
 .diary-card .dc-text{font-size:13px;color:var(--text-2);line-height:1.65;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:8px}
 .diary-card .dc-tags{display:flex;gap:6px;flex-wrap:wrap}
 .diary-card .dc-tag{font-size:11px;color:var(--text-3);background:var(--accent-bg);padding:3px 10px;border-radius:10px;font-weight:500}
-.diary-card .dc-actions{position:absolute;top:12px;right:12px;display:flex;gap:6px;opacity:0.5;transition:opacity .2s}
-.diary-card:hover .dc-actions,.diary-card:focus-within .dc-actions{opacity:1}
-.dc-act-btn{width:28px;height:28px;border-radius:50%;border:none;background:var(--bg);color:var(--text-2);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm)}
-.dc-act-btn.del{color:var(--red)}
+/* diary card actions removed — now use action sheet */
 
 /* ===== Expense Card ===== */
 .exp-card{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow-sm);transition:transform .15s;position:relative}
@@ -268,6 +265,20 @@ a{text-decoration:none;color:inherit}
 /* ===== Toast ===== */
 .toast{position:fixed;top:50px;left:50%;transform:translateX(-50%) translateY(-20px);background:var(--text);color:var(--bg);padding:10px 24px;border-radius:28px;font-size:14px;z-index:999;opacity:0;pointer-events:none;transition:all .35s cubic-bezier(0.32,0.72,0,1);font-weight:500;box-shadow:var(--shadow-lg)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ===== Action Sheet ===== */
+.action-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:400;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+.action-overlay.show{display:flex}
+.action-sheet{width:100%;max-width:430px;background:var(--card);border-radius:var(--radius-lg) var(--radius-lg) 0 0;padding:8px 0 calc(8px + var(--safe-bottom));transform:translateY(100%);transition:transform .3s cubic-bezier(0.32,0.72,0,1)}
+.action-overlay.show .action-sheet{transform:translateY(0)}
+.action-handle{width:36px;height:4px;border-radius:2px;background:var(--border-strong);margin:6px auto 10px}
+.action-item{display:flex;align-items:center;gap:14px;padding:15px 24px;font-size:15px;font-weight:500;color:var(--text);cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:background .15s}
+.action-item:active{background:var(--card-hover)}
+.action-item .lucide{color:var(--text-2)}
+.action-item.danger{color:var(--red)}
+.action-item.danger .lucide{color:var(--red)}
+.action-cancel{display:block;width:calc(100% - 32px);margin:8px 16px 0;padding:14px;border:none;border-radius:var(--radius-sm);background:var(--bg);font-size:15px;font-weight:600;color:var(--text-2);cursor:pointer;text-align:center;transition:background .15s}
+.action-cancel:active{background:var(--border)}
 
 /* ===== Login ===== */
 .login-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);padding:40px 24px;position:relative;overflow:hidden}
@@ -465,6 +476,15 @@ a{text-decoration:none;color:inherit}
   </div>
 </div>
 
+<!-- Action Sheet -->
+<div class="action-overlay" id="actionOverlay" onclick="closeActionSheet()">
+  <div class="action-sheet" onclick="event.stopPropagation()">
+    <div class="action-handle"></div>
+    <div id="actionItems"></div>
+    <button class="action-cancel" onclick="closeActionSheet()">取消</button>
+  </div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toastEl"></div>
 
@@ -510,6 +530,8 @@ const _I={
   graduation:'<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 4 3 6 3s6-1 6-3v-5"/>',
   home:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
   minus:'<line x1="5" y1="12" x2="19" y2="12"/>',
+  trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>',
+  moreH:'<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
   inbox:'<polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>'
 };
 function icon(name,sz){const s=sz||20;return `<span class="lucide lucide-${s}"><svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${_I[name]||_I.edit}</svg></span>`}
@@ -594,10 +616,7 @@ function renderStats(){
 }
 
 function diaryHTML(d){
-  return `<div class="diary-card" onclick="showDiaryDetail(${d.id})">
-    <div class="dc-actions">
-      <button class="dc-act-btn" onclick="event.stopPropagation();editDiary(${d.id})" title="编辑">${icon('pencil',14)}</button>\n      <button class="dc-act-btn del" onclick="event.stopPropagation();delDiary(${d.id})" title="删除">${icon('x',14)}</button>
-    </div>
+  return `<div class="diary-card" ontouchstart="startLongPress('diary',${d.id})" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('diary',${d.id})" onclick="if(!wasLongPress())showDiaryDetail(${d.id})">
     <div class="dc-top">
       <div class="dc-mood">${d.mood?d.mood:icon('edit',18)}</div>
       <div class="dc-info"><div class="dc-title">${esc(d.title||'未命名')}</div><div class="dc-meta">${esc(d.source||'手动记录')} · ${esc(d.time||'')}</div></div>
@@ -608,10 +627,7 @@ function diaryHTML(d){
 }
 
 function expenseHTML(e){
-  return `<div class="exp-card">
-    <div class="dc-actions" style="position:static;opacity:1;display:flex;gap:4px;flex-shrink:0">
-      <button class="dc-act-btn" onclick="event.stopPropagation();editExpense(${e.id})" title="编辑">${icon('pencil',14)}</button>\n      <button class="dc-act-btn del" onclick="event.stopPropagation();delExpense(${e.id})" title="删除">${icon('x',14)}</button>
-    </div>
+  return `<div class="exp-card" ontouchstart="startLongPress('expense',${e.id})" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('expense',${e.id})" onclick="if(!wasLongPress())editExpense(${e.id})">
     <div class="exp-icon" style="background:${CAT_BG[e.category]||'rgba(174,174,178,0.12)'}">${CAT_EMOJI[e.category]||icon('tag',20)}</div>
     <div class="exp-info"><div class="exp-name">${esc(e.name)}</div><div class="exp-detail">${esc(e.category)} · ${esc(e.date)}</div></div>
     <div class="exp-amount">-¥${e.amount.toFixed(2)}</div>
@@ -621,23 +637,17 @@ function expenseHTML(e){
 function todoHTML(t){
   return `<div class="todo-card">
     <div class="todo-cb ${t.done?'checked':''}" onclick="event.stopPropagation();toggleTodo(${t.id})">${t.done?icon('check',14):''}</div>
-    <div class="todo-body" onclick="editTodo(${t.id})" style="cursor:pointer"><div class="todo-title ${t.done?'done':''}">${esc(t.title)}</div>${t.date?`<div class="todo-date">${esc(t.date)}</div>`:''}</div>
-    <div class="dc-actions" style="position:static;opacity:1;display:flex;gap:4px;flex-shrink:0">
-      <button class="dc-act-btn del" onclick="event.stopPropagation();delTodo(${t.id})" title="删除">${icon('x',14)}</button>
-    </div>
+    <div class="todo-body" ontouchstart="startLongPress('todo',${t.id})" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('todo',${t.id})" onclick="if(!wasLongPress())editTodo(${t.id})" style="cursor:pointer"><div class="todo-title ${t.done?'done':''}">${esc(t.title)}</div>${t.date?`<div class="todo-date">${esc(t.date)}</div>`:''}</div>
     <div class="todo-pri" style="background:${PRI_COLOR[t.priority]||'#ccc'}"></div>
   </div>`;
 }
 
 function countdownHTML(c){
   const d=daysBetween(c.date);const past=d<0;
-  return `<div class="cd-card">
+  return `<div class="cd-card" ontouchstart="startLongPress('countdown',${c.id})" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('countdown',${c.id})" onclick="if(!wasLongPress())editCountdown(${c.id})">
     <div class="cd-emoji">${c.emoji?c.emoji:icon('calendar',32)}</div>
-    <div class="cd-info" onclick="editCountdown(${c.id})" style="cursor:pointer"><div class="cd-name">${esc(c.name)}</div><div class="cd-date">${esc(c.date)}</div></div>
+    <div class="cd-info"><div class="cd-name">${esc(c.name)}</div><div class="cd-date">${esc(c.date)}</div></div>
     <div class="cd-days-wrap"><div class="cd-days">${Math.abs(d)}</div><div class="cd-unit">${past?'天前已到':'天后'}</div></div>
-    <div class="dc-actions" style="position:static;opacity:1;display:flex;gap:4px;flex-shrink:0;margin-left:4px">
-      <button class="dc-act-btn del" onclick="event.stopPropagation();delCountdown(${c.id})" title="删除">${icon('x',14)}</button>
-    </div>
   </div>`;
 }
 
@@ -700,6 +710,49 @@ function renderPage(){
 }
 function renderAll(){renderStats();renderDiaries();renderAsset();renderExpenses();renderTodos();renderCountdowns()}
 
+// ===== Action Sheet =====
+let _actionTarget=null,_longPressTimer=null,_longPressFired=false;
+function startLongPress(type,id){
+  _longPressFired=false;
+  _longPressTimer=setTimeout(()=>{_longPressFired=true;showActionSheet(type,id)},500)
+}
+function cancelLongPress(){if(_longPressTimer){clearTimeout(_longPressTimer);_longPressTimer=null}}
+function wasLongPress(){const r=_longPressFired;_longPressFired=false;return r}
+
+
+function showActionSheet(type,id){
+  _actionTarget={type,id};
+  const items=$('actionItems');
+  const actions={
+    diary:[{icon:'pencil',label:'编辑',action:'edit'},{icon:'trash',label:'删除',action:'delete',danger:true}],
+    expense:[{icon:'pencil',label:'编辑',action:'edit'},{icon:'trash',label:'删除',action:'delete',danger:true}],
+    todo:[{icon:'pencil',label:'编辑',action:'edit'},{icon:'checkCircle',label:todoToggleLabel(id),action:'toggle'},{icon:'trash',label:'删除',action:'delete',danger:true}],
+    countdown:[{icon:'pencil',label:'编辑',action:'edit'},{icon:'trash',label:'删除',action:'delete',danger:true}]
+  };
+  const list=actions[type]||[];
+  items.innerHTML=list.map(a=>`<button class="action-item ${a.danger?'danger':''}" onclick="doAction('${a.action}')">${icon(a.icon,20)} ${a.label}</button>`).join('');
+  $('actionOverlay').classList.add('show');
+}
+function todoToggleLabel(id){const t=D.todos.find(x=>x.id===id);return t&&t.done?'标记未完成':'标记完成'}
+function closeActionSheet(){$('actionOverlay').classList.remove('show');_actionTarget=null}
+function doAction(action){
+  const t=_actionTarget;if(!t)return;
+  closeActionSheet();
+  if(action==='edit'){
+    if(t.type==='diary')editDiary(t.id);
+    else if(t.type==='expense')editExpense(t.id);
+    else if(t.type==='todo')editTodo(t.id);
+    else if(t.type==='countdown')editCountdown(t.id);
+  }else if(action==='delete'){
+    if(t.type==='diary')delDiary(t.id);
+    else if(t.type==='expense')delExpense(t.id);
+    else if(t.type==='todo')delTodo(t.id);
+    else if(t.type==='countdown')delCountdown(t.id);
+  }else if(action==='toggle'){
+    toggleTodo(t.id);
+  }
+}
+
 // ===== CRUD =====
 function delDiary(id){showConfirm('删除日记','确定要删除这条日记吗？',()=>{D.diaries=D.diaries.filter(d=>d.id!==id);save();renderAll();toast('已删除')})}
 function delExpense(id){showConfirm('删除消费','确定要删除这条消费记录吗？',()=>{D.expenses=D.expenses.filter(e=>e.id!==id);save();renderAll();toast('已删除')})}
@@ -721,8 +774,7 @@ function showDiaryDetail(id){
     ${d.text?`<div class="detail-text">${esc(d.text)}</div>`:''}
     ${d.tags&&d.tags.length?`<div class="detail-tags">${d.tags.map(t=>`<span class="detail-tag">${esc(t)}</span>`).join('')}</div>`:''}
     <div class="detail-actions">
-      <button class="detail-btn" style="background:var(--accent);color:#fff" onclick="closeDetail();editDiary(${d.id})">编辑</button>
-      <button class="detail-btn" style="background:var(--red);color:#fff" onclick="closeDetail();delDiary(${d.id})">删除</button>
+      <button class="detail-btn" style="background:var(--accent);color:#fff" onclick="closeDetail();showActionSheet('diary',${d.id})">更多操作</button>
     </div>`;
   $('detailOverlay').classList.add('show');$('detailModal').classList.add('show');
 }
