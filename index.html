@@ -73,20 +73,44 @@ a{text-decoration:none;color:inherit}
 .sync-now{color:var(--accent);font-weight:600;cursor:pointer;margin-left:auto}
 
 /* ===== Stats ===== */
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 24px}
-.stat-card{background:var(--card);border-radius:var(--radius);padding:18px 16px;border:1px solid var(--border);position:relative;overflow:hidden;cursor:pointer;transition:transform .15s,border-color .2s}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;padding:12px 24px}
+.stat-card{background:var(--card);border-radius:var(--radius);padding:14px 10px;border:1px solid var(--border);position:relative;overflow:hidden;cursor:pointer;transition:transform .15s,border-color .2s;text-align:center}
 .stat-card:active{transform:scale(0.96);border-color:var(--border-strong)}
-.stat-card::after{content:'';position:absolute;top:-12px;right:-12px;width:44px;height:44px;border-radius:50%;opacity:0.06}
-.stat-val{font-family:var(--font);font-size:28px;font-weight:700;letter-spacing:-0.5px}
-.stat-lbl{font-size:12px;color:var(--text-2);margin-top:4px;font-weight:400;letter-spacing:0.5px}
+.stat-val{font-family:var(--font);font-size:24px;font-weight:700;letter-spacing:-0.5px}
+.stat-lbl{font-size:10px;color:var(--text-2);margin-top:2px;font-weight:400;letter-spacing:0.5px}
 .stat-card:nth-child(1) .stat-val{color:var(--seal)}
-.stat-card:nth-child(1)::after{background:var(--seal)}
 .stat-card:nth-child(2) .stat-val{color:var(--moss)}
-.stat-card:nth-child(2)::after{background:var(--moss)}
 .stat-card:nth-child(3) .stat-val{color:var(--clay)}
-.stat-card:nth-child(3)::after{background:var(--clay)}
 .stat-card:nth-child(4) .stat-val{color:var(--indigo)}
-.stat-card:nth-child(4)::after{background:var(--indigo)}
+
+/* ===== Home Welcome ===== */
+.home-welcome{padding:8px 24px 0}
+.home-greeting{font-family:var(--font);font-size:20px;font-weight:700;letter-spacing:0.5px}
+.home-date{font-size:12px;color:var(--text-3);margin-top:2px;letter-spacing:0.3px}
+
+/* ===== Home Quick Section ===== */
+.home-sec{padding:16px 24px 0}
+.home-sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.home-sec-title{font-family:var(--font);font-size:15px;font-weight:600;letter-spacing:0.5px;display:flex;align-items:center;gap:8px}
+.home-sec-title .lucide{color:var(--text-3)}
+.home-sec-more{font-size:12px;color:var(--accent);font-weight:500;cursor:pointer;border:none;background:none;letter-spacing:0.3px}
+
+/* ===== Home Countdown Row ===== */
+.cd-row{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.cd-mini{min-width:120px;background:var(--card);border-radius:var(--radius);padding:12px 14px;border:1px solid var(--border);cursor:pointer;transition:transform .15s}
+.cd-mini:active{transform:scale(0.97)}
+.cd-mini-emoji{font-size:24px;margin-bottom:4px}
+.cd-mini-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cd-mini-days{font-family:var(--font);font-size:20px;font-weight:700;color:var(--accent);margin-top:2px}
+.cd-mini-unit{font-size:10px;color:var(--text-3)}
+
+/* ===== Home Expense Summary ===== */
+.exp-summary{background:var(--card);border-radius:var(--radius);padding:14px 16px;border:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:transform .15s}
+.exp-summary:active{transform:scale(0.98)}
+.exp-summary-left{display:flex;align-items:center;gap:10px}
+.exp-summary-icon{width:36px;height:36px;border-radius:50%;background:rgba(192,72,81,0.1);display:flex;align-items:center;justify-content:center}
+.exp-summary-info{font-size:12px;color:var(--text-3)}
+.exp-summary-amount{font-family:var(--font);font-size:20px;font-weight:700;color:var(--seal)}
 
 /* ===== Section Header ===== */
 .sec-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px 8px}
@@ -720,10 +744,10 @@ function renderStats(){
   const mc=D.diaries.filter(d=>d.time&&d.time.startsWith(fmtDate().slice(0,7))).length;
   const ta=D.todos.filter(t=>!t.done).length;
   $('statsBar').innerHTML=`
-    <div class="stat-card" onclick="switchTab('diary')" style="cursor:pointer"><div class="stat-val">${mc}</div><div class="stat-lbl">本月记录</div></div>
-    <div class="stat-card" onclick="switchTab('todo')" style="cursor:pointer"><div class="stat-val">${ta}</div><div class="stat-lbl">待办进行</div></div>
+    <div class="stat-card" onclick="switchTab('diary')" style="cursor:pointer"><div class="stat-val">${mc}</div><div class="stat-lbl">记录</div></div>
+    <div class="stat-card" onclick="switchTab('todo')" style="cursor:pointer"><div class="stat-val">${ta}</div><div class="stat-lbl">待办</div></div>
     <div class="stat-card" onclick="switchTab('countdown')" style="cursor:pointer"><div class="stat-val">${D.countdowns.length}</div><div class="stat-lbl">倒数日</div></div>
-    <div class="stat-card" onclick="switchTab('expense')" style="cursor:pointer"><div class="stat-val">${D.expenses.length}</div><div class="stat-lbl">消费笔数</div></div>`;
+    <div class="stat-card" onclick="switchTab('expense')" style="cursor:pointer"><div class="stat-val">${D.expenses.length}</div><div class="stat-lbl">消费</div></div>`;
 }
 
 function diaryHTML(d){
@@ -765,24 +789,37 @@ function countdownHTML(c){
 function emptyHTML(iconName,text){return `<div class="empty"><div class="empty-icon">${icon(iconName,48)}</div><div class="empty-text">${text}</div><div class="empty-hint">点击 + 开始记录</div></div>`}
 
 function renderAllPage(){
+  // 首页：欢迎区 + 统计 + 待办快捷 + 日记 + 倒数日 + 消费
+  const now=new Date();const hour=now.getHours();
+  const greeting=hour<6?'夜深了':hour<12?'早上好':hour<18?'下午好':'晚上好';
+  const weekdays=['日','一','二','三','四','五','六'];
+  const dateStr=`${now.getMonth()+1}月${now.getDate()}日 周${weekdays[now.getDay()]}`;
   let h='';
+  // 欢迎区
+  h+=`<div class="home-welcome"><div class="home-greeting">${greeting}</div><div class="home-date">${dateStr}</div></div>`;
+  // 待办快捷区（未完成的待办）
+  const undoneTodos=D.todos.filter(t=>!t.done);
+  if(undoneTodos.length){
+    h+=`<div class="home-sec"><div class="home-sec-header"><div class="home-sec-title">${icon('bookmark',18)} 待办 · ${undoneTodos.length}</div><button class="home-sec-more" onclick="switchTab('todo')">全部 ›</button></div>`;
+    h+=`<div class="record-list">${undoneTodos.slice(0,4).map(todoHTML).join('')}</div></div>`;
+  }
+  // 最近日记
   if(D.diaries.length){
-    h+=`<div class="sec-header"><span class="sec-title">日记</span><button class="sec-more" onclick="switchTab('diary')">更多 ›</button></div>`;
-    h+=`<div class="record-list">${D.diaries.slice(0,3).map(diaryHTML).join('')}</div>`;
+    h+=`<div class="home-sec"><div class="home-sec-header"><div class="home-sec-title">${icon('edit',18)} 日记</div><button class="home-sec-more" onclick="switchTab('diary')">全部 ›</button></div>`;
+    h+=`<div class="record-list">${D.diaries.slice(0,2).map(diaryHTML).join('')}</div></div>`;
   }
-  if(D.todos.filter(t=>!t.done).length){
-    h+=`<div class="sec-header"><span class="sec-title">待办</span><button class="sec-more" onclick="switchTab('todo')">更多 ›</button></div>`;
-    h+=`<div class="record-list">${D.todos.filter(t=>!t.done).slice(0,3).map(todoHTML).join('')}</div>`;
-  }
+  // 倒数日横滑
   if(D.countdowns.length){
-    h+=`<div class="sec-header"><span class="sec-title">倒数日</span><button class="sec-more" onclick="switchTab('countdown')">更多 ›</button></div>`;
-    h+=`<div class="record-list">${D.countdowns.slice(0,3).map(countdownHTML).join('')}</div>`;
+    h+=`<div class="home-sec"><div class="home-sec-header"><div class="home-sec-title">${icon('calendar',18)} 倒数日</div><button class="home-sec-more" onclick="switchTab('countdown')">全部 ›</button></div>`;
+    h+=`<div class="cd-row">${D.countdowns.map(c=>{const d=daysBetween(c.date);return `<div class="cd-mini" onclick="switchTab('countdown')"><div class="cd-mini-emoji">${c.emoji||'📅'}</div><div class="cd-mini-name">${esc(c.name)}</div><div class="cd-mini-days">${Math.abs(d)}</div><div class="cd-mini-unit">${d<0?'天前已到':'天后'}</div></div>`}).join('')}</div></div>`;
   }
+  // 消费汇总
   if(D.expenses.length){
-    h+=`<div class="sec-header"><span class="sec-title">消费</span><button class="sec-more" onclick="switchTab('expense')">更多 ›</button></div>`;
-    h+=`<div class="record-list">${D.expenses.slice(0,3).map(expenseHTML).join('')}</div>`;
+    const totalExp=D.expenses.reduce((s,e)=>s+(e.amount||0),0);
+    h+=`<div class="home-sec"><div class="home-sec-header"><div class="home-sec-title">${icon('receipt',18)} 消费</div><button class="home-sec-more" onclick="switchTab('expense')">全部 ›</button></div>`;
+    h+=`<div class="exp-summary" onclick="switchTab('expense')"><div class="exp-summary-left"><div class="exp-summary-icon">${icon('receipt',20)}</div><div class="exp-summary-info">${D.expenses.length}笔记录</div></div><div class="exp-summary-amount">¥${totalExp.toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2})}</div></div></div>`;
   }
-  if(!h)h=emptyHTML('inbox','暂无记录');
+  if(!h.includes('home-sec'))h+=emptyHTML('inbox','暂无记录');
   $('allDiaryList').innerHTML=h;
 }
 function renderDiaries(){
@@ -1185,7 +1222,34 @@ async function pushLocalOps(){
   }catch(e){console.warn('增量推送失败:',e.message);return false}
 }
 
-// 全量合并 fallback（首次同步 / 游标过期）
+// 全量替换（首次登录：云端为准，合并本地独有数据）
+function replaceWithCloud(cloud){
+  if(!cloud||typeof cloud!=='object')return false;
+  D._m=D._m||{};
+  for(const k of SYNC_KEYS){
+    const localArr=(D[k]||[]).slice();
+    const cloudArr=cloud[k]||[];
+    // 以云端为主
+    const cloudMap=new Map(cloudArr.map(x=>[String(x.id),x]));
+    // 保留本地独有且 u 大于云端的记录
+    for(const item of localArr){
+      const id=String(item.id);
+      if(!cloudMap.has(id)&&(item.u||0)>0){
+        cloudMap.set(id,item);
+      }
+    }
+    // 排除墓碑中的记录
+    const dels=new Set((D._m.deleted&&D._m.deleted[k])||[]);
+    D[k]=[...cloudMap.values()].filter(x=>!dels.has(String(x.id)));
+  }
+  D.nextId=Math.max(D.nextId||10,cloud.nextId||10);
+  D._m.lastSyncAt=Date.now();
+  if(cloud._opCursor!=null){OP_CURSOR=cloud._opCursor;saveOpCursor()}
+  localStorage.setItem(currentStorageKey(),JSON.stringify(D));
+  _snap=JSON.stringify(D);
+  return true;
+}
+// 全量合并 fallback（增量拉取后的补充合并）
 function mergeCloudIntoLocal(cloud){
   if(!cloud||typeof cloud!=='object')return false;
   let changed=false;
@@ -1223,9 +1287,9 @@ async function pullCloudData(){
       const ops=await pullRemoteOps();
       if(ops.length>0){isOnline=true;setSyncStatus('online');return{ops}}
     }
-    // 游标为 0 或增量返回空：走全量 fallback
+    // 游标为 0 或增量返回空：走全量 fallback（云端为准）
     const cloud=await api('/api/data');
-    mergeCloudIntoLocal(cloud);
+    replaceWithCloud(cloud);
     isOnline=true;setSyncStatus('online');
     return cloud;
   }catch(e){console.warn('拉取云端数据失败:',e.message);return null}
@@ -1255,20 +1319,21 @@ async function pushCloudData(){
 async function syncOnLogin(){
   if(!authToken)return;
   try{
-    // 优先增量拉取（OP_CURSOR > 0 表示之前已同步过）
-    if(OP_CURSOR>0){
-      const ops=await pullRemoteOps();
-      if(ops.length>0||OP_CURSOR>0){
-        // 增量拉取成功，推送本地 op
-        await pushCloudData();
-        renderAll();
-        return;
-      }
+    // 先尝试增量拉取所有 op（从 after=0 开始全量回放）
+    const opsResult=await api('/api/ops?after=0');
+    if(opsResult.ops&&opsResult.ops.length>0){
+      // 增量回放：回放所有远程 op（跳过自己的设备）
+      applyRemoteOps(opsResult.ops);
+      OP_CURSOR=opsResult.cursor;
+      saveOpCursor();
+      // 再推送本地 op
+      await pushCloudData();
+      renderAll();
+      return;
     }
-    // 游标为0或增量失败：全量拉取合并
+    // 无 op：走全量 fallback
     const cloud=await api('/api/data');
-    mergeCloudIntoLocal(cloud);
-    // 再推送本地数据
+    replaceWithCloud(cloud);
     await pushCloudData();
     renderAll();
   }catch(e){console.warn('登录同步失败:',e.message)}
@@ -1279,6 +1344,20 @@ async function syncPush(force){
   try{
     // 先增量拉取远程 op
     await pullRemoteOps();
+    // 再做全量快照校验（修补增量同步可能遗漏的删除）
+    try{
+      const cloud=await api('/api/data');
+      // 以云端为准：删除本地有但云端没有的记录（除非本地有更新的 u）
+      for(const k of SYNC_KEYS){
+        const cloudIds=new Set((cloud[k]||[]).map(x=>String(x.id)));
+        const before=D[k].length;
+        D[k]=D[k].filter(item=>cloudIds.has(String(item.id))||(item.u||0)>0);
+        if(D[k].length!==before){
+          localStorage.setItem(currentStorageKey(),JSON.stringify(D));
+          _snap=JSON.stringify(D);
+        }
+      }
+    }catch(e){}
     // 再推送本地 op
     if(force||localOps.length>0||isDirty()){
       await pushCloudData();
