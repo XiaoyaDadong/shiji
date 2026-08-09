@@ -766,7 +766,7 @@ function loadData() {
   try { const r = localStorage.getItem(STORAGE_KEY); if(r) return JSON.parse(r); } catch(e){}
   return defaultData();
 }
-function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(D)); if(authToken) pushCloudData(); }
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(D)); if(authToken) debouncePush(); }
 function nid() { D.nextId = (D.nextId||10)+1; save(); return D.nextId; }
 function defaultData() {
   return {
@@ -1401,19 +1401,36 @@ async function pullCloudData() {
   if(!authToken) return;
   try {
     const cloud = await api('/api/data');
-    // 合并策略：云端有数据则用云端覆盖本地
-    if(cloud.diaries || cloud.todos || cloud.expenses || cloud.countdowns) {
-      D.diaries = cloud.diaries || [];
-      D.todos = cloud.todos || [];
-      D.expenses = cloud.expenses || [];
-      D.countdowns = cloud.countdowns || [];
-      D.nextId = cloud.nextId || 10;
-      save();
-    }
+    if(!cloud.diaries && !cloud.todos && !cloud.expenses && !cloud.countdowns) { isOnline=true; return; }
+    // 合并策略：按ID合并，本地和云端都有→保留较新版本（本地优先），仅一方有→保留
+    D.diaries = mergeById(D.diaries, cloud.diaries||[]);
+    D.todos = mergeById(D.todos, cloud.todos||[]);
+    D.expenses = mergeById(D.expenses, cloud.expenses||[]);
+    D.countdowns = mergeById(D.countdowns, cloud.countdowns||[]);
+    D.nextId = Math.max(D.nextId||10, cloud.nextId||10);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(D));
     isOnline = true;
   } catch(e) {
     console.warn('拉取云端数据失败:', e.message);
   }
+}
+
+// 按ID合并两个数组：本地+云端去重，以本地版本优先
+function mergeById(localArr, cloudArr) {
+  const map = new Map();
+  // 先放云端数据
+  for(const item of cloudArr) { if(item && item.id) map.set(item.id, item); }
+  // 本地数据覆盖云端（本地优先）
+  for(const item of localArr) { if(item && item.id) map.set(item.id, item); }
+  // 按id排序，保证顺序稳定
+  return Array.from(map.values()).sort((a,b) => b.id - a.id);
+}
+
+// 防抖推送：避免save()高频调用导致频繁请求
+let pushDebounceTimer = null;
+function debouncePush() {
+  if(pushDebounceTimer) clearTimeout(pushDebounceTimer);
+  pushDebounceTimer = setTimeout(() => { pushCloudData(); }, 2000);
 }
 
 async function pushCloudData() {
@@ -1461,14 +1478,17 @@ function updateSyncUI() {
 
 function startAutoSync() {
   if(syncTimer) clearInterval(syncTimer);
-  // 每30秒自动同步
-  syncTimer = setInterval(()=>{ pushCloudData(); }, 30000);
+  // 每30秒自动同步：先拉后推，保证多设备数据不丢
+  syncTimer = setInterval(async ()=>{
+    try { await pullCloudData(); renderAll(); } catch(e) {}
+    pushCloudData();
+  }, 30000);
 }
 
 function manualSync() {
   if(!authToken) { toast('未登录，无法同步'); return; }
-  pushCloudData();
   toast('正在同步...');
+  pullCloudData().then(()=>{ renderAll(); pushCloudData(); }).catch(()=>{ pushCloudData(); });
 }
 
 function handleLogout() {
