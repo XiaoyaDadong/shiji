@@ -200,6 +200,13 @@ a{text-decoration:none;color:inherit}
 .empty-text{font-family:var(--font);font-size:15px;font-weight:600;margin-bottom:4px}
 .empty-hint{font-size:12px;opacity:0.6;letter-spacing:0.5px}
 
+/* ===== Day Group ===== */
+.day-group{margin-top:8px}
+.day-header{display:flex;align-items:center;gap:12px;padding:16px 0 8px;position:sticky;top:0;z-index:5}
+.day-date{font-family:var(--font);font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;letter-spacing:0.5px}
+.day-line{flex:1;height:1px;background:var(--border)}
+.day-count{font-size:11px;color:var(--text-3);white-space:nowrap;letter-spacing:0.3px}
+
 /* ===== FAB ===== */
 .fab-wrap{position:fixed;bottom:calc(24px + var(--safe-bottom));right:calc(50% - 195px);z-index:50}
 @media(max-width:430px){.fab-wrap{right:24px}}
@@ -816,7 +823,36 @@ function renderAllPage(){
 function renderDiaries(){
   let list=sortByTime(D.diaries,'time');
   if(searchQ)list=list.filter(d=>(d.title||'').toLowerCase().includes(searchQ)||(d.text||'').toLowerCase().includes(searchQ)||(d.tags||[]).some(t=>t.toLowerCase().includes(searchQ)));
-  $('diaryList').innerHTML=list.length?list.map(diaryHTML).join(''):emptyHTML('edit','暂无日记');
+  if(!list.length){$('diaryList').innerHTML=emptyHTML('edit','暂无日记');return}
+  // 按日期分组
+  const groups={};
+  list.forEach(d=>{
+    const dateKey=(d.time||'').slice(0,10)||'未知日期';
+    if(!groups[dateKey])groups[dateKey]=[];
+    groups[dateKey].push(d);
+  });
+  const weekdays=['日','一','二','三','四','五','六'];
+  let html='';
+  const sortedKeys=Object.keys(groups).sort((a,b)=>b.localeCompare(a)); // 日期倒序
+  sortedKeys.forEach(dateKey=>{
+    const items=groups[dateKey];
+    let label;
+    if(dateKey==='未知日期'){
+      label='未知日期';
+    }else{
+      const dt=new Date(dateKey+'T00:00:00');
+      const today=fmtDate();
+      const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
+      const ydStr=fmtDate(yesterday);
+      if(dateKey===today)label='今天';
+      else if(dateKey===ydStr)label='昨天';
+      else label=`${dt.getMonth()+1}月${dt.getDate()}日 周${weekdays[dt.getDay()]}`;
+    }
+    html+=`<div class="day-group"><div class="day-header"><span class="day-date">${esc(label)}</span><div class="day-line"></div><span class="day-count">${items.length}篇</span></div>`;
+    html+=items.map(diaryHTML).join('');
+    html+=`</div>`;
+  });
+  $('diaryList').innerHTML=html;
 }
 function renderExpenses(){
   const el=$('expenseList');if(!el)return;
@@ -1182,7 +1218,7 @@ async function cloudUpdate(col,id,item){
   try{
     const result=await api('/api/records/'+col+'/'+id,{method:'PUT',body:JSON.stringify(item)});
     if(result.success&&result.item){
-      const idx=D[col].findIndex(x=>x.id===id);
+      const idx=D[col].findIndex(x=>String(x.id)===String(id));
       if(idx>=0){D[col][idx]=result.item}
       _snap=JSON.stringify(D);
       localStorage.setItem(currentStorageKey(),JSON.stringify(D));
