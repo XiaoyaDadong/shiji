@@ -190,37 +190,51 @@ a{text-decoration:none;color:inherit}
 .sheet-header p{font-size:13px;color:var(--text-2);margin-top:4px;letter-spacing:0.5px}
 
 /* ===== Type Grid ===== */
-.type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 20px 16px}
-.type-item{background:var(--card);border-radius:var(--radius);padding:14px 4px 12px;text-align:center;cursor:pointer;border:1px solid var(--border);outline:none;transition:transform .15s}
-.type-item:active{transform:scale(0.92)}
-.type-icon{width:44px;height:44px;border-radius:var(--radius-sm);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:22px}
-.type-label{font-size:12px;font-weight:500;color:var(--text-2);letter-spacing:0.3px}
+.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:0 24px 24px}
+.type-item{background:var(--card);border-radius:var(--radius-lg);padding:20px 4px 16px;text-align:center;cursor:pointer;border:1px solid var(--border);outline:none;transition:all .2s}
+.type-item:active{transform:scale(0.94);border-color:var(--earth);background:var(--card-hover)}
+.type-icon{width:52px;height:52px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:24px;transition:transform .2s}
+.type-item:active .type-icon{transform:scale(1.1)}
+.type-label{font-size:13px;font-weight:500;color:var(--text-2);letter-spacing:1px;font-family:var(--font)}
+.type-hint{font-family:var(--font);font-size:13px;color:var(--text-3);text-align:center;padding:0 24px 16px;letter-spacing:2px;line-height:1.6}
+.type-divider{width:32px;height:1px;background:var(--border-strong);margin:4px auto 12px}
 
 /* ===== Modal ===== */
-.modal-overlay{position:fixed;inset:0;background:rgba(26,22,18,0.4);z-index:200;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(6px)}
+.modal-overlay{position:fixed;inset:0;background:rgba(26,22,18,0.45);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(8px)}
 .modal-overlay.show{opacity:1;pointer-events:auto}
-.modal{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:430px;background:var(--bg);border-radius:20px 20px 0 0;padding:20px 20px calc(24px + var(--safe-bottom));z-index:201;transition:transform .35s cubic-bezier(0.32,0.72,0,1);max-height:88vh;overflow-y:auto}
+.modal{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:430px;background:var(--bg);border-radius:24px 24px 0 0;padding:12px 24px calc(28px + var(--safe-bottom));z-index:201;transition:transform .4s cubic-bezier(0.32,0.72,0,1);max-height:90vh;overflow-y:auto}
 .modal.show{transform:translateX(-50%) translateY(0)}
-.modal-handle{width:36px;height:4px;background:var(--border-strong);border-radius:2px;margin:0 auto 16px}
-.modal h2{font-family:var(--font);font-size:18px;font-weight:700;margin-bottom:16px;text-align:center}
+.modal-handle{width:36px;height:4px;background:var(--border-strong);border-radius:2px;margin:4px auto 20px}
+.modal h2{font-family:var(--font);font-size:20px;font-weight:700;margin-bottom:20px;text-align:center;letter-spacing:1px}
+.modal-subtitle{font-family:var(--font);font-size:12px;color:var(--text-3);text-align:center;margin-top:-16px;margin-bottom:20px;letter-spacing:1.5px}
 
-/* ===== Form ===== */
-.fg{margin-bottom:14px}
-.fg label{font-size:12px;color:var(--text-2);display:block;margin-bottom:5px;font-weight:500;letter-spacing:0.3px}
-.fg input,.fg textarea,.fg select{width:100%;border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;font-size:15px;background:var(--card);outline:none;transition:border-color .2s;color:var(--text);font-family:var(--font-sans)}
+/* ===== Form (Wabi-sabi) ===== */
+.fg{margin-bottom:18px}
+.fg label{font-size:11px;color:var(--text-3);display:block;margin-bottom:8px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase}
+.fg input,.fg textarea,.fg select{width:100%;border:none;border-bottom:1.5px solid var(--border);border-radius:0;padding:10px 2px;font-size:16px;background:transparent;outline:none;transition:border-color .3s;color:var(--text);font-family:var(--font-sans)}
 .fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--accent)}
-.fg textarea{resize:vertical;min-height:72px}
-.fg select{-webkit-appearance:none;appearance:none}
-.mood-row{display:flex;gap:8px;flex-wrap:wrap}
-.mood-opt{width:42px;height:42px;border-radius:var(--radius-sm);border:2px solid var(--border);background:var(--card);font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
-.mood-opt.active{border-color:var(--accent);background:var(--accent-bg);transform:scale(1.08)}
+.fg textarea{resize:vertical;min-height:80px;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px}
+.fg textarea:focus{border-color:var(--accent)}
+.fg select{-webkit-appearance:none;appearance:none;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px}
+.fg select:focus{border-color:var(--accent)}
+.mood-row{display:flex;gap:10px;flex-wrap:wrap}
+.mood-opt{width:44px;height:44px;border-radius:50%;border:2px solid var(--border);background:transparent;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s}
+.mood-opt:active{transform:scale(0.9)}
+.mood-opt.active{border-color:var(--accent);background:var(--accent-bg);transform:scale(1.1);box-shadow:0 2px 8px rgba(192,72,81,0.15)}
 .pri-row{display:flex;gap:10px}
-.pri-opt{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-sm);border:2px solid var(--border);background:var(--card);cursor:pointer;font-size:13px;transition:all .2s}
+.pri-opt{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:13px;transition:all .25s;letter-spacing:0.5px}
+.pri-opt:active{transform:scale(0.95)}
 .pri-opt.active{border-color:var(--accent);background:var(--accent-bg)}
 .pri-dot{width:8px;height:8px;border-radius:50%}
-.form-submit{width:100%;padding:14px;border:none;border-radius:var(--radius-sm);background:var(--text);color:var(--bg);font-size:16px;font-weight:600;cursor:pointer;transition:opacity .2s;margin-top:6px;font-family:var(--font-sans);letter-spacing:0.5px}
-.form-submit:active{opacity:0.85}
-.form-cancel{width:100%;padding:12px;border:none;border-radius:var(--radius-sm);background:var(--card);color:var(--text-2);font-size:15px;cursor:pointer;margin-top:8px}
+.form-submit{width:100%;padding:15px;border:none;border-radius:var(--radius);background:var(--seal);color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:8px;font-family:var(--font-sans);letter-spacing:1px;box-shadow:0 2px 12px rgba(192,72,81,0.2)}
+.form-submit:active{transform:scale(0.97);opacity:0.9}
+.form-cancel{width:100%;padding:13px;border:none;border-radius:var(--radius);background:transparent;color:var(--text-3);font-size:15px;cursor:pointer;margin-top:6px;letter-spacing:0.5px}
+
+/* ===== Category Chips (for expense form) ===== */
+.cat-chips{display:flex;gap:8px;flex-wrap:wrap}
+.cat-chip{padding:8px 16px;border-radius:20px;border:1.5px solid var(--border);background:transparent;font-size:13px;cursor:pointer;transition:all .25s;letter-spacing:0.5px}
+.cat-chip:active{transform:scale(0.95)}
+.cat-chip.active{border-color:var(--earth);background:rgba(160,139,114,0.12);color:var(--ink)}
 
 /* ===== Detail ===== */
 .detail-body{padding:0 4px}
@@ -449,7 +463,9 @@ a{text-decoration:none;color:inherit}
 <div class="overlay" id="overlay" onclick="closeTypePanel()"></div>
 <div class="sheet" id="typePanel">
   <div class="sheet-handle"></div>
-  <div class="sheet-header"><h2>选择记录类型</h2><p>生活值得你记录</p></div>
+  <div class="sheet-header"><h2>记录此刻</h2><p>一笔一画，皆是生活</p></div>
+  <div class="type-divider"></div>
+  <div class="type-hint">选择你要留下的痕迹</div>
   <div class="type-grid" id="typeGrid"></div>
 </div>
 
@@ -458,6 +474,7 @@ a{text-decoration:none;color:inherit}
 <div class="modal" id="modal">
   <div class="modal-handle"></div>
   <h2 id="modalTitle">新建记录</h2>
+  <div class="modal-subtitle" id="modalSubtitle"></div>
   <div id="modalBody"></div>
 </div>
 
@@ -788,75 +805,77 @@ function renderTypeGrid(){$('typeGrid').innerHTML=TYPES.map(t=>`<button class="t
 
 // ===== Modal =====
 let editId=null;
+const TYPE_SUBTITLES={diary:'纸短情长，落笔生花',expense:'一文一物，皆有所值',meal:'人间烟火，食之有味',todo:'待办之事，逐一了之',countdown:'翘首以盼，不负归期',birthday:'年年岁岁，生辰如歌',anniversary:'此情可待，岁岁年年',checkin:'日日不断，功不唐捐',asset:'身外之物，亦需记之',subscribe:'月月有约，按时而至',plan:'谋定后动，行且坚毅',festival:'节庆之时，人间值得'};
 function openModal(type,editData){
   closeTypePanel();editId=editData?editData.id:null;
-  const B=$('modalBody'),T=$('modalTitle');let h='';const isEdit=!!editData;
+  const B=$('modalBody'),T=$('modalTitle'),S=$('modalSubtitle');let h='';const isEdit=!!editData;
+  S.textContent=TYPE_SUBTITLES[type]||'记录此刻';
   switch(type){
-    case 'diary':T.textContent=isEdit?'编辑日记':'新建日记';h=`
+    case 'diary':T.textContent=isEdit?'编辑日记':'写日记';h=`
       <div class="fg"><label>标题</label><input id="f_title" placeholder="今天的心情..." value="${esc(editData?.title||'')}"></div>
-      <div class="fg"><label>内容</label><textarea id="f_text" placeholder="记录一下..." rows="4">${esc(editData?.text||'')}</textarea></div>
-      <div class="fg"><label>心情</label><div class="mood-row" id="moodRow"></div></div>
-      <div class="fg"><label>标签（逗号分隔）</label><input id="f_tags" placeholder="如：读书,散步" value="${esc(editData?.tags?.join(',')||'')}"></div>
-      <button class="form-submit" onclick="submitDiary()">${isEdit?'保存修改':'保存日记'}</button>`;break;
-    case 'expense':T.textContent=isEdit?'编辑消费':'新建消费';h=`
-      <div class="fg"><label>名称</label><input id="f_name" placeholder="消费项目" value="${esc(editData?.name||'')}"></div>
+      <div class="fg"><label>内容</label><textarea id="f_text" placeholder="纸短情长，慢慢写..." rows="4">${esc(editData?.text||'')}</textarea></div>
+      <div class="fg"><label>此刻心情</label><div class="mood-row" id="moodRow"></div></div>
+      <div class="fg"><label>标签 · 逗号分隔</label><input id="f_tags" placeholder="如：读书,散步" value="${esc(editData?.tags?.join(',')||'')}"></div>
+      <button class="form-submit" onclick="submitDiary()">${isEdit?'保存修改':'落笔'}</button>`;break;
+    case 'expense':T.textContent=isEdit?'编辑消费':'记一笔';h=`
+      <div class="fg"><label>消费项目</label><input id="f_name" placeholder="买了什么" value="${esc(editData?.name||'')}"></div>
       <div class="fg"><label>金额</label><input id="f_amount" type="number" step="0.01" placeholder="0.00" value="${editData?.amount||''}"></div>
-      <div class="fg"><label>分类</label><select id="f_cat">${['餐饮','交通','日用品','娱乐','购物','医疗','其他'].map(c=>`<option ${editData?.category===c?'selected':''}>${c}</option>`).join('')}</select></div>
+      <div class="fg"><label>分类</label><div class="cat-chips" id="catChips"></div><input type="hidden" id="f_cat" value="${esc(editData?.category||'餐饮')}"></div>
       <div class="fg"><label>日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
-      <button class="form-submit" onclick="submitExpense()">${isEdit?'保存修改':'保存'}</button>`;break;
-    case 'meal':T.textContent=isEdit?'编辑餐食':'餐食记录';h=`
-      <div class="fg"><label>餐食</label><input id="f_title" placeholder="吃了什么" value="${esc(editData?.title||'')}"></div>
-      <div class="fg"><label>内容</label><textarea id="f_text" placeholder="记录一下..." rows="3">${esc(editData?.text||'')}</textarea></div>
-      <div class="fg"><label>心情</label><div class="mood-row" id="moodRow"></div></div>
-      <button class="form-submit" onclick="submitMeal()">${isEdit?'保存修改':'保存'}</button>`;break;
-    case 'todo':T.textContent=isEdit?'编辑待办':'新建待办';h=`
-      <div class="fg"><label>内容</label><input id="f_title" placeholder="待办事项" value="${esc(editData?.title||'')}"></div>
+      <button class="form-submit" onclick="submitExpense()">${isEdit?'保存修改':'入账'}</button>`;break;
+    case 'meal':T.textContent=isEdit?'编辑餐食':'记餐食';h=`
+      <div class="fg"><label>吃了什么</label><input id="f_title" placeholder="餐食" value="${esc(editData?.title||'')}"></div>
+      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="味道如何..." rows="3">${esc(editData?.text||'')}</textarea></div>
+      <div class="fg"><label>此刻心情</label><div class="mood-row" id="moodRow"></div></div>
+      <button class="form-submit" onclick="submitMeal()">${isEdit?'保存修改':'记下'}</button>`;break;
+    case 'todo':T.textContent=isEdit?'编辑待办':'加待办';h=`
+      <div class="fg"><label>待办事项</label><input id="f_title" placeholder="要做什么" value="${esc(editData?.title||'')}"></div>
       <div class="fg"><label>截止日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
       <div class="fg"><label>优先级</label><div class="pri-row" id="priRow"></div></div>
-      <button class="form-submit" onclick="submitTodo()">${isEdit?'保存修改':'保存'}</button>`;break;
-    case 'countdown':T.textContent=isEdit?'编辑倒数日':'新建倒数日';h=`
-      <div class="fg"><label>名称</label><input id="f_name" placeholder="倒数日名称" value="${esc(editData?.name||'')}"></div>
+      <button class="form-submit" onclick="submitTodo()">${isEdit?'保存修改':'记下'}</button>`;break;
+    case 'countdown':T.textContent=isEdit?'编辑倒数日':'加倒数日';h=`
+      <div class="fg"><label>名称</label><input id="f_name" placeholder="期待什么" value="${esc(editData?.name||'')}"></div>
       <div class="fg"><label>目标日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
       <div class="fg"><label>图标</label><div class="mood-row" id="emojiRow"></div></div>
-      <button class="form-submit" onclick="submitCountdown()">${isEdit?'保存修改':'保存'}</button>`;break;
-    case 'birthday':T.textContent=isEdit?'编辑生日':'生日记录';h=`
+      <button class="form-submit" onclick="submitCountdown()">${isEdit?'保存修改':'记下'}</button>`;break;
+    case 'birthday':T.textContent=isEdit?'编辑生日':'记生日';h=`
       <div class="fg"><label>谁的生日</label><input id="f_name" placeholder="姓名" value="${esc((editData?.name||'').replace('的生日',''))}"></div>
       <div class="fg"><label>日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
       <div class="fg"><label>备注</label><textarea id="f_text" placeholder="想记录些什么..." rows="3">${esc(editData?.text||'')}</textarea></div>
-      <button class="form-submit" onclick="submitBirthday()">${isEdit?'保存修改':'保存'}</button>`;break;
-    case 'anniversary':T.textContent=isEdit?'编辑纪念日':'纪念日';h=`
+      <button class="form-submit" onclick="submitBirthday()">${isEdit?'保存修改':'记下'}</button>`;break;
+    case 'anniversary':T.textContent=isEdit?'编辑纪念日':'记纪念日';h=`
       <div class="fg"><label>纪念日名称</label><input id="f_name" placeholder="如：结婚纪念日" value="${esc(editData?.name||'')}"></div>
       <div class="fg"><label>日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
       <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="3">${esc(editData?.text||'')}</textarea></div>
-      <button class="form-submit" onclick="submitAnniversary()">${isEdit?'保存修改':'保存'}</button>`;break;
-    case 'checkin':T.textContent=isEdit?'编辑打卡':'打卡记录';h=`
+      <button class="form-submit" onclick="submitAnniversary()">${isEdit?'保存修改':'记下'}</button>`;break;
+    case 'checkin':T.textContent=isEdit?'编辑打卡':'打卡';h=`
       <div class="fg"><label>打卡项目</label><input id="f_title" placeholder="如：早起/运动/阅读" value="${esc((editData?.title||'').replace('打卡：',''))}"></div>
       <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="3">${esc(editData?.text||'')}</textarea></div>
-      <button class="form-submit" onclick="submitCheckin()">${isEdit?'保存修改':'保存'}</button>`;break;
-    case 'asset':T.textContent=isEdit?'编辑资产':'资产记录';h=`
+      <button class="form-submit" onclick="submitCheckin()">${isEdit?'保存修改':'打卡'}</button>`;break;
+    case 'asset':T.textContent=isEdit?'编辑资产':'记资产';h=`
       <div class="fg"><label>资产名称</label><input id="f_title" placeholder="如：笔记本电脑" value="${esc((editData?.title||'').replace('资产：',''))}"></div>
       <div class="fg"><label>估值</label><input id="f_amount" type="number" step="0.01" placeholder="0.00" value="${editData?.amount||''}"></div>
       <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="3">${esc(editData?.text||'')}</textarea></div>
-      <button class="form-submit" onclick="submitAsset()">${isEdit?'保存修改':'保存'}</button>`;break;
-    case 'subscribe':T.textContent=isEdit?'编辑订阅':'订阅记录';h=`
+      <button class="form-submit" onclick="submitAsset()">${isEdit?'保存修改':'记下'}</button>`;break;
+    case 'subscribe':T.textContent=isEdit?'编辑订阅':'记订阅';h=`
       <div class="fg"><label>订阅名称</label><input id="f_name" placeholder="如：网易云音乐" value="${esc((editData?.name||'').replace(' (订阅)',''))}"></div>
       <div class="fg"><label>月费</label><input id="f_amount" type="number" step="0.01" placeholder="0.00" value="${editData?.amount||''}"></div>
       <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="3">${esc(editData?.text||'')}</textarea></div>
-      <button class="form-submit" onclick="submitSubscribe()">${isEdit?'保存修改':'保存'}</button>`;break;
-    case 'plan':T.textContent=isEdit?'编辑计划':'计划记录';h=`
+      <button class="form-submit" onclick="submitSubscribe()">${isEdit?'保存修改':'记下'}</button>`;break;
+    case 'plan':T.textContent=isEdit?'编辑计划':'记计划';h=`
       <div class="fg"><label>计划名称</label><input id="f_title" placeholder="你的计划" value="${esc((editData?.title||'').replace('计划：',''))}"></div>
       <div class="fg"><label>详细说明</label><textarea id="f_text" placeholder="详细描述..." rows="3">${esc(editData?.text||'')}</textarea></div>
       <div class="fg"><label>目标日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
-      <button class="form-submit" onclick="submitPlan()">${isEdit?'保存修改':'保存'}</button>`;break;
-    case 'festival':T.textContent=isEdit?'编辑节日':'节日记录';h=`
+      <button class="form-submit" onclick="submitPlan()">${isEdit?'保存修改':'记下'}</button>`;break;
+    case 'festival':T.textContent=isEdit?'编辑节日':'记节日';h=`
       <div class="fg"><label>节日名称</label><input id="f_name" placeholder="如：中秋节" value="${esc((editData?.name||'').replace('节日：',''))}"></div>
       <div class="fg"><label>日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
       <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="3">${esc(editData?.text||'')}</textarea></div>
-      <button class="form-submit" onclick="submitFestival()">${isEdit?'保存修改':'保存'}</button>`;break;
+      <button class="form-submit" onclick="submitFestival()">${isEdit?'保存修改':'记下'}</button>`;break;
     default:T.textContent=isEdit?'编辑记录':'新建记录';h=`
       <div class="fg"><label>标题</label><input id="f_title" placeholder="标题" value="${esc(editData?.title||'')}"></div>
       <div class="fg"><label>内容</label><textarea id="f_text" placeholder="记录一下..." rows="3">${esc(editData?.text||'')}</textarea></div>
-      <button class="form-submit" onclick="submitGeneric()">${isEdit?'保存修改':'保存'}</button>`;
+      <button class="form-submit" onclick="submitGeneric()">${isEdit?'保存修改':'记下'}</button>`;
   }
   h+=`<button class="form-cancel" onclick="closeModal()">取消</button>`;
   B.innerHTML=h;$('modalOverlay').classList.add('show');$('modal').classList.add('show');
@@ -866,12 +885,15 @@ function openModal(type,editData){
     const er=$('emojiRow');
     if(er){const es=['🌕','🎉','🎂','💝','✈️','🎄','🏮','⭐','🎓','🏠'];const ce=editData?.emoji||'🌕';pickedEmoji=ce;er.innerHTML=es.map(m=>`<div class="mood-opt ${m===ce?'active':''}" onclick="pickMood(this,'${m}')">${m}</div>`).join('')}
     const pr=$('priRow');
-    if(pr){const cp=editData?.priority||'medium';pickedPri=cp;pr.innerHTML=[{k:'low',l:'低',c:'#6B8C6A'},{k:'medium',l:'中',c:'#C4956A'},{k:'high',l:'高',c:'#C04851'}].map(p=>`<div class="pri-opt ${p.k===cp?'active':''}" onclick="pickPri(this,'${p.k}')"><div class="pri-dot" style="background:${p.c}"></div>${p.l}</div>`).join('')}
+    if(pr){const cp=editData?.priority||'medium';pickedPri=cp;pr.innerHTML=[{k:'low',l:'从容',c:'#6B8C6A'},{k:'medium',l:'寻常',c:'#C4956A'},{k:'high',l:'紧迫',c:'#C04851'}].map(p=>`<div class="pri-opt ${p.k===cp?'active':''}" onclick="pickPri(this,'${p.k}')"><div class="pri-dot" style="background:${p.c}"></div>${p.l}</div>`).join('')}
+    const cc=$('catChips');
+    if(cc){const cats=['餐饮','交通','日用品','娱乐','购物','医疗','订阅','其他'];const cur=$('f_cat').value||'餐饮';cc.innerHTML=cats.map(c=>`<div class="cat-chip ${c===cur?'active':''}" onclick="pickCat(this,'${c}')">${c}</div>`).join('')}
   },50);
 }
 let pickedMood='😊',pickedEmoji='🌕',pickedPri='medium';
 function pickMood(el,val){el.parentElement.querySelectorAll('.mood-opt').forEach(x=>x.classList.remove('active'));el.classList.add('active');pickedMood=val;pickedEmoji=val}
 function pickPri(el,val){el.parentElement.querySelectorAll('.pri-opt').forEach(x=>x.classList.remove('active'));el.classList.add('active');pickedPri=val}
+function pickCat(el,val){el.parentElement.querySelectorAll('.cat-chip').forEach(x=>x.classList.remove('active'));el.classList.add('active');$('f_cat').value=val}
 function closeModal(){$('modalOverlay').classList.remove('show');$('modal').classList.remove('show');pickedMood='😊';pickedEmoji='🌕';pickedPri='medium';editId=null}
 
 // ===== Submit =====
