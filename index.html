@@ -1509,12 +1509,18 @@ loadTheme();
 
   // 已有token尝试自动登录
   if(authToken && currentUser) {
-    // 先离线展示，后台尝试拉取云端数据
     showApp();
-    if(isOnline) {
-      try { await pullCloudData(); renderAll(); toast('欢迎回来，' + currentUser); }
-      catch(e) { /* 拉取失败也不影响离线使用 */ }
-    } else {
+    // 先尝试拉取云端数据，不管isOnline，token有效就能连
+    try { 
+      await pullCloudData(); 
+      isOnline = true;
+      renderAll(); 
+      updateSyncUI();
+      toast('欢迎回来，' + currentUser); 
+    } catch(e) { 
+      // 拉取失败，离线模式使用本地数据
+      isOnline = false;
+      updateSyncUI();
       toast('离线模式，' + currentUser);
     }
   } else {
