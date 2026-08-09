@@ -171,72 +171,43 @@
     background:var(--card); border-radius:var(--radius); padding:18px;
     box-shadow:var(--shadow); cursor:pointer; position:relative;
   }
-  .diary-card { cursor:pointer; }
+  .diary-card:active { transform:scale(0.97); }
   @keyframes fadeInUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
   @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
   @keyframes scaleIn { from { opacity:0; transform:scale(0.92); } to { opacity:1; transform:scale(1); } }
-  @keyframes slideInRight { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
-  @keyframes slideInLeft { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:translateX(0); } }
   @keyframes countUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
-  /* ===== 页面区块动画 ===== */
+  /* ===== 页面区块 ===== */
   .page-sec { display:none; }
-  .page-sec.active { display:block; }
-  .page-sec.active > * { animation: fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) both; }
-  .page-sec.active > *:nth-child(1) { animation-delay: 0s; }
-  .page-sec.active > *:nth-child(2) { animation-delay: 0.04s; }
-  .page-sec.active > *:nth-child(3) { animation-delay: 0.08s; }
-  .page-sec.active > *:nth-child(4) { animation-delay: 0.12s; }
-  .page-sec.active > *:nth-child(5) { animation-delay: 0.16s; }
+  .page-sec.active { display:block; animation:fadeInUp 0.3s ease both; }
 
-  /* ===== 卡片入场动画 ===== */
-  .diary-card, .todo-item, .expense-item, .cd-item {
-    animation: fadeInUp 0.4s cubic-bezier(0.22,1,0.36,1) both;
-  }
-  .diary-card:nth-child(1), .todo-item:nth-child(1), .expense-item:nth-child(1), .cd-item:nth-child(1) { animation-delay:0s; }
-  .diary-card:nth-child(2), .todo-item:nth-child(2), .expense-item:nth-child(2), .cd-item:nth-child(2) { animation-delay:0.05s; }
-  .diary-card:nth-child(3), .todo-item:nth-child(3), .expense-item:nth-child(3), .cd-item:nth-child(3) { animation-delay:0.1s; }
-  .diary-card:nth-child(n+4), .todo-item:nth-child(n+4), .expense-item:nth-child(n+4), .cd-item:nth-child(n+4) { animation-delay:0.15s; }
+  /* ===== 卡片入场 ===== */
+  .diary-card, .todo-item, .expense-item, .cd-item { animation:fadeInUp 0.35s ease both; }
+  .diary-card:nth-child(2), .todo-item:nth-child(2), .expense-item:nth-child(2), .cd-item:nth-child(2) { animation-delay:0.04s; }
+  .diary-card:nth-child(3), .todo-item:nth-child(3), .expense-item:nth-child(3), .cd-item:nth-child(3) { animation-delay:0.08s; }
+  .diary-card:nth-child(n+4), .todo-item:nth-child(n+4), .expense-item:nth-child(n+4), .cd-item:nth-child(n+4) { animation-delay:0.12s; }
 
-  /* ===== 统计卡片动画 ===== */
-  .stat-card { animation: countUp 0.5s cubic-bezier(0.22,1,0.36,1) both; }
-  .stat-card:nth-child(1) { animation-delay:0s; }
-  .stat-card:nth-child(2) { animation-delay:0.06s; }
-  .stat-card:nth-child(3) { animation-delay:0.12s; }
-  .stat-card:nth-child(4) { animation-delay:0.18s; }
-
-  /* ===== 弹窗动画增强 ===== */
-  .modal, .panel, .action-menu {
-    transition:transform 0.35s cubic-bezier(0.22,1,0.36,1), opacity 0.25s ease;
-  }
-  .modal.show, .panel.show, .action-menu.show {
-    opacity:1;
-  }
-  .modal-overlay.show, .overlay.show, .confirm-overlay.show, .action-overlay.show {
-    transition:opacity 0.25s ease;
-  }
+  /* ===== 统计卡片 ===== */
+  .stat-card { animation:countUp 0.4s ease both; }
+  .stat-card:nth-child(2) { animation-delay:0.05s; }
+  .stat-card:nth-child(3) { animation-delay:0.1s; }
+  .stat-card:nth-child(4) { animation-delay:0.15s; }
 
   /* ===== 按压反馈 ===== */
-  .diary-card, .todo-item, .expense-item, .cd-item, .stat-card, .cash-card, .type-item, .tab {
-    transition: transform 0.15s cubic-bezier(0.22,1,0.36,1), box-shadow 0.2s ease;
-  }
-  .diary-card:active, .todo-item:active, .expense-item:active, .cd-item:active, .cash-card:active, .type-item:active {
-    transform:scale(0.97) !important;
-  }
+  .diary-card, .todo-item, .expense-item, .cd-item, .stat-card, .cash-card, .type-item, .tab { transition:transform 0.15s ease; }
+  .diary-card:active, .todo-item:active, .expense-item:active, .cd-item:active, .cash-card:active, .type-item:active { transform:scale(0.97); }
   .tab:active { transform:scale(0.95); }
 
   /* ===== 确认框弹入 ===== */
-  .confirm-box { animation: scaleIn 0.25s cubic-bezier(0.22,1,0.36,1) both; }
+  .confirm-box { animation:scaleIn 0.25s ease both; }
 
-  /* ===== Toast 动画优化 ===== */
+  /* ===== Toast ===== */
   .toast { transition:all 0.35s cubic-bezier(0.22,1,0.36,1); }
 
   /* ===== 设置面板滑入 ===== */
-  .settings-panel {
-    transition:right 0.35s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease;
-  }
+  .settings-panel { transition:right 0.35s cubic-bezier(0.22,1,0.36,1); }
 
-  /* ===== 悬浮按钮点击效果 ===== */
+  /* ===== 悬浮按钮 ===== */
   .fab:active { transform:scale(0.85); transition:transform 0.1s; }
 
   /* ===== 响应式 ===== */
@@ -726,11 +697,11 @@ function renderPage() {
 }
 function renderAll() { renderStats(); renderDiaries(); renderAsset(); renderExpenses(); renderTodoStats(); renderTodos(); renderCountdowns(); }
 
-// ===== 删除操作 =====
-function delDiary(id) { showConfirm('删除日记','确定要删除这条日记吗？',()=>{ D.diaries=D.diaries.filter(d=>d.id!==id); save(); renderAll(); toast('已删除'); }); }
-function delExpense(id) { showConfirm('删除消费','确定要删除这条消费记录吗？',()=>{ D.expenses=D.expenses.filter(e=>e.id!==id); save(); renderExpenses(); toast('已删除'); }); }
-function delTodo(id) { showConfirm('删除待办','确定要删除这条待办吗？',()=>{ D.todos=D.todos.filter(t=>t.id!==id); save(); renderTodos(); toast('已删除'); }); }
-function delCountdown(id) { showConfirm('删除倒数日','确定要删除这条倒数日吗？',()=>{ D.countdowns=D.countdowns.filter(c=>c.id!==id); save(); renderCountdowns(); toast('已删除'); }); }
+// ===== 删除操作（直接删除） =====
+function delDiary(id) { D.diaries=D.diaries.filter(d=>d.id!==id); save(); renderAll(); toast('已删除'); }
+function delExpense(id) { D.expenses=D.expenses.filter(e=>e.id!==id); save(); renderAll(); toast('已删除'); }
+function delTodo(id) { D.todos=D.todos.filter(t=>t.id!==id); save(); renderAll(); toast('已删除'); }
+function delCountdown(id) { D.countdowns=D.countdowns.filter(c=>c.id!==id); save(); renderAll(); toast('已删除'); }
 
 // ===== 待办切换 =====
 function toggleTodo(id) { const t=D.todos.find(x=>x.id===id); if(t){t.done=!t.done; save(); renderAll(); toast(t.done?'已完成':'已恢复');} }
