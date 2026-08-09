@@ -646,61 +646,11 @@ function loadData(){
   return fresh;
 }
 function save(){
-  const prev=_snap?JSON.parse(_snap):null;
-  const now=Date.now();
-  if(prev){
-    // 与上次快照对比：生成 OpLog
-    for(const k of ['diaries','todos','expenses','countdowns']){
-      const arr=D[k]||[],oldArr=prev[k]||[];
-      const oldMap=new Map(oldArr.map(x=>[String(x.id),x]));
-      const curMap=new Map(arr.map(x=>[String(x.id),x]));
-      const curIds=new Set(arr.map(x=>String(x.id)));
-      for(const item of arr){
-        const old=oldMap.get(String(item.id));
-        if(!old){
-          // 新增
-          item.u=now;
-          pushOp('add',k,item.id,item);
-        }else if(JSON.stringify(old)!==JSON.stringify(item)){
-          // 修改
-          item.u=now;
-          pushOp('update',k,item.id,item);
-        }
-      }
-      for(const old of oldArr){
-        if(!curIds.has(String(old.id))){
-          // 删除
-          addTombstone(k,old.id);
-          pushOp('delete',k,old.id,null);
-        }
-      }
-    }
-  }else{
-    for(const k of ['diaries','todos','expenses','countdowns'])(D[k]||[]).forEach(x=>{if(x.u==null){x.u=now;pushOp('add',k,x.id,x)}});
-  }
-  D._m=D._m||{};D._m.dirty=true;D._m.localUpdatedAt=now;
+  D._m=D._m||{};D._m.localUpdatedAt=Date.now();
   _snap=JSON.stringify(D);
   localStorage.setItem(currentStorageKey(),JSON.stringify(D));
-  if(authToken)immediatePush();
-}
-function addTombstone(type,id){
-  D._m=D._m||{};D._m.deleted=D._m.deleted||{diaries:[],todos:[],expenses:[],countdowns:[]};
-  const sid=String(id);const list=D._m.deleted[type]=D._m.deleted[type]||[];
-  if(!list.includes(sid))list.push(sid);
-}
-function isDirty(){return !!(D._m&&D._m.dirty)||(localOps.length>0)}
-
-// ===== OpLog 生成 =====
-// 将变更转化为 op 并推入本地队列
-function pushOp(type,collection,recordId,data){
-  const op={id:nid(),type,collection,recordId:parseInt(recordId,10),ts:Date.now(),device:DEVICE_ID};
-  if(data)op.data=JSON.parse(JSON.stringify(data));
-  localOps.push(op);
-  saveLocalOps();
 }
 
-// 记录旧快照，在 save() 中 diff 生成 op
-let _prevSnapForOps=null;
 function nid(){return 'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
 function defaultData(){return{
   diaries:[
@@ -967,18 +917,21 @@ function doAction(action){
 }
 
 // ===== CRUD =====
-function delDiary(id){showConfirm('删除日记','确定要删除这条日记吗？',()=>{D.diaries=D.diaries.filter(d=>String(d.id)!==String(id));save();renderAll();toast('已删除')})}
-function delExpense(id){showConfirm('删除消费','确定要删除这条消费记录吗？',()=>{D.expenses=D.expenses.filter(e=>String(e.id)!==String(id));save();renderAll();toast('已删除')})}
-function delTodo(id){showConfirm('删除待办','确定要删除这条待办吗？',()=>{D.todos=D.todos.filter(t=>String(t.id)!==String(id));save();renderAll();toast('已删除')})}
-function delCountdown(id){showConfirm('删除倒数日','确定要删除这条倒数日吗？',()=>{D.countdowns=D.countdowns.filter(c=>String(c.id)!==String(id));save();renderAll();toast('已删除')})}
-function toggleTodo(id){const t=D.todos.find(x=>String(x.id)===String(id));if(t){t.done=!t.done;save();renderAll();toast(t.done?'已完成':'已恢复')}}
+function delDiary(id){showConfirm('删除日记','确定要删除这条日记吗？',()=>{D.diaries=D.diaries.filter(d=>String(d.id)!==String(id));save();renderAll();cloudDelete('diaries',String(id));toast('已删除')})}
+function delExpense(id){showConfirm('删除消费','确定要删除这条消费记录吗？',()=>{D.expenses=D.expenses.filter(e=>String(e.id)!==String(id));save();renderAll();cloudDelete('expenses',String(id));toast('已删除')})}
+function delTodo(id){showConfirm('删除待办','确定要删除这条待办吗？',()=>{D.todos=D.todos.filter(t=>String(t.id)!==String(id));save();renderAll();cloudDelete('todos',String(id));toast('已删除')})}
+function delCountdown(id){showConfirm('删除倒数日','确定要删除这条倒数日吗？',()=>{D.countdowns=D.countdowns.filter(c=>String(c.id)!==String(id));save();renderAll();cloudDelete('countdowns',String(id));toast('已删除')})}
+function toggleTodo(id){const t=D.todos.find(x=>String(x.id)===String(id));if(t){t.done=!t.done;save();renderAll();cloudUpdate('todos',String(id),t);toast(t.done?'已完成':'已恢复')}}
 function togglePin(type,id){
+  const colMap={diary:'diaries',expense:'expenses',todo:'todos',countdown:'countdowns'};
   const arr=type==='diary'?D.diaries:type==='expense'?D.expenses:type==='todo'?D.todos:type==='countdown'?D.countdowns:null;
   if(!arr)return;
   const item=arr.find(x=>String(x.id)===String(id));
   if(!item)return;
   item.pinned=!item.pinned;
-  save();renderAll();toast(item.pinned?'已置顶':'已取消置顶');
+  save();renderAll();
+  cloudUpdate(colMap[type]||type,String(id),item);
+  toast(item.pinned?'已置顶':'已取消置顶');
 }
 function editDiary(id){const d=D.diaries.find(x=>String(x.id)===String(id));if(d)openModal('diary',d)}
 function editExpense(id){const e=D.expenses.find(x=>String(x.id)===String(id));if(e)openModal('expense',e)}
@@ -1102,19 +1055,19 @@ function pickCat(el,val){el.parentElement.querySelectorAll('.cat-chip').forEach(
 function closeModal(){$('modalOverlay').classList.remove('show');$('modal').classList.remove('show');pickedMood='😊';pickedEmoji='🌕';pickedPri='medium';editId=null}
 
 // ===== Submit =====
-function submitDiary(){const title=$('f_title').value.trim(),text=$('f_text').value.trim();if(!title&&!text){toast('请填写内容');return}const tags=$('f_tags').value.split(/[,，]/).map(s=>s.trim()).filter(Boolean);if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title=title||'未命名日记';d.text=text||'';d.mood=pickedMood;d.tags=tags}save();closeModal();renderAll();toast('日记已修改')}else{D.diaries.unshift({id:nid(),title:title||'未命名日记',text:text||'',time:fmtTime(),source:'手动记录',mood:pickedMood,tags});save();closeModal();renderAll();toast('日记已保存')}}
-function submitExpense(){const name=$('f_name').value.trim(),amount=parseFloat($('f_amount').value);if(!name||isNaN(amount)){toast('请填写完整');return}if(editId){const e=D.expenses.find(x=>x.id===editId);if(e){e.name=name;e.amount=amount;e.category=$('f_cat').value;e.date=$('f_date').value||e.date}save();closeModal();renderAll();toast('消费已修改')}else{D.expenses.unshift({id:nid(),name,amount,category:$('f_cat').value,date:$('f_date').value||fmtDate()});save();closeModal();renderAll();toast('消费已记录')}}
-function submitMeal(){const title=$('f_title').value.trim();if(!title){toast('请填写内容');return}if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title=title;d.text=$('f_text').value.trim()||'';d.mood=pickedMood}save();closeModal();renderAll();toast('餐食已修改')}else{D.diaries.unshift({id:nid(),title,text:$('f_text').value.trim()||'',time:fmtTime(),source:'手动记录',mood:pickedMood,tags:['餐食']});save();closeModal();renderAll();toast('餐食已记录')}}
-function submitTodo(){const title=$('f_title').value.trim();if(!title){toast('请填写内容');return}if(editId){const t=D.todos.find(x=>x.id===editId);if(t){t.title=title;t.date=$('f_date').value||'';t.priority=pickedPri}save();closeModal();renderAll();toast('待办已修改')}else{D.todos.unshift({id:nid(),title,date:$('f_date').value||'',done:false,priority:pickedPri});save();closeModal();renderAll();toast('待办已添加')}}
-function submitCountdown(){const name=$('f_name').value.trim(),date=$('f_date').value;if(!name||!date){toast('请填写完整');return}if(editId){const c=D.countdowns.find(x=>x.id===editId);if(c){c.name=name;c.date=date;c.emoji=pickedEmoji}save();closeModal();renderAll();toast('倒数日已修改')}else{D.countdowns.unshift({id:nid(),name,date,emoji:pickedEmoji});save();closeModal();renderAll();toast('倒数日已添加')}}
-function submitBirthday(){const name=$('f_name').value.trim(),date=$('f_date').value;if(!name||!date){toast('请填写完整');return}if(editId){const c=D.countdowns.find(x=>x.id===editId);if(c){c.name=name+'的生日';c.date=date}save();closeModal();renderAll();toast('已修改')}else{D.countdowns.unshift({id:nid(),name:name+'的生日',date,emoji:'🎂'});D.diaries.unshift({id:nid(),title:name+'的生日',text:$('f_text').value.trim()||'',time:fmtTime(),source:'生日记录',mood:'🎂',tags:['生日']});save();closeModal();renderAll();toast('已保存')}}
-function submitAnniversary(){const name=$('f_name').value.trim(),date=$('f_date').value;if(!name||!date){toast('请填写完整');return}if(editId){const c=D.countdowns.find(x=>x.id===editId);if(c){c.name=name;c.date=date}save();closeModal();renderAll();toast('已修改')}else{D.countdowns.unshift({id:nid(),name,date,emoji:'💝'});D.diaries.unshift({id:nid(),title:'纪念日：'+name,text:$('f_text').value.trim()||'',time:fmtTime(),source:'纪念日',mood:'💝',tags:['纪念日']});save();closeModal();renderAll();toast('已保存')}}
-function submitCheckin(){const title=$('f_title').value.trim();if(!title){toast('请填写内容');return}if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title='打卡：'+title;d.text=$('f_text').value.trim()||''}save();closeModal();renderAll();toast('已修改')}else{D.diaries.unshift({id:nid(),title:'打卡：'+title,text:$('f_text').value.trim()||'',time:fmtTime(),source:'打卡记录',mood:'✅',tags:['打卡']});save();closeModal();renderAll();toast('打卡成功')}}
-function submitAsset(){const title=$('f_title').value.trim();if(!title){toast('请填写内容');return}const amt=$('f_amount').value;if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title='资产：'+title;d.text=(amt?'估值：¥'+amt+'\n':'')+($('f_text').value.trim()||'')}save();closeModal();renderAll();toast('已修改')}else{D.diaries.unshift({id:nid(),title:'资产：'+title,text:(amt?'估值：¥'+amt+'\n':'')+($('f_text').value.trim()||''),time:fmtTime(),source:'资产记录',mood:'💰',tags:['资产']});save();closeModal();renderAll();toast('已保存')}}
-function submitSubscribe(){const name=$('f_name').value.trim();if(!name){toast('请填写内容');return}if(editId){const e=D.expenses.find(x=>x.id===editId);if(e){e.name=name+' (订阅)';e.amount=parseFloat($('f_amount').value)||0}save();closeModal();renderAll();toast('已修改')}else{D.expenses.unshift({id:nid(),name:name+' (订阅)',amount:parseFloat($('f_amount').value)||0,category:'订阅',date:fmtDate()});save();closeModal();renderAll();toast('已保存')}}
-function submitPlan(){const title=$('f_title').value.trim();if(!title){toast('请填写内容');return}if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title='计划：'+title;d.text=$('f_text').value.trim()||''}save();closeModal();renderAll();toast('已修改')}else{D.diaries.unshift({id:nid(),title:'计划：'+title,text:$('f_text').value.trim()||'',time:fmtTime(),source:'计划记录',mood:'📋',tags:['计划']});save();closeModal();renderAll();toast('已保存')}}
-function submitFestival(){const name=$('f_name').value.trim(),date=$('f_date').value;if(!name||!date){toast('请填写完整');return}if(editId){const c=D.countdowns.find(x=>x.id===editId);if(c){c.name=name;c.date=date}save();closeModal();renderAll();toast('已修改')}else{D.countdowns.unshift({id:nid(),name,date,emoji:'🏮'});D.diaries.unshift({id:nid(),title:'节日：'+name,text:$('f_text').value.trim()||'',time:fmtTime(),source:'节日记录',mood:'🏮',tags:['节日']});save();closeModal();renderAll();toast('已保存')}}
-function submitGeneric(){const title=$('f_title').value.trim(),text=$('f_text').value.trim();if(!title&&!text){toast('请填写内容');return}if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title=title||'未命名记录';d.text=text||''}save();closeModal();renderAll();toast('已修改')}else{D.diaries.unshift({id:nid(),title:title||'未命名记录',text:text||'',time:fmtTime(),source:'手动记录',mood:'📝',tags:[]});save();closeModal();renderAll();toast('已保存')}}
+function submitDiary(){const title=$('f_title').value.trim(),text=$('f_text').value.trim();if(!title&&!text){toast('请填写内容');return}const tags=$('f_tags').value.split(/[,，]/).map(s=>s.trim()).filter(Boolean);if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title=title||'未命名日记';d.text=text||'';d.mood=pickedMood;d.tags=tags}save();closeModal();renderAll();cloudUpdate('diaries',String(editId),d);toast('日记已修改')}else{const item={id:nid(),title:title||'未命名日记',text:text||'',time:fmtTime(),source:'手动记录',mood:pickedMood,tags};D.diaries.unshift(item);save();closeModal();renderAll();cloudAdd('diaries',item);toast('日记已保存')}}
+function submitExpense(){const name=$('f_name').value.trim(),amount=parseFloat($('f_amount').value);if(!name||isNaN(amount)){toast('请填写完整');return}if(editId){const e=D.expenses.find(x=>x.id===editId);if(e){e.name=name;e.amount=amount;e.category=$('f_cat').value;e.date=$('f_date').value||e.date}save();closeModal();renderAll();cloudUpdate('expenses',String(editId),e);toast('消费已修改')}else{const item={id:nid(),name,amount,category:$('f_cat').value,date:$('f_date').value||fmtDate()};D.expenses.unshift(item);save();closeModal();renderAll();cloudAdd('expenses',item);toast('消费已记录')}}
+function submitMeal(){const title=$('f_title').value.trim();if(!title){toast('请填写内容');return}if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title=title;d.text=$('f_text').value.trim()||'';d.mood=pickedMood}save();closeModal();renderAll();cloudUpdate('diaries',String(editId),d);toast('餐食已修改')}else{const item={id:nid(),title,text:$('f_text').value.trim()||'',time:fmtTime(),source:'手动记录',mood:pickedMood,tags:['餐食']};D.diaries.unshift(item);save();closeModal();renderAll();cloudAdd('diaries',item);toast('餐食已记录')}}
+function submitTodo(){const title=$('f_title').value.trim();if(!title){toast('请填写内容');return}if(editId){const t=D.todos.find(x=>x.id===editId);if(t){t.title=title;t.date=$('f_date').value||'';t.priority=pickedPri}save();closeModal();renderAll();cloudUpdate('todos',String(editId),t);toast('待办已修改')}else{const item={id:nid(),title,date:$('f_date').value||'',done:false,priority:pickedPri};D.todos.unshift(item);save();closeModal();renderAll();cloudAdd('todos',item);toast('待办已添加')}}
+function submitCountdown(){const name=$('f_name').value.trim(),date=$('f_date').value;if(!name||!date){toast('请填写完整');return}if(editId){const c=D.countdowns.find(x=>x.id===editId);if(c){c.name=name;c.date=date;c.emoji=pickedEmoji}save();closeModal();renderAll();cloudUpdate('countdowns',String(editId),c);toast('倒数日已修改')}else{const item={id:nid(),name,date,emoji:pickedEmoji};D.countdowns.unshift(item);save();closeModal();renderAll();cloudAdd('countdowns',item);toast('倒数日已添加')}}
+function submitBirthday(){const name=$('f_name').value.trim(),date=$('f_date').value;if(!name||!date){toast('请填写完整');return}if(editId){const c=D.countdowns.find(x=>x.id===editId);if(c){c.name=name+'的生日';c.date=date}save();closeModal();renderAll();cloudUpdate('countdowns',String(editId),c);toast('已修改')}else{const cdItem={id:nid(),name:name+'的生日',date,emoji:'🎂'};const dItem={id:nid(),title:name+'的生日',text:$('f_text').value.trim()||'',time:fmtTime(),source:'生日记录',mood:'🎂',tags:['生日']};D.countdowns.unshift(cdItem);D.diaries.unshift(dItem);save();closeModal();renderAll();cloudAdd('countdowns',cdItem);cloudAdd('diaries',dItem);toast('已保存')}}
+function submitAnniversary(){const name=$('f_name').value.trim(),date=$('f_date').value;if(!name||!date){toast('请填写完整');return}if(editId){const c=D.countdowns.find(x=>x.id===editId);if(c){c.name=name;c.date=date}save();closeModal();renderAll();cloudUpdate('countdowns',String(editId),c);toast('已修改')}else{const cdItem={id:nid(),name,date,emoji:'💝'};const dItem={id:nid(),title:'纪念日：'+name,text:$('f_text').value.trim()||'',time:fmtTime(),source:'纪念日',mood:'💝',tags:['纪念日']};D.countdowns.unshift(cdItem);D.diaries.unshift(dItem);save();closeModal();renderAll();cloudAdd('countdowns',cdItem);cloudAdd('diaries',dItem);toast('已保存')}}
+function submitCheckin(){const title=$('f_title').value.trim();if(!title){toast('请填写内容');return}if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title='打卡：'+title;d.text=$('f_text').value.trim()||''}save();closeModal();renderAll();cloudUpdate('diaries',String(editId),d);toast('已修改')}else{const item={id:nid(),title:'打卡：'+title,text:$('f_text').value.trim()||'',time:fmtTime(),source:'打卡记录',mood:'✅',tags:['打卡']};D.diaries.unshift(item);save();closeModal();renderAll();cloudAdd('diaries',item);toast('打卡成功')}}
+function submitAsset(){const title=$('f_title').value.trim();if(!title){toast('请填写内容');return}const amt=$('f_amount').value;if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title='资产：'+title;d.text=(amt?'估值：¥'+amt+'\n':'')+($('f_text').value.trim()||'')}save();closeModal();renderAll();cloudUpdate('diaries',String(editId),d);toast('已修改')}else{const item={id:nid(),title:'资产：'+title,text:(amt?'估值：¥'+amt+'\n':'')+($('f_text').value.trim()||''),time:fmtTime(),source:'资产记录',mood:'💰',tags:['资产']};D.diaries.unshift(item);save();closeModal();renderAll();cloudAdd('diaries',item);toast('已保存')}}
+function submitSubscribe(){const name=$('f_name').value.trim();if(!name){toast('请填写内容');return}if(editId){const e=D.expenses.find(x=>x.id===editId);if(e){e.name=name+' (订阅)';e.amount=parseFloat($('f_amount').value)||0}save();closeModal();renderAll();cloudUpdate('expenses',String(editId),e);toast('已修改')}else{const item={id:nid(),name:name+' (订阅)',amount:parseFloat($('f_amount').value)||0,category:'订阅',date:fmtDate()};D.expenses.unshift(item);save();closeModal();renderAll();cloudAdd('expenses',item);toast('已保存')}}
+function submitPlan(){const title=$('f_title').value.trim();if(!title){toast('请填写内容');return}if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title='计划：'+title;d.text=$('f_text').value.trim()||''}save();closeModal();renderAll();cloudUpdate('diaries',String(editId),d);toast('已修改')}else{const item={id:nid(),title:'计划：'+title,text:$('f_text').value.trim()||'',time:fmtTime(),source:'计划记录',mood:'📋',tags:['计划']};D.diaries.unshift(item);save();closeModal();renderAll();cloudAdd('diaries',item);toast('已保存')}}
+function submitFestival(){const name=$('f_name').value.trim(),date=$('f_date').value;if(!name||!date){toast('请填写完整');return}if(editId){const c=D.countdowns.find(x=>x.id===editId);if(c){c.name=name;c.date=date}save();closeModal();renderAll();cloudUpdate('countdowns',String(editId),c);toast('已修改')}else{const cdItem={id:nid(),name,date,emoji:'🏮'};const dItem={id:nid(),title:'节日：'+name,text:$('f_text').value.trim()||'',time:fmtTime(),source:'节日记录',mood:'🏮',tags:['节日']};D.countdowns.unshift(cdItem);D.diaries.unshift(dItem);save();closeModal();renderAll();cloudAdd('countdowns',cdItem);cloudAdd('diaries',dItem);toast('已保存')}}
+function submitGeneric(){const title=$('f_title').value.trim(),text=$('f_text').value.trim();if(!title&&!text){toast('请填写内容');return}if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title=title||'未命名记录';d.text=text||''}save();closeModal();renderAll();cloudUpdate('diaries',String(editId),d);toast('已修改')}else{const item={id:nid(),title:title||'未命名记录',text:text||'',time:fmtTime(),source:'手动记录',mood:'📝',tags:[]};D.diaries.unshift(item);save();closeModal();renderAll();cloudAdd('diaries',item);toast('已保存')}}
 
 // ===== Settings =====
 function toggleSettings(){$('settingsPanel').classList.toggle('show')}
@@ -1125,24 +1078,10 @@ function importDataTrigger(){$('importFile').click()}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);D=d;save();renderAll();toast('数据已导入')}catch(err){toast('文件格式错误')}};r.readAsText(f)}
 function confirmClear(){showConfirm('清空数据','确定要清空所有记录吗？此操作不可恢复！',()=>{D=defaultData();save();renderAll();toast('数据已清空')})}
 
-// ===== Sync (v3: OpLog 增量同步 + 全量 fallback) =====
+// ===== Sync (v5: 云端为主，直接CRUD) =====
 const BUILTIN_API='https://shiji-api.liuyu-cwb.workers.dev';
 function getAPIBase(){const saved=localStorage.getItem('shiji_api_base')||'';if(saved)return saved;if(location.origin!==BUILTIN_API&&!location.origin.includes('localhost'))return BUILTIN_API;return location.origin}
-let API_BASE=getAPIBase();let authToken=localStorage.getItem('shiji_token')||'';let currentUser=localStorage.getItem('shiji_user')||'';let isOnline=false;let isLoginMode=true;let syncTimer=null;
-let isPushing=false,pushTimer=null;
-
-// 设备ID：每台设备生成唯一标识，用于 OpLog 的 device 字段
-let DEVICE_ID=localStorage.getItem('shiji_device_id');
-if(!DEVICE_ID){DEVICE_ID='dev_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8);localStorage.setItem('shiji_device_id',DEVICE_ID)}
-
-// OpLog 游标：记录本设备已同步到的云端游标
-let OP_CURSOR=parseInt(localStorage.getItem('shiji_op_cursor')||'0',10);
-
-// 本地待推送的 op 队列
-let localOps=JSON.parse(localStorage.getItem('shiji_local_ops')||'[]');
-
-function saveLocalOps(){localStorage.setItem('shiji_local_ops',JSON.stringify(localOps))}
-function saveOpCursor(){localStorage.setItem('shiji_op_cursor',String(OP_CURSOR))}
+let API_BASE=getAPIBase();let authToken=localStorage.getItem('shiji_token')||'';let currentUser=localStorage.getItem('shiji_user')||'';let isOnline=false;let isLoginMode=true;
 
 async function api(path,opts={}){
   try{
@@ -1163,12 +1102,11 @@ async function api(path,opts={}){
 function handleAuthExpired(){
   authToken='';currentUser='';
   localStorage.removeItem('shiji_token');localStorage.removeItem('shiji_user');
-  if(syncTimer){clearInterval(syncTimer);syncTimer=null}
   isOnline=false;updateSyncUI();
   toast('登录已过期，请重新登录');
 }
 function showLoginPage(){$('loginPage').style.display='flex';$('app').style.display='none'}
-function showApp(){$('loginPage').style.display='none';$('app').style.display='block';renderTabs();renderTypeGrid();renderAll();updateSyncUI();if(currentUser)startAutoSync()}
+function showApp(){$('loginPage').style.display='none';$('app').style.display='block';renderTabs();renderTypeGrid();renderAll();updateSyncUI()}
 function toggleLoginMode(){isLoginMode=!isLoginMode;$('loginCardTitle').textContent=isLoginMode?'登录账号':'注册账号';$('loginSubmitBtn').textContent=isLoginMode?'登录':'注册';$('loginSwitchBtn').textContent=isLoginMode?'没有账号？注册一个':'已有账号？去登录';$('loginPass2Field').style.display=isLoginMode?'none':'block';$('loginError').textContent=''}
 async function handleLoginSubmit(){
   const user=$('loginUser').value.trim(),pass=$('loginPass').value,server=$('loginServer').value.trim(),errorEl=$('loginError');errorEl.textContent='';
@@ -1183,7 +1121,7 @@ async function handleLoginSubmit(){
     localStorage.setItem('shiji_token',authToken);localStorage.setItem('shiji_user',currentUser);
     D=loadData();
     isOnline=true;
-    await syncOnLogin();
+    await loadCloudData();
     showApp();
     toast('欢迎回来，'+currentUser);
   }catch(e){
@@ -1193,240 +1131,73 @@ async function handleLoginSubmit(){
 }
 function enterOffline(){currentUser='';authToken='';localStorage.removeItem('shiji_token');localStorage.removeItem('shiji_user');D=loadData();isOnline=false;showApp();toast('离线模式，数据仅保存在本地')}
 
-// ===== 同步核心（v4: 学习 Joplin 三步同步，修复覆盖→合并） =====
+// ===== 同步核心（v5: 云端为主，直接CRUD） =====
 const SYNC_KEYS=['diaries','todos','expenses','countdowns'];
 
-// 将远程 op 回放到本地数据（u 大者胜）
-function applyRemoteOps(ops){
-  if(!ops||!ops.length)return false;
-  let changed=false;
-  const myDevice=DEVICE_ID;
-  for(const op of ops){
-    // 跳过自己设备发出的 op（避免重复回放）
-    if(op.device===myDevice)continue;
-    const k=op.collection;
-    if(!SYNC_KEYS.includes(k))continue;
-    if(!D[k])D[k]=[];
-
-    if(op.type==='delete'){
-      const idx=D[k].findIndex(x=>String(x.id)===String(op.recordId));
-      if(idx>=0){D[k].splice(idx,1);changed=true}
-      addTombstone(k,op.recordId);
-    }else if(op.type==='add'||op.type==='update'){
-      if(op.data){
-        const idx=D[k].findIndex(x=>String(x.id)===String(op.recordId));
-        if(idx>=0){
-          // 已存在：u 大者胜
-          if((op.data.u||0)>(D[k][idx].u||0)){D[k][idx]=op.data;changed=true}
-        }else{
-          // 不存在且不在墓碑中：添加
-          const dels=new Set((D._m&&D._m.deleted&&D._m.deleted[k])||[]);
-          if(!dels.has(String(op.recordId))){D[k].push(op.data);changed=true}
-        }
-      }
-    }
-    D.nextId=Math.max(D.nextId||10,(op.recordId||0)+1);
-  }
-  if(changed){
-    D._m=D._m||{};D._m.lastSyncAt=Date.now();
-    localStorage.setItem(currentStorageKey(),JSON.stringify(D));
-    _snap=JSON.stringify(D);
-  }
-  return changed;
-}
-
-// 增量拉取远程 op
-async function pullRemoteOps(){
-  if(!authToken)return [];
-  try{
-    const result=await api('/api/ops?after='+OP_CURSOR);
-    if(result.ops&&result.ops.length>0){
-      applyRemoteOps(result.ops);
-      OP_CURSOR=result.cursor;
-      saveOpCursor();
-    }else if(result.cursor>OP_CURSOR){
-      OP_CURSOR=result.cursor;
-      saveOpCursor();
-    }
-    return result.ops||[];
-  }catch(e){console.warn('增量拉取失败:',e.message);return []}
-}
-
-// 增量推送本地 op
-async function pushLocalOps(){
-  if(!authToken||localOps.length===0)return true;
-  try{
-    const body={ops:localOps,nextId:D.nextId};
-    const result=await api('/api/ops',{method:'POST',body:JSON.stringify(body)});
-    if(result.success){
-      // 记录本次推送的 op 对应的 recordId，用于精确清墓碑
-      const pushedRecordIds=new Set(localOps.map(o=>o.collection+':'+String(o.recordId)));
-      localOps=[];
-      saveLocalOps();
-      OP_CURSOR=result.cursor;
-      saveOpCursor();
-      // 只清本次推送涉及的墓碑（而非全部清空）
-      if(D._m&&D._m.deleted){
-        for(const k of SYNC_KEYS){
-          if(D._m.deleted[k]){
-            D._m.deleted[k]=D._m.deleted[k].filter(id=>!pushedRecordIds.has(k+':'+String(id)));
-          }
-        }
-      }
-      D._m.dirty=false;
-      D._m.lastSyncAt=Date.now();
-      localStorage.setItem(currentStorageKey(),JSON.stringify(D));
-      _snap=JSON.stringify(D);
-    }
-    return result.success;
-  }catch(e){console.warn('增量推送失败:',e.message);return false}
-}
-
-// 全量合并（双方 u 大者胜，不再无条件云端覆盖）
-function mergeCloudIntoLocal(cloud){
-  if(!cloud||typeof cloud!=='object')return false;
-  let changed=false;
-  D._m=D._m||{};
-  for(const k of SYNC_KEYS){
-    const localArr=(D[k]||[]).slice();
-    const cloudArr=cloud[k]||[];
-    const map=new Map();
-    // 先放本地所有记录
-    for(const item of localArr)map.set(String(item.id),item);
-    let listChanged=false;
-    // 云端记录：u 大者覆盖，新记录直接添加
-    for(const item of cloudArr){
-      const id=String(item.id);
-      const prev=map.get(id);
-      if(!prev){map.set(id,item);listChanged=true}
-      else if((item.u||0)>(prev.u||0)){map.set(id,item);listChanged=true}
-    }
-    const dels=new Set((D._m.deleted&&D._m.deleted[k])||[]);
-    const merged=[...map.values()].filter(x=>!dels.has(String(x.id)));
-    if(listChanged||merged.length!==localArr.length)changed=true;
-    D[k]=merged;
-  }
-  D.nextId=Math.max(D.nextId||10,cloud.nextId||10);
-  D._m.lastSyncAt=Date.now();
-  if(cloud._opCursor!=null){OP_CURSOR=cloud._opCursor;saveOpCursor()}
-  localStorage.setItem(currentStorageKey(),JSON.stringify(D));
-  _snap=JSON.stringify(D);
-  return changed;
-}
-
-async function pullCloudData(){
-  if(!authToken)return null;
-  try{
-    // 优先增量拉取
-    if(OP_CURSOR>0){
-      const ops=await pullRemoteOps();
-      if(ops.length>0){isOnline=true;setSyncStatus('online');return{ops}}
-    }
-    // 游标为 0 或增量返回空：走全量合并（不再覆盖）
-    const cloud=await api('/api/data');
-    mergeCloudIntoLocal(cloud);
-    isOnline=true;setSyncStatus('online');
-    return cloud;
-  }catch(e){console.warn('拉取云端数据失败:',e.message);return null}
-}
-async function pushCloudData(){
-  if(!authToken)return false;
-  try{
-    setSyncStatus('syncing');
-    // 优先增量推送
-    if(localOps.length>0){
-      const ok=await pushLocalOps();
-      if(ok){isOnline=true;setSyncStatus('online');return true}
-      // 增量失败，fallback 到全量
-    }
-    // 全量 fallback（合并式推送：带墓碑，后端按 u 大者胜合并）
-    const body={diaries:D.diaries,todos:D.todos,expenses:D.expenses,
-                countdowns:D.countdowns,nextId:D.nextId,_fullSync:true};
-    if(D._m&&D._m.deleted)body._deleted=D._m.deleted;
-    const result=await api('/api/data',{method:'POST',body:JSON.stringify(body)});
-    // 全量推送成功后更新 cursor
-    if(result.cursor){OP_CURSOR=result.cursor;saveOpCursor()}
-    if(D._m){D._m.deleted={diaries:[],todos:[],expenses:[],countdowns:[]};D._m.dirty=false}
-    D._m.lastSyncAt=Date.now();
-    localStorage.setItem(currentStorageKey(),JSON.stringify(D));
-    _snap=JSON.stringify(D);
-    isOnline=true;setSyncStatus('online');
-    return true;
-  }catch(e){setSyncStatus('offline');console.warn('推送失败:',e.message);return false}
-}
-async function syncOnLogin(){
+// 从云端拉取全量数据到本地
+async function loadCloudData(){
   if(!authToken)return;
   try{
-    // 先尝试增量拉取所有 op（从 after=0 开始全量回放）
-    const opsResult=await api('/api/ops?after=0');
-    if(opsResult.ops&&opsResult.ops.length>0){
-      applyRemoteOps(opsResult.ops);
-      OP_CURSOR=opsResult.cursor;
-      saveOpCursor();
-      // 再推送本地 op
-      await pushCloudData();
-      renderAll();
-      return;
-    }
-    // 无 op：走全量合并（不再覆盖）
+    setSyncStatus('syncing');
     const cloud=await api('/api/data');
-    mergeCloudIntoLocal(cloud);
-    await pushCloudData();
-    renderAll();
-  }catch(e){console.warn('登录同步失败:',e.message)}
-}
-async function syncPush(force){
-  if(!authToken||isPushing)return;
-  isPushing=true;
-  try{
-    // 第一步：增量拉取远程变更
-    await pullRemoteOps();
-    // 第二步：全量快照校验（双向修补 + u 比较）
-    try{
-      const cloud=await api('/api/data');
-      const pendingIds=new Set(localOps.map(o=>String(o.recordId)));
-      for(const k of SYNC_KEYS){
-        const cloudArr=cloud[k]||[];
-        const cloudMap=new Map(cloudArr.map(x=>[String(x.id),x]));
-        const localMap=new Map(D[k].map(x=>[String(x.id),x]));
-        let changed=false;
-        // 删除本地有但云端没有的（pendingIds 例外）
-        const before=D[k].length;
-        D[k]=D[k].filter(item=>cloudMap.has(String(item.id))||pendingIds.has(String(item.id)));
-        if(D[k].length!==before)changed=true;
-        // 处理双方都有但版本不同：u 大者胜
-        for(const item of D[k]){
-          const cloudItem=cloudMap.get(String(item.id));
-          if(cloudItem&&(cloudItem.u||0)>(item.u||0)){
-            Object.assign(item,cloudItem);changed=true;
-          }
-        }
-        // 补充云端有但本地没有的
-        for(const item of cloudArr){
-          if(!localMap.has(String(item.id))){
-            D[k].push(item);changed=true;
-          }
-        }
-        if(changed){
-          localStorage.setItem(currentStorageKey(),JSON.stringify(D));
-          _snap=JSON.stringify(D);
-        }
-      }
-    }catch(e){}
-    // 第三步：推送本地变更
-    if(force||localOps.length>0||isDirty()){
-      await pushCloudData();
+    // 用云端数据替换本地（已登录用户以云端为准）
+    for(const k of SYNC_KEYS){
+      D[k]=cloud[k]||[];
     }
-    renderAll();
-  }catch(e){console.warn('同步失败:',e.message)}
-  finally{isPushing=false}
+    D.nextId=cloud.nextId||10;
+    D._m=D._m||{};
+    D._m.lastSyncAt=Date.now();
+    _snap=JSON.stringify(D);
+    localStorage.setItem(currentStorageKey(),JSON.stringify(D));
+    isOnline=true;
+    setSyncStatus('online');
+  }catch(e){
+    console.warn('拉取云端数据失败:',e.message);
+    setSyncStatus('offline');
+  }
 }
 
-// (pullRemoteOps/pushLocalOps 已在前方 v4 同步区定义)
-// (replaceWithCloud 已移除，统一使用 mergeCloudIntoLocal)
-// (mergeCloudIntoLocal 已在前方 v4 同步区定义)
-// (pullCloudData/pushCloudData/syncOnLogin/syncPush 已在前方 v4 同步区定义)
-function immediatePush(){if(!authToken)return;if(pushTimer)clearTimeout(pushTimer);pushTimer=setTimeout(()=>syncPush(false),1500)}
+// 新增记录到云端
+async function cloudAdd(col,item){
+  save(); // 先存本地
+  if(!authToken)return;
+  try{
+    const result=await api('/api/records/'+col,{method:'POST',body:JSON.stringify(item)});
+    if(result.success&&result.item){
+      // 用云端分配的 id 和 u 替换本地
+      const idx=D[col].findIndex(x=>x.id===item.id);
+      if(idx>=0){D[col][idx]=result.item}
+      else{D[col].push(result.item)}
+      D.nextId=Math.max(D.nextId||10,result.nextId||10);
+      _snap=JSON.stringify(D);
+      localStorage.setItem(currentStorageKey(),JSON.stringify(D));
+    }
+  }catch(e){console.warn('云端新增失败:',e.message)}
+}
+
+// 修改云端记录
+async function cloudUpdate(col,id,item){
+  save(); // 先存本地
+  if(!authToken)return;
+  try{
+    const result=await api('/api/records/'+col+'/'+id,{method:'PUT',body:JSON.stringify(item)});
+    if(result.success&&result.item){
+      const idx=D[col].findIndex(x=>x.id===id);
+      if(idx>=0){D[col][idx]=result.item}
+      _snap=JSON.stringify(D);
+      localStorage.setItem(currentStorageKey(),JSON.stringify(D));
+    }
+  }catch(e){console.warn('云端修改失败:',e.message)}
+}
+
+// 删除云端记录
+async function cloudDelete(col,id){
+  if(!authToken)return;
+  try{
+    await api('/api/records/'+col+'/'+id,{method:'DELETE'});
+  }catch(e){console.warn('云端删除失败:',e.message)}
+}
+
 function setSyncStatus(status){const dot=$('syncDot'),text=$('syncText');if(!dot)return;dot.className='sync-dot';if(status==='syncing'){dot.classList.add('syncing');text.textContent='同步中...'}else if(status==='online'){text.textContent='已同步'}else{dot.classList.add('offline');text.textContent='离线'}}
 function updateSyncUI(){
   const loggedIn=!!currentUser;
@@ -1443,9 +1214,8 @@ function updateSyncUI(){
     if(ls){const t=D._m&&D._m.lastSyncAt;ls.textContent=t?new Date(t).toLocaleString():'从未同步'}
   }
 }
-function startAutoSync(){if(syncTimer)clearInterval(syncTimer);syncTimer=setInterval(async()=>{if(isPushing)return;try{await syncPush(false)}catch(e){}},60000)}
-function manualSync(){if(!authToken){toast('未登录，无法同步');return}toast('正在同步...');(async()=>{try{await syncPush(true);renderAll();toast('同步完成')}catch(e){toast('同步失败：'+(e.message==='NETWORK_ERROR'?'网络异常':e.message))}})()}
-function handleLogout(){showConfirm('退出登录','退出后本地数据仍保留，但不再同步。',()=>{authToken='';currentUser='';localStorage.removeItem('shiji_token');localStorage.removeItem('shiji_user');if(syncTimer){clearInterval(syncTimer);syncTimer=null}isOnline=false;D=loadData();toggleSettings();showLoginPage();toast('已退出登录')})}
+function manualSync(){if(!authToken){toast('未登录，无法同步');return}toast('正在同步...');(async()=>{try{await loadCloudData();renderAll();toast('同步完成')}catch(e){toast('同步失败')}})()}
+function handleLogout(){showConfirm('退出登录','退出后本地数据仍保留，但不再同步。',()=>{authToken='';currentUser='';localStorage.removeItem('shiji_token');localStorage.removeItem('shiji_user');isOnline=false;D=loadData();toggleSettings();showLoginPage();toast('已退出登录')})}
 
 // ===== Init =====
 loadTheme();
@@ -1458,6 +1228,18 @@ loadTheme();
   const el5=$('iconSettingsClose');if(el5)el5.innerHTML=icon('x',18);
   const serverInput=$('loginServer');if(serverInput)serverInput.value=BUILTIN_API;
   (async function detectServer(){try{await fetch(BUILTIN_API+'/api/login',{method:'OPTIONS',signal:AbortSignal.timeout(3000)});isOnline=true;updateSyncUI()}catch(e){isOnline=false;updateSyncUI()}})();
-  if(authToken&&currentUser){showApp();try{await syncOnLogin();isOnline=true;renderAll();updateSyncUI();toast('欢迎回来，'+currentUser)}catch(e){isOnline=false;updateSyncUI();toast('离线模式，'+currentUser)}}else{showLoginPage()}
+  if(authToken&&currentUser){
+    showApp();
+    try{
+      await loadCloudData();
+      isOnline=true;renderAll();updateSyncUI();toast('欢迎回来，'+currentUser);
+    }catch(e){
+      isOnline=false;updateSyncUI();toast('离线模式，'+currentUser);
+    }
+  }else{showLoginPage()}
+  // 页面离开时同步
+  window.addEventListener('beforeunload',()=>{if(authToken){navigator.sendBeacon(API_BASE+'/api/data?ping=1')}});
+  // 页面获得焦点时刷新数据
+  document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='visible'&&authToken){try{await loadCloudData();renderAll();updateSyncUI()}catch(e){}}});
 })();
 </script>
