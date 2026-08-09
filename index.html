@@ -190,9 +190,10 @@
   .diary-del {
     position:absolute; top:12px; right:12px; width:28px; height:28px; border-radius:50%;
     background:var(--danger); color:#fff; border:none; font-size:14px; cursor:pointer;
-    display:none; align-items:center; justify-content:center; z-index:2;
+    display:flex; align-items:center; justify-content:center; z-index:2;
+    opacity:0.7; transition:opacity 0.2s;
   }
-  .diary-card:hover .diary-del { display:flex; }
+  .diary-del:active { opacity:1; }
 
   /* ===== 待办 ===== */
   .todo-list { padding:0 20px; display:flex; flex-direction:column; gap:10px; }
@@ -213,12 +214,36 @@
   .todo-title.done { text-decoration:line-through; color:var(--text-light); }
   .todo-date { font-size:12px; color:var(--text-light); margin-top:2px; }
   .todo-pri { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .todo-cat-tag { font-size:11px; padding:2px 10px; border-radius:10px; background:var(--tag-bg); color:var(--text-secondary); display:inline-block; margin-top:4px; }
+  .todo-sub-progress { margin-top:6px; }
+  .todo-sub-bar { width:100%; height:4px; border-radius:2px; background:var(--tag-bg); overflow:hidden; }
+  .todo-sub-fill { height:100%; border-radius:2px; background:var(--accent-gradient); transition:width 0.3s; }
+  .todo-sub-text { font-size:11px; color:var(--text-light); margin-top:3px; }
+  .todo-actions { display:flex; gap:4px; flex-shrink:0; }
   .todo-del {
     width:28px; height:28px; border-radius:50%; background:var(--danger); color:#fff;
-    border:none; font-size:12px; cursor:pointer; display:none; align-items:center;
-    justify-content:center; flex-shrink:0; margin-left:4px;
+    border:none; font-size:12px; cursor:pointer; display:flex; align-items:center;
+    justify-content:center; flex-shrink:0;
+    opacity:0.7; transition:opacity 0.2s;
   }
-  .todo-item:hover .todo-del { display:flex; }
+  .todo-del:active { opacity:1; }
+  .todo-edit-btn {
+    width:28px; height:28px; border-radius:50%; background:var(--accent); color:#fff;
+    border:none; font-size:12px; cursor:pointer; display:flex; align-items:center;
+    justify-content:center; flex-shrink:0;
+    opacity:0.7; transition:opacity 0.2s;
+  }
+  .todo-edit-btn:active { opacity:1; }
+  .todo-sub-list { margin-top:8px; padding-left:4px; }
+  .todo-sub-item { display:flex; align-items:center; gap:8px; padding:4px 0; font-size:13px; color:var(--text-secondary); }
+  .todo-sub-cb {
+    width:18px; height:18px; border-radius:50%; border:2px solid var(--border);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    transition:all 0.2s; font-size:10px; color:#fff; cursor:pointer;
+  }
+  .todo-sub-cb.checked { background:var(--accent); border-color:var(--accent); }
+  .todo-sub-name { flex:1; transition:all 0.2s; }
+  .todo-sub-name.done { text-decoration:line-through; color:var(--text-light); }
 
   /* ===== 消费记录 ===== */
   .expense-list { padding:0 20px; }
@@ -234,10 +259,11 @@
   .expense-amount { font-size:16px; font-weight:700; color:#e57373; flex-shrink:0; }
   .expense-del {
     width:26px; height:26px; border-radius:50%; background:var(--danger); color:#fff;
-    border:none; font-size:11px; cursor:pointer; display:none; align-items:center;
+    border:none; font-size:11px; cursor:pointer; display:flex; align-items:center;
     justify-content:center; flex-shrink:0;
+    opacity:0.7; transition:opacity 0.2s;
   }
-  .expense-item:hover .expense-del { display:flex; }
+  .expense-del:active { opacity:1; }
 
   /* ===== 倒数日 ===== */
   .cd-list { padding:0 20px; display:flex; flex-direction:column; gap:12px; }
@@ -256,9 +282,10 @@
   .cd-del {
     position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:50%;
     background:var(--danger); color:#fff; border:none; font-size:11px; cursor:pointer;
-    display:none; align-items:center; justify-content:center;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0.7; transition:opacity 0.2s;
   }
-  .cd-item:hover .cd-del { display:flex; }
+  .cd-del:active { opacity:1; }
 
   /* ===== 空状态 ===== */
   .empty {
@@ -552,7 +579,7 @@
     <div class="login-field"><label>用户名</label><input id="loginUser" placeholder="输入用户名" autocomplete="username"></div>
     <div class="login-field"><label>密码</label><input id="loginPass" type="password" placeholder="输入密码" autocomplete="current-password"></div>
     <div class="login-field" id="loginPass2Field" style="display:none;"><label>确认密码</label><input id="loginPass2" type="password" placeholder="再次输入密码"></div>
-    <div class="login-field"><label>服务器地址</label><input id="loginServer" placeholder="如 https://my-app.myname.workers.dev（留空则用当前页面地址）"></div>
+    <div class="login-field" id="loginServerField" style="display:none;"><label>服务器地址</label><input id="loginServer" placeholder="Workers地址"></div>
     <button class="login-btn login-btn-primary" id="loginSubmitBtn" onclick="handleLoginSubmit()">登录</button>
     <button class="login-btn login-btn-secondary" id="loginSwitchBtn" onclick="toggleLoginMode()" style="margin-top:10px;">没有账号？注册一个</button>
     <div class="login-switch" id="loginSwitchText"></div>
@@ -630,6 +657,10 @@
   <!-- 待办 -->
   <div class="page-sec" id="page-todo">
     <div class="sec-header"><span class="sec-title">待办事项</span><button class="sec-more" onclick="openModal('todo')">新建待办 ›</button></div>
+    <!-- 待办统计栏 -->
+    <div class="stats" id="todoStats"></div>
+    <!-- 待办分类筛选 -->
+    <div class="tabs" id="todoCatBar" style="padding:0 20px 10px;"></div>
     <div class="todo-list" id="todoList"></div>
   </div>
 
@@ -754,6 +785,12 @@ const TYPES = [
 ];
 const CAT_EMOJI = { '餐饮':'🍱','交通':'🚗','日用品':'🛒','娱乐':'🎮','购物':'🛍️','医疗':'🏥','订阅':'🔄','其他':'📌' };
 const PRI_COLOR = { high:'#e57373', medium:'#ffb74d', low:'#81c784' };
+const TODO_CATS = [
+  { key:'all', label:'全部' }, { key:'work', label:'工作' },
+  { key:'life', label:'生活' }, { key:'study', label:'学习' }, { key:'other', label:'其他' }
+];
+const TODO_CAT_MAP = { all:'', work:'工作', life:'生活', study:'学习', other:'其他' };
+let todoCatFilter = 'all';
 
 const STORAGE_KEY = 'shiji_v2_data';
 let D = loadData();
@@ -776,10 +813,11 @@ function defaultData() {
       { id:3, title:'加班赶项目', text:'项目快上线了，今天加班到晚上十点，进度还算顺利。回来路上听了几首歌放松了一下。', time:'2026-07-31 22:10', source:'手动记录', mood:'😤', tags:['加班','项目'] }
     ],
     todos: [
-      { id:1, title:'整理书桌', date:'2026-08-05', done:false, priority:'low' },
-      { id:2, title:'提交季度报告', date:'2026-08-04', done:false, priority:'high' },
-      { id:3, title:'预约牙科检查', date:'2026-08-10', done:true, priority:'medium' },
-      { id:4, title:'购买生日礼物', date:'2026-08-15', done:false, priority:'medium' }
+      { id:1, title:'整理书桌', date:'2026-08-05', done:false, priority:'low', category:'life', subs:[{id:1,name:'整理抽屉',done:false},{id:2,name:'擦桌子',done:false}] },
+      { id:2, title:'提交季度报告', date:'2026-08-04', done:false, priority:'high', category:'work', subs:[{id:1,name:'收集数据',done:true},{id:2,name:'撰写报告',done:false},{id:3,name:'领导审核',done:false}] },
+      { id:3, title:'预约牙科检查', date:'2026-08-10', done:true, priority:'medium', category:'life', subs:[] },
+      { id:4, title:'购买生日礼物', date:'2026-08-15', done:false, priority:'medium', category:'other', subs:[] },
+      { id:5, title:'复习考试内容', date:'2026-08-20', done:false, priority:'high', category:'study', subs:[{id:1,name:'第三章',done:false},{id:2,name:'第四章',done:false}] }
     ],
     expenses: [
       { id:1, name:'午餐', amount:38, category:'餐饮', date:'2026-08-02' },
@@ -888,17 +926,63 @@ function renderExpenses() {
     </div>`).join('');
 }
 
+function renderTodoStats() {
+  const total = D.todos.length;
+  const done = D.todos.filter(t=>t.done).length;
+  const pending = total - done;
+  const pct = total ? Math.round(done/total*100) : 0;
+  $('todoStats').innerHTML = `
+    <div class="stat-card"><div class="stat-val" style="color:#b8a9c9;">${total}</div><div class="stat-lbl">总计</div></div>
+    <div class="stat-card"><div class="stat-val" style="color:#81c784;">${done}</div><div class="stat-lbl">已完成</div></div>
+    <div class="stat-card"><div class="stat-val" style="color:#e8a87c;">${pending}</div><div class="stat-lbl">进行中</div></div>
+    <div class="stat-card"><div class="stat-val" style="color:#7cc4a0;">${pct}%</div><div class="stat-lbl">完成率</div></div>`;
+}
+
+function renderTodoCatBar() {
+  $('todoCatBar').innerHTML = TODO_CATS.map(c =>
+    `<button class="tab ${todoCatFilter===c.key?'active':''}" onclick="filterTodoCat('${c.key}')">${c.label}</button>`
+  ).join('');
+}
+
+function filterTodoCat(key) { todoCatFilter=key; renderTodos(); }
+
 function renderTodos() {
+  renderTodoStats();
+  renderTodoCatBar();
   const el = $('todoList');
-  if(!D.todos.length) { el.innerHTML = emptyHTML('📌','暂无待办'); return; }
-  el.innerHTML = D.todos.map(t => `
-    <div class="todo-item">
+  let list = D.todos;
+  if(todoCatFilter!=='all') list = list.filter(t=>(t.category||'other')===todoCatFilter);
+  if(!list.length) { el.innerHTML = emptyHTML('📌','暂无待办'); return; }
+  // 未完成排前面
+  const sorted = [...list].sort((a,b)=>(a.done===b.done?0:a.done?1:-1)||(a.id-b.id));
+  el.innerHTML = sorted.map(t => {
+    const subDone = (t.subs||[]).filter(s=>s.done).length;
+    const subTotal = (t.subs||[]).length;
+    const subPct = subTotal ? Math.round(subDone/subTotal*100) : 0;
+    const catLabel = TODO_CAT_MAP[t.category||'other'] || '其他';
+    return `<div class="todo-item" style="flex-wrap:wrap;">
       <div class="todo-cb ${t.done?'checked':''}" onclick="toggleTodo(${t.id})">${t.done?'✓':''}</div>
-      <div class="todo-body"><div class="todo-title ${t.done?'done':''}">${esc(t.title)}</div>${t.date?`<div class="todo-date">${esc(t.date)}</div>`:''}</div>
+      <div class="todo-body">
+        <div class="todo-title ${t.done?'done':''}">${esc(t.title)}</div>
+        ${t.date?`<div class="todo-date">${esc(t.date)}</div>`:''}
+        <span class="todo-cat-tag">${esc(catLabel)}</span>
+        ${subTotal?`<div class="todo-sub-progress">
+          <div class="todo-sub-bar"><div class="todo-sub-fill" style="width:${subPct}%"></div></div>
+          <div class="todo-sub-text">${subDone}/${subTotal} 子任务完成</div>
+        </div>`:''}
+        ${subTotal?`<div class="todo-sub-list">${(t.subs||[]).map(s=>`
+          <div class="todo-sub-item">
+            <div class="todo-sub-cb ${s.done?'checked':''}" onclick="toggleSub(${t.id},${s.id})">${s.done?'✓':''}</div>
+            <span class="todo-sub-name ${s.done?'done':''}">${esc(s.name)}</span>
+          </div>`).join('')}</div>`:''}
+      </div>
       <div class="todo-pri" style="background:${PRI_COLOR[t.priority]||'#ccc'}"></div>
-      <button class="todo-del" onclick="editTodo(${t.id})" style="background:var(--accent);right:38px;" title="编辑">✎</button>
-      <button class="todo-del" onclick="delTodo(${t.id})" title="删除">✕</button>
-    </div>`).join('');
+      <div class="todo-actions">
+        <button class="todo-edit-btn" onclick="editTodo(${t.id})" title="编辑">✎</button>
+        <button class="todo-del" onclick="delTodo(${t.id})" title="删除">✕</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function renderCountdowns() {
@@ -926,10 +1010,10 @@ function renderPage() {
   if(curTab==='all') { renderStats(); renderDiaries(); }
   else if(curTab==='diary') renderDiaries();
   else if(curTab==='asset') { renderAsset(); renderExpenses(); }
-  else if(curTab==='todo') renderTodos();
+  else if(curTab==='todo') { renderTodoStats(); renderTodos(); }
   else if(curTab==='countdown') renderCountdowns();
 }
-function renderAll() { renderStats(); renderDiaries(); renderAsset(); renderExpenses(); renderTodos(); renderCountdowns(); }
+function renderAll() { renderStats(); renderDiaries(); renderAsset(); renderExpenses(); renderTodoStats(); renderTodos(); renderCountdowns(); }
 
 // ===== 删除操作 =====
 function delDiary(id) { showConfirm('删除日记','确定要删除这条日记吗？',()=>{ D.diaries=D.diaries.filter(d=>d.id!==id); save(); renderAll(); toast('已删除'); }); }
@@ -938,7 +1022,12 @@ function delTodo(id) { showConfirm('删除待办','确定要删除这条待办�
 function delCountdown(id) { showConfirm('删除倒数日','确定要删除这条倒数日吗？',()=>{ D.countdowns=D.countdowns.filter(c=>c.id!==id); save(); renderCountdowns(); toast('已删除'); }); }
 
 // ===== 待办切换 =====
-function toggleTodo(id) { const t=D.todos.find(x=>x.id===id); if(t){t.done=!t.done; save(); renderTodos(); toast(t.done?'已完成':'已恢复');} }
+function toggleTodo(id) { const t=D.todos.find(x=>x.id===id); if(t){t.done=!t.done; save(); renderAll(); toast(t.done?'已完成':'已恢复');} }
+function toggleSub(todoId, subId) {
+  const t=D.todos.find(x=>x.id===todoId); if(!t||!t.subs) return;
+  const s=t.subs.find(x=>x.id===subId); if(!s) return;
+  s.done=!s.done; save(); renderAll();
+}
 
 // ===== 编辑入口 =====
 function editDiary(id) { const d=D.diaries.find(x=>x.id===id); if(d) openModal('diary',d); }
@@ -1005,7 +1094,9 @@ function openModal(type, editData) {
     case 'todo': T.textContent=isEdit?'编辑待办':'新建待办'; h=`
       <div class="fg"><label>内容</label><input id="f_title" placeholder="待办事项" value="${esc(editData?.title||'')}"></div>
       <div class="fg"><label>截止日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
+      <div class="fg"><label>分类</label><select id="f_category">${TODO_CATS.filter(c=>c.key!=='all').map(c=>`<option value="${c.key}" ${(editData?.category||'other')===c.key?'selected':''}>${c.label}</option>`).join('')}</select></div>
       <div class="fg"><label>优先级</label><div class="pri-row" id="priRow"></div></div>
+      <div class="fg"><label>子任务（每行一个，逗号前加 x 表示已完成）</label><textarea id="f_subs" placeholder="如：收集数据&#10;x 整理文件&#10;撰写报告" rows="4">${esc((editData?.subs||[]).map(s=>(s.done?'x ':'')+s.name).join('\n'))}</textarea></div>
       <button class="form-submit" onclick="submitTodo()">${isEdit?'保存修改':'保存待办'}</button>`;
       break;
     case 'countdown': T.textContent=isEdit?'编辑倒数日':'新建倒数日'; h=`
@@ -1123,14 +1214,27 @@ function submitMeal() {
     save();closeModal();renderAll();toast('餐食已记录');
   }
 }
+function parseSubs(text) {
+  if(!text||!text.trim()) return [];
+  let subId = 1;
+  return text.trim().split('\n').map(line=>{
+    const s=line.trim(); if(!s) return null;
+    const done = s.startsWith('x ')||s.startsWith('X ');
+    const name = done ? s.replace(/^[xX] /,'') : s;
+    return { id: subId++, name, done };
+  }).filter(Boolean);
+}
+
 function submitTodo() {
   const title=$('f_title').value.trim(); if(!title){toast('请填写内容');return;}
+  const category = $('f_category') ? $('f_category').value : 'other';
+  const subs = $('f_subs') ? parseSubs($('f_subs').value) : [];
   if(editId) {
     const t=D.todos.find(x=>x.id===editId);
-    if(t){t.title=title;t.date=$('f_date').value||'';t.priority=pickedPri;}
+    if(t){t.title=title;t.date=$('f_date').value||'';t.priority=pickedPri;t.category=category;t.subs=subs;}
     save();closeModal();renderAll();toast('待办已修改');
   } else {
-    D.todos.unshift({id:nid(),title,date:$('f_date').value||'',done:false,priority:pickedPri});
+    D.todos.unshift({id:nid(),title,date:$('f_date').value||'',done:false,priority:pickedPri,category:category,subs});
     save();closeModal();renderAll();toast('待办已添加');
   }
 }
@@ -1346,12 +1450,13 @@ async function handleLoginSubmit() {
   const errorEl = $('loginError');
   errorEl.textContent = '';
 
-  // 保存用户填写的服务器地址
+  // 保存用户填写的服务器地址（隐藏字段，默认已填Workers地址）
   if(server) {
     API_BASE = server.replace(/\/+$/, '');
     localStorage.setItem('shiji_api_base', API_BASE);
-  } else if(!localStorage.getItem('shiji_api_base')) {
-    API_BASE = location.origin;
+  } else {
+    API_BASE = BUILTIN_API;
+    localStorage.setItem('shiji_api_base', API_BASE);
   }
 
   if(!user||!pass) { errorEl.textContent='请输入用户名和密码'; return; }
@@ -1509,16 +1614,14 @@ function handleLogout() {
 loadTheme();
 
 (async function init() {
-  // 初始化服务器地址输入框
-  const savedBase = localStorage.getItem('shiji_api_base') || '';
+  // 服务器地址固定使用内置Workers地址
   const serverInput = $('loginServer');
-  if(serverInput) serverInput.value = savedBase;
+  if(serverInput) serverInput.value = BUILTIN_API;
 
   // 检测服务端是否可达（静默检测，不阻塞界面）
   (async function detectServer() {
     try {
-      const base = savedBase || location.origin;
-      await fetch(base + '/api/login', { method:'OPTIONS', signal: AbortSignal.timeout(3000) });
+      await fetch(BUILTIN_API + '/api/login', { method:'OPTIONS', signal: AbortSignal.timeout(3000) });
       isOnline = true;
       updateSyncUI();
     } catch(e) {
