@@ -548,12 +548,11 @@
   <div class="login-slogan">生活值得你记录</div>
   <div class="login-card">
     <h2 id="loginCardTitle">登录账号</h2>
-    <div class="login-error" id="loginError"></div>
+    <div class="login-error" id="loginError" style="white-space:pre-line;"></div>
     <div class="login-field"><label>用户名</label><input id="loginUser" placeholder="输入用户名" autocomplete="username"></div>
     <div class="login-field"><label>密码</label><input id="loginPass" type="password" placeholder="输入密码" autocomplete="current-password"></div>
     <div class="login-field" id="loginPass2Field" style="display:none;"><label>确认密码</label><input id="loginPass2" type="password" placeholder="再次输入密码"></div>
     <div class="login-field"><label>服务器地址</label><input id="loginServer" placeholder="如 https://my-app.myname.workers.dev（留空则用当前页面地址）"></div>
-    <div class="login-error" id="loginError" style="white-space:pre-line;"></div>
     <button class="login-btn login-btn-primary" id="loginSubmitBtn" onclick="handleLoginSubmit()">登录</button>
     <button class="login-btn login-btn-secondary" id="loginSwitchBtn" onclick="toggleLoginMode()" style="margin-top:10px;">没有账号？注册一个</button>
     <div class="login-switch" id="loginSwitchText"></div>
@@ -1187,10 +1186,13 @@ function confirmClear() {
 }
 
 // ===== 同步与账号 =====
-// API地址优先级：用户填写的 > localStorage存的 > 当前域名（本地Node服务）
+// API地址优先级：用户填写的 > localStorage存的 > 内置Workers地址 > 当前域名
+const BUILTIN_API = 'https://shiji-api.liuyu-cwb.workers.dev';
 function getAPIBase() {
   const saved = localStorage.getItem('shiji_api_base') || '';
   if(saved) return saved;
+  // 如果当前页面不是本地或同源，说明部署在GitHub Pages等，用内置Workers地址
+  if(location.origin !== BUILTIN_API && !location.origin.includes('localhost')) return BUILTIN_API;
   return location.origin;
 }
 let API_BASE = getAPIBase();
@@ -1205,12 +1207,20 @@ let syncTimer = null;
       const headers = { 'Content-Type':'application/json' };
       if(authToken) headers['Authorization'] = 'Bearer ' + authToken;
       const res = await fetch(API_BASE + path, { ...opts, headers: { ...headers, ...(opts.headers||{}) } });
+      // 先检查返回类型，防止把HTML当JSON解析
+      const ct = res.headers.get('content-type') || '';
+      if(!ct.includes('json')) {
+        const text = await res.text();
+        throw new Error('NETWORK_ERROR');
+      }
       const data = await res.json();
       if(!res.ok) throw new Error(data.error||'请求失败');
       return data;
     } catch(e) {
-      // TypeError: 网络错误（Failed to fetch / CORS 等）
-      if(e instanceof TypeError) { isOnline=false; throw new Error('NETWORK_ERROR'); }
+      // TypeError: 网络错误 / SyntaxError: JSON解析失败 / 手动标记
+      if(e instanceof TypeError || e instanceof SyntaxError || e.message==='NETWORK_ERROR') {
+        isOnline=false; throw new Error('NETWORK_ERROR');
+      }
       throw e;
     }
   }
