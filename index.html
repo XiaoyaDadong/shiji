@@ -64,13 +64,11 @@ a{text-decoration:none;color:inherit}
 .search-bar input::placeholder{color:var(--text-3)}
 .search-cancel{font-size:13px;color:var(--accent);font-weight:600;cursor:pointer;border:none;background:none}
 
-/* ===== Sync Bar ===== */
-.sync-bar{display:flex;align-items:center;gap:6px;padding:4px 24px 8px;font-size:11px;color:var(--text-3);letter-spacing:0.3px}
-.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--moss);flex-shrink:0}
+/* ===== Sync Status Dot (settings only) ===== */
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--moss);flex-shrink:0;display:inline-block;vertical-align:middle}
 .sync-dot.offline{background:var(--text-3)}
 .sync-dot.syncing{background:var(--clay);animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.sync-now{color:var(--accent);font-weight:600;cursor:pointer;margin-left:auto}
 
 /* ===== Stats ===== */
 .stats{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;padding:12px 24px}
@@ -200,12 +198,19 @@ a{text-decoration:none;color:inherit}
 .empty-text{font-family:var(--font);font-size:15px;font-weight:600;margin-bottom:4px}
 .empty-hint{font-size:12px;opacity:0.6;letter-spacing:0.5px}
 
-/* ===== Day Group ===== */
-.day-group{margin-top:8px}
-.day-header{display:flex;align-items:center;gap:12px;padding:16px 0 8px;position:sticky;top:0;z-index:5}
-.day-date{font-family:var(--font);font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;letter-spacing:0.5px}
-.day-line{flex:1;height:1px;background:var(--border)}
-.day-count{font-size:11px;color:var(--text-3);white-space:nowrap;letter-spacing:0.3px}
+/* ===== Day Group (Wabi-sabi Timeline) ===== */
+.day-group{position:relative;padding-left:28px;margin-top:6px}
+.day-group::before{content:'';position:absolute;left:7px;top:20px;bottom:0;width:1.5px;background:var(--border);border-radius:1px}
+.day-group:last-child::before{display:none}
+.day-header{display:flex;align-items:flex-start;gap:14px;padding:20px 0 6px;position:relative}
+.day-marker{position:absolute;left:-28px;top:20px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--border-strong);z-index:2;transition:border-color .2s}
+.day-group:first-child .day-marker{border-color:var(--accent);background:var(--accent-bg)}
+.day-date-group{flex-shrink:0;min-width:52px;text-align:center;padding-top:2px}
+.day-date-num{font-family:var(--font);font-size:22px;font-weight:700;line-height:1;color:var(--text);letter-spacing:-0.5px}
+.day-date-week{font-size:11px;color:var(--text-3);margin-top:3px;letter-spacing:1px;font-weight:500}
+.day-date-year{font-size:10px;color:var(--text-3);margin-top:1px;letter-spacing:0.5px}
+.day-items{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;padding-bottom:8px}
+.day-count-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--text-3);background:var(--card);border:1px solid var(--border);padding:2px 10px;border-radius:10px;margin-bottom:4px;letter-spacing:0.3px}
 
 /* ===== FAB ===== */
 .fab-wrap{position:fixed;bottom:calc(24px + var(--safe-bottom));right:calc(50% - 195px);z-index:50}
@@ -362,11 +367,7 @@ a{text-decoration:none;color:inherit}
 .login-offline{font-size:12px;color:var(--text-3);text-align:center;margin-top:20px;z-index:1;letter-spacing:0.5px}
 .login-offline a{color:var(--accent);cursor:pointer;font-weight:500}
 
-/* ===== User Badge ===== */
-.user-badge{display:flex;align-items:center;gap:8px;padding:4px 24px 12px}
-.user-avatar{width:32px;height:32px;border-radius:50%;background:var(--earth);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700}
-.user-name{font-size:13px;font-weight:600}
-.user-id{font-size:11px;color:var(--text-3)}
+/* ===== User Badge (removed from main, kept in settings) ===== */
 
 /* ===== Page Sections ===== */
 .page-sec{display:none}
@@ -419,16 +420,6 @@ a{text-decoration:none;color:inherit}
       <button class="hbtn" onclick="toggleSettings()" title="设置" id="iconSettings"></button>
     </div>
   </header>
-
-  <div class="sync-bar" id="syncBar" style="display:none">
-    <div class="sync-dot" id="syncDot"></div>
-    <span id="syncText">已同步</span>
-    <span class="sync-now" onclick="manualSync()">立即同步</span>
-  </div>
-  <div class="user-badge" id="userBadge" style="display:none">
-    <div class="user-avatar" id="userAvatar"></div>
-    <div><div class="user-name" id="userName"></div><div class="user-id" id="userId"></div></div>
-  </div>
 
   <nav class="tabs" id="tabBar"></nav>
   <div id="searchWrap" class="search-wrap"></div>
@@ -497,10 +488,11 @@ a{text-decoration:none;color:inherit}
     <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
   </div>
   <div class="settings-section" id="accountSection" style="display:none">
-    <div class="settings-section-title">账号</div>
+    <div class="settings-section-title">云同步</div>
+    <div class="settings-item"><span class="settings-item-label">同步状态</span><span class="settings-item-value" id="syncStatusText"><span class="sync-dot" id="syncDot"></span> 离线</span></div>
     <div class="settings-item"><span class="settings-item-label">当前账号</span><span class="settings-item-value" id="settingsUser">-</span></div>
-    <div class="settings-item" onclick="manualSync()"><span class="settings-item-label">手动同步</span><span class="settings-item-value">立即同步 ›</span></div>
     <div class="settings-item"><span class="settings-item-label">上次同步</span><span class="settings-item-value" id="lastSyncTime">-</span></div>
+    <div class="settings-item" onclick="manualSync()"><span class="settings-item-label" style="color:var(--accent);font-weight:600">手动同步</span><span class="settings-item-value">立即同步 ›</span></div>
     <button class="danger-btn" onclick="handleLogout()">退出登录</button>
   </div>
   <div class="settings-section"><button class="danger-btn" onclick="confirmClear()">清空所有数据</button></div>
@@ -832,25 +824,25 @@ function renderDiaries(){
     groups[dateKey].push(d);
   });
   const weekdays=['日','一','二','三','四','五','六'];
+  const today=fmtDate();
+  const yd=new Date();yd.setDate(yd.getDate()-1);
+  const ydStr=fmtDate(yd);
   let html='';
-  const sortedKeys=Object.keys(groups).sort((a,b)=>b.localeCompare(a)); // 日期倒序
+  const sortedKeys=Object.keys(groups).sort((a,b)=>b.localeCompare(a));
   sortedKeys.forEach(dateKey=>{
     const items=groups[dateKey];
-    let label;
-    if(dateKey==='未知日期'){
-      label='未知日期';
-    }else{
+    let dateNum='',weekDay='',yearLabel='';
+    if(dateKey!=='未知日期'){
       const dt=new Date(dateKey+'T00:00:00');
-      const today=fmtDate();
-      const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
-      const ydStr=fmtDate(yesterday);
-      if(dateKey===today)label='今天';
-      else if(dateKey===ydStr)label='昨天';
-      else label=`${dt.getMonth()+1}月${dt.getDate()}日 周${weekdays[dt.getDay()]}`;
-    }
-    html+=`<div class="day-group"><div class="day-header"><span class="day-date">${esc(label)}</span><div class="day-line"></div><span class="day-count">${items.length}篇</span></div>`;
+      if(dateKey===today){dateNum='今天';weekDay='';yearLabel=dt.getFullYear()+'年'}
+      else if(dateKey===ydStr){dateNum='昨天';weekDay='';yearLabel=dt.getFullYear()+'年'}
+      else{dateNum=(dt.getMonth()+1)+'/'+dt.getDate();weekDay='周'+weekdays[dt.getDay()];yearLabel=dt.getFullYear()+'年'}
+    }else{dateNum='?';weekDay='未知';yearLabel=''}
+    html+=`<div class="day-group"><div class="day-marker"></div><div class="day-header">`;
+    html+=`<div class="day-date-group"><div class="day-date-num">${esc(dateNum)}</div><div class="day-date-week">${esc(weekDay)}</div><div class="day-date-year">${esc(yearLabel)}</div></div>`;
+    html+=`<div class="day-items"><div class="day-count-badge">${icon('edit',12)} ${items.length}篇</div>`;
     html+=items.map(diaryHTML).join('');
-    html+=`</div>`;
+    html+=`</div></div></div>`;
   });
   $('diaryList').innerHTML=html;
 }
@@ -1234,16 +1226,11 @@ async function cloudDelete(col,id){
   }catch(e){console.warn('云端删除失败:',e.message)}
 }
 
-function setSyncStatus(status){const dot=$('syncDot'),text=$('syncText');if(!dot)return;dot.className='sync-dot';if(status==='syncing'){dot.classList.add('syncing');text.textContent='同步中...'}else if(status==='online'){text.textContent='已同步'}else{dot.classList.add('offline');text.textContent='离线'}}
+function setSyncStatus(status){const text=$('syncStatusText');if(!text)return;const dot=$('syncDot');if(status==='syncing'){if(dot){dot.className='sync-dot syncing'}text.innerHTML=(dot?'<span class="sync-dot syncing"></span> ':'')+'同步中...'}else if(status==='online'){if(dot){dot.className='sync-dot'}text.innerHTML=(dot?'<span class="sync-dot"></span> ':'')+'已连接'}else{if(dot){dot.className='sync-dot offline'}text.innerHTML=(dot?'<span class="sync-dot offline"></span> ':'')+'离线'}}
 function updateSyncUI(){
   const loggedIn=!!currentUser;
-  const bar=$('syncBar');if(bar)bar.style.display=loggedIn?'flex':'none';
-  const ub=$('userBadge');if(ub)ub.style.display=loggedIn?'flex':'none';
   const as=$('accountSection');if(as)as.style.display=loggedIn?'block':'none';
   if(loggedIn){
-    const av=$('userAvatar');if(av)av.textContent=currentUser.charAt(0).toUpperCase();
-    const un=$('userName');if(un)un.textContent=currentUser;
-    const uid=$('userId');if(uid)uid.textContent='已登录';
     const su=$('settingsUser');if(su)su.textContent=currentUser;
     setSyncStatus(isOnline?'online':'offline');
     const ls=$('lastSyncTime');
@@ -1268,14 +1255,14 @@ loadTheme();
     showApp();
     try{
       await loadCloudData();
-      isOnline=true;renderAll();updateSyncUI();toast('欢迎回来，'+currentUser);
+      isOnline=true;renderAll();updateSyncUI();
     }catch(e){
-      isOnline=false;updateSyncUI();toast('离线模式，'+currentUser);
+      isOnline=false;updateSyncUI();
     }
   }else{showLoginPage()}
-  // 页面离开时同步
+  // 页面离开时静默同步（拉取最新数据确保一致）
   window.addEventListener('beforeunload',()=>{if(authToken){navigator.sendBeacon(API_BASE+'/api/data?ping=1')}});
-  // 页面获得焦点时刷新数据
+  // 页面获得焦点时静默刷新数据（切换标签页/切回应用时自动同步）
   document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='visible'&&authToken){try{await loadCloudData();renderAll();updateSyncUI()}catch(e){}}});
 })();
 </script>
