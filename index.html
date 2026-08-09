@@ -804,11 +804,12 @@ async function handleLoginSubmit(){
   if(!user||!pass){errorEl.textContent='请输入用户名和密码';return}
   if(!isLoginMode){const pass2=$('loginPass2').value;if(pass!==pass2){errorEl.textContent='两次密码不一致';return}if(pass.length<4){errorEl.textContent='密码至少4位';return}}
   $('loginSubmitBtn').textContent='处理中...';$('loginSubmitBtn').disabled=true;
-  try{const endpoint=isLoginMode?'/api/login':'/api/register';const data=await api(endpoint,{method:'POST',body:JSON.stringify({username:user,password:pass})});authToken=data.token;currentUser=data.username;localStorage.setItem('shiji_token',authToken);localStorage.setItem('shiji_user',currentUser);isOnline=true;await pushCloudData();await pullCloudData();showApp();toast('欢迎回来，'+currentUser)}catch(e){if(e.message==='NETWORK_ERROR')errorEl.textContent='无法连接服务器，请检查网络';else errorEl.textContent=e.message}finally{$('loginSubmitBtn').textContent=isLoginMode?'登录':'注册';$('loginSubmitBtn').disabled=false}
+  try{const endpoint=isLoginMode?'/api/login':'/api/register';const data=await api(endpoint,{method:'POST',body:JSON.stringify({username:user,password:pass})});authToken=data.token;currentUser=data.username;localStorage.setItem('shiji_token',authToken);localStorage.setItem('shiji_user',currentUser);isOnline=true;await syncOnLogin();showApp();toast('欢迎回来，'+currentUser)}catch(e){if(e.message==='NETWORK_ERROR')errorEl.textContent='无法连接服务器，请检查网络';else errorEl.textContent=e.message}finally{$('loginSubmitBtn').textContent=isLoginMode?'登录':'注册';$('loginSubmitBtn').disabled=false}
 }
 function enterOffline(){currentUser='';authToken='';isOnline=false;showApp();toast('离线模式，数据仅保存在本地')}
 async function pullCloudData(){if(!authToken)return;try{const cloud=await api('/api/data');if(cloud.diaries||cloud.todos||cloud.expenses||cloud.countdowns){D.diaries=cloud.diaries||[];D.todos=cloud.todos||[];D.expenses=cloud.expenses||[];D.countdowns=cloud.countdowns||[];D.nextId=Math.max(D.nextId||10,cloud.nextId||10);localStorage.setItem(STORAGE_KEY,JSON.stringify(D))}isOnline=true}catch(e){console.warn('拉取云端数据失败:',e.message)}}
 let isPushing=false;
+async function syncOnLogin(){if(!authToken)return;try{const cloud=await api('/api/data');const cloudTotal=(cloud.diaries||[]).length+(cloud.todos||[]).length+(cloud.expenses||[]).length+(cloud.countdowns||[]).length;if(cloudTotal>0){D.diaries=cloud.diaries||[];D.todos=cloud.todos||[];D.expenses=cloud.expenses||[];D.countdowns=cloud.countdowns||[];D.nextId=Math.max(D.nextId||10,cloud.nextId||10);localStorage.setItem(STORAGE_KEY,JSON.stringify(D))}else{await pushCloudData()}}catch(e){console.warn('登录同步失败:',e.message)}}
 async function immediatePush(){if(!authToken||isPushing)return;isPushing=true;try{await pushCloudData();isOnline=true;renderAll()}catch(e){console.warn('同步失败:',e.message)}finally{isPushing=false}}
 async function pushCloudData(){if(!authToken)return;try{setSyncStatus('syncing');await api('/api/data',{method:'POST',body:JSON.stringify({diaries:D.diaries,todos:D.todos,expenses:D.expenses,countdowns:D.countdowns,nextId:D.nextId,_fullSync:true})});isOnline=true;setSyncStatus('online')}catch(e){setSyncStatus('offline')}}
 function setSyncStatus(status){const dot=$('syncDot'),text=$('syncText');if(!dot)return;dot.className='sync-dot';if(status==='syncing'){dot.classList.add('syncing');text.textContent='同步中...'}else if(status==='online'){text.textContent='已同步'}else{dot.classList.add('offline');text.textContent='离线'}}
@@ -822,7 +823,7 @@ loadTheme();
 (async function init(){
   const serverInput=$('loginServer');if(serverInput)serverInput.value=BUILTIN_API;
   (async function detectServer(){try{await fetch(BUILTIN_API+'/api/login',{method:'OPTIONS',signal:AbortSignal.timeout(3000)});isOnline=true;updateSyncUI()}catch(e){isOnline=false;updateSyncUI()}})();
-  if(authToken&&currentUser){showApp();try{await pushCloudData();await pullCloudData();isOnline=true;renderAll();updateSyncUI();toast('欢迎回来，'+currentUser)}catch(e){isOnline=false;updateSyncUI();toast('离线模式，'+currentUser)}}else{showLoginPage()}
+  if(authToken&&currentUser){showApp();try{await syncOnLogin();isOnline=true;renderAll();updateSyncUI();toast('欢迎回来，'+currentUser)}catch(e){isOnline=false;updateSyncUI();toast('离线模式，'+currentUser)}}else{showLoginPage()}
 })();
 </script>
 </body>
