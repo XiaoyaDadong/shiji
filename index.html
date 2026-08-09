@@ -652,7 +652,7 @@ const TABS=[
 ];
 
 const TYPES=[
-  {key:'diary',icon:icon('edit',20),bg:'rgba(196,149,106,0.15)',color:'#C4956A',label:'日记',desc:'纸短情长，落笔生花'},
+  {key:'diary',icon:icon('feather',20),bg:'rgba(196,149,106,0.15)',color:'#C4956A',label:'日记',desc:'纸短情长，落笔生花'},
   {key:'expense',icon:icon('receipt',20),bg:'rgba(192,72,81,0.12)',color:'#C04851',label:'消费',desc:'一文一物，皆有所值'},
   {key:'meal',icon:icon('utensils',20),bg:'rgba(196,149,106,0.15)',color:'#C4956A',label:'餐食',desc:'人间烟火，食之有味'},
   {key:'countdown',icon:icon('calendar',20),bg:'rgba(91,107,138,0.12)',color:'#5B6B8A',label:'倒数日',desc:'翘首以盼，不负归期'},
@@ -809,7 +809,7 @@ function closeConfirm(){$('confirmOverlay').classList.remove('show');confirmCb=n
 function typeBadge(type){
   const m=TYPE_META[type];
   if(!m)return '';
-  return `<span class="type-badge" style="background:${m.bg};color:${m.color}">${m.icon?`<span style="display:inline-flex;width:12px;height:12px">${m.icon}</span>`:''} ${esc(m.label)}</span>`;
+  return `<span class="type-badge" style="background:${m.bg};color:${m.color}">${m.icon?`<span style="display:inline-flex;width:12px;height:12px">${m.icon}</span>`:''}</span>`;
 }
 
 // ===== Tabs =====
@@ -1271,29 +1271,26 @@ function doAction(action){
 
 // ===== CRUD =====
 function delRecord(type,id){
-  const label=TYPE_META[type]?TYPE_META[type].label:'记录';
-  showConfirm('删除'+label,'确定要删除这条'+label+'吗？',()=>{
-    const strId=String(id);
-    if(['diary','meal','checkin','asset','plan'].includes(type)){
-      D.diaries=D.diaries.filter(x=>!(String(x.id)===strId&&x.type===type));
-      save();renderAll();cloudDelete('diaries',strId);
-    }else if(['expense','subscribe'].includes(type)){
-      D.expenses=D.expenses.filter(x=>!(String(x.id)===strId&&x.type===type));
-      save();renderAll();cloudDelete('expenses',strId);
-    }else if(type==='todo'){
-      D.todos=D.todos.filter(x=>String(x.id)!==strId);
-      save();renderAll();cloudDelete('todos',strId);
-    }else if(['countdown','birthday','anniversary','festival'].includes(type)){
-      D.countdowns=D.countdowns.filter(x=>!(String(x.id)===strId&&x.type===type));
-      const found=D.diaries.find(x=>x.type===type&&String(x.linkId)===strId);
-      if(found){
-        D.diaries=D.diaries.filter(x=>x!==found);
-        cloudDelete('diaries',String(found.id));
-      }
-      save();renderAll();cloudDelete('countdowns',strId);
+  const strId=String(id);
+  if(['diary','meal','checkin','asset','plan'].includes(type)){
+    D.diaries=D.diaries.filter(x=>!(String(x.id)===strId&&x.type===type));
+    save();renderAll();cloudDelete('diaries',strId);
+  }else if(['expense','subscribe'].includes(type)){
+    D.expenses=D.expenses.filter(x=>!(String(x.id)===strId&&x.type===type));
+    save();renderAll();cloudDelete('expenses',strId);
+  }else if(type==='todo'){
+    D.todos=D.todos.filter(x=>String(x.id)!==strId);
+    save();renderAll();cloudDelete('todos',strId);
+  }else if(['countdown','birthday','anniversary','festival'].includes(type)){
+    D.countdowns=D.countdowns.filter(x=>!(String(x.id)===strId&&x.type===type));
+    const found=D.diaries.find(x=>x.type===type&&String(x.linkId)===strId);
+    if(found){
+      D.diaries=D.diaries.filter(x=>x!==found);
+      cloudDelete('diaries',String(found.id));
     }
-    toast('已删除');
-  });
+    save();renderAll();cloudDelete('countdowns',strId);
+  }
+  toast('已删除');
 }
 
 function toggleTodo(id){
