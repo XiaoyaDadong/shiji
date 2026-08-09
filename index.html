@@ -36,7 +36,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 ::-webkit-scrollbar{width:0;height:0}
-body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .4s,color .4s);position:relative}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .4s,color .4s;position:relative}
 body::after{content:'';position:fixed;inset:0;background:var(--bg-grain);pointer-events:none;z-index:0;opacity:0.6}
 a{text-decoration:none;color:inherit}
 
@@ -54,7 +54,7 @@ a{text-decoration:none;color:inherit}
 
 /* ===== Tabs ===== */
 .tabs{display:flex;gap:4px;padding:10px 24px 6px;overflow-x:auto;scrollbar-width:none}
-.tab{padding:7px 18px;border-radius:20px;font-size:13px;font-weight:500;white-space:nowrap;cursor:pointer;border:none;outline:none;background:transparent;color:var(--text-3);transition:all .25s;letter-spacing:0.3px}
+.tab{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:500;white-space:nowrap;cursor:pointer;border:none;outline:none;background:transparent;color:var(--text-3);transition:all .25s;letter-spacing:0.3px}
 .tab.active{background:var(--text);color:var(--bg);font-weight:600}
 
 /* ===== Search ===== */
@@ -64,7 +64,7 @@ a{text-decoration:none;color:inherit}
 .search-bar input::placeholder{color:var(--text-3)}
 .search-cancel{font-size:13px;color:var(--accent);font-weight:600;cursor:pointer;border:none;background:none}
 
-/* ===== Sync Status Dot (settings only) ===== */
+/* ===== Sync Status Dot ===== */
 .sync-dot{width:7px;height:7px;border-radius:50%;background:var(--moss);flex-shrink:0;display:inline-block;vertical-align:middle}
 .sync-dot.offline{background:var(--text-3)}
 .sync-dot.syncing{background:var(--clay);animation:pulse 1s infinite}
@@ -86,41 +86,15 @@ a{text-decoration:none;color:inherit}
 .home-greeting{font-family:var(--font);font-size:20px;font-weight:700;letter-spacing:0.5px}
 .home-date{font-size:12px;color:var(--text-3);margin-top:2px;letter-spacing:0.3px}
 
-/* ===== Home Quick Section ===== */
-.home-sec{padding:16px 24px 0}
-.home-sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.home-sec-title{font-family:var(--font);font-size:15px;font-weight:600;letter-spacing:0.5px;display:flex;align-items:center;gap:8px}
-.home-sec-title .lucide{color:var(--text-3)}
-.home-sec-more{font-size:12px;color:var(--accent);font-weight:500;cursor:pointer;border:none;background:none;letter-spacing:0.3px}
+/* ===== Type Badge ===== */
+.type-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:600;padding:2px 8px;border-radius:8px;letter-spacing:0.3px;margin-bottom:6px;flex-shrink:0}
+.type-badge svg{width:12px;height:12px}
 
-/* ===== Home Countdown Row ===== */
-.cd-row{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
-.cd-mini{min-width:120px;background:var(--card);border-radius:var(--radius);padding:12px 14px;border:1px solid var(--border);cursor:pointer;transition:transform .15s;position:relative}
-.cd-mini:active{transform:scale(0.97)}
-.cd-mini-emoji{font-size:24px;margin-bottom:4px}
-.cd-mini-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cd-mini-days{font-family:var(--font);font-size:20px;font-weight:700;color:var(--accent);margin-top:2px}
-.cd-mini-unit{font-size:10px;color:var(--text-3)}
-
-/* ===== Home Expense Summary ===== */
-.exp-summary{background:var(--card);border-radius:var(--radius);padding:14px 16px;border:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:transform .15s}
-.exp-summary:active{transform:scale(0.98)}
-.exp-summary-left{display:flex;align-items:center;gap:10px}
-.exp-summary-icon{width:36px;height:36px;border-radius:50%;background:rgba(192,72,81,0.1);display:flex;align-items:center;justify-content:center}
-.exp-summary-info{font-size:12px;color:var(--text-3)}
-.exp-summary-amount{font-family:var(--font);font-size:20px;font-weight:700;color:var(--seal)}
-
-/* ===== Section Header ===== */
-.sec-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px 8px}
-.sec-title{font-family:var(--font);font-size:17px;font-weight:600;letter-spacing:0.5px}
-.sec-more{font-size:13px;color:var(--accent);font-weight:500;cursor:pointer;border:none;background:none;letter-spacing:0.3px}
-
-/* ===== Record List ===== */
-.record-list{padding:0 24px;display:flex;flex-direction:column;gap:8px}
+/* ===== Record Card (Unified Base) ===== */
+.record-card{background:var(--card);border-radius:var(--radius);padding:16px;border:1px solid var(--border);cursor:pointer;transition:transform .15s,border-color .2s;position:relative}
+.record-card:active{transform:scale(0.98);border-color:var(--border-strong)}
 
 /* ===== Diary Card ===== */
-.diary-card{background:var(--card);border-radius:var(--radius);padding:16px;border:1px solid var(--border);cursor:pointer;transition:transform .15s,border-color .2s;position:relative}
-.diary-card:active{transform:scale(0.98);border-color:var(--border-strong)}
 .diary-card .dc-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
 .diary-card .dc-mood{width:36px;height:36px;border-radius:var(--radius-sm);background:var(--accent-bg);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .diary-card .dc-info{flex:1;min-width:0}
@@ -130,18 +104,32 @@ a{text-decoration:none;color:inherit}
 .diary-card .dc-tags{display:flex;gap:6px;flex-wrap:wrap}
 .diary-card .dc-tag{font-size:11px;color:var(--earth);background:rgba(160,139,114,0.12);padding:3px 10px;border-radius:10px;font-weight:500}
 
+/* ===== Meal Card ===== */
+.meal-card .dc-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.meal-card .dc-mood{width:36px;height:36px;border-radius:var(--radius-sm);background:rgba(196,149,106,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.meal-card .dc-info{flex:1;min-width:0}
+.meal-card .dc-title{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--font)}
+.meal-card .dc-meta{font-size:11px;color:var(--text-3);margin-top:3px;letter-spacing:0.3px}
+.meal-card .dc-text{font-size:13px;color:var(--text-2);line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;letter-spacing:0.2px}
+
 /* ===== Expense Card ===== */
-.exp-card{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:var(--radius);padding:14px 16px;border:1px solid var(--border);transition:transform .15s}
-.exp-card:active{transform:scale(0.98)}
-.exp-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.exp-info{flex:1;min-width:0}
-.exp-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.exp-detail{font-size:12px;color:var(--text-3);margin-top:2px}
-.exp-amount{font-size:16px;font-weight:700;color:var(--seal);flex-shrink:0;font-family:var(--font)}
+.exp-card{display:flex;align-items:center;gap:12px}
+.exp-card .exp-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.exp-card .exp-info{flex:1;min-width:0}
+.exp-card .exp-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exp-card .exp-detail{font-size:12px;color:var(--text-3);margin-top:2px}
+.exp-card .exp-amount{font-size:16px;font-weight:700;color:var(--seal);flex-shrink:0;font-family:var(--font)}
+
+/* ===== Subscribe Card ===== */
+.subscribe-card{display:flex;align-items:center;gap:12px}
+.subscribe-card .sub-icon{width:40px;height:40px;border-radius:var(--radius-sm);background:rgba(160,139,114,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.subscribe-card .exp-info{flex:1;min-width:0}
+.subscribe-card .exp-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.subscribe-card .exp-detail{font-size:12px;color:var(--text-3);margin-top:2px}
+.subscribe-card .sub-amount{font-size:14px;font-weight:700;color:var(--earth);flex-shrink:0;font-family:var(--font)}
 
 /* ===== Todo Card ===== */
-.todo-card{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:var(--radius);padding:14px 16px;border:1px solid var(--border);transition:transform .15s}
-.todo-card:active{transform:scale(0.98)}
+.todo-card{display:flex;align-items:center;gap:12px}
 .todo-cb{width:22px;height:22px;border-radius:50%;border:2px solid var(--border-strong);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .2s;font-size:11px;color:#fff}
 .todo-cb.checked{background:var(--moss);border-color:var(--moss)}
 .todo-body{flex:1;min-width:0}
@@ -151,17 +139,47 @@ a{text-decoration:none;color:inherit}
 .todo-pri{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
 /* ===== Countdown Card ===== */
-.cd-card{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:var(--radius);padding:16px;border:1px solid var(--border);transition:transform .15s}
-.cd-card:active{transform:scale(0.98)}
-.cd-emoji{font-size:32px;flex-shrink:0}
-.cd-info{flex:1;min-width:0}
-.cd-name{font-family:var(--font);font-size:15px;font-weight:600}
-.cd-date{font-size:12px;color:var(--text-3);margin-top:3px}
-.cd-days-wrap{text-align:right}
-.cd-days{font-family:var(--font);font-size:26px;font-weight:700;color:var(--accent)}
-.cd-unit{font-size:11px;color:var(--text-3)}
+.cd-card{display:flex;align-items:center;gap:14px}
+.cd-card .cd-emoji{font-size:32px;flex-shrink:0}
+.cd-card .cd-info{flex:1;min-width:0}
+.cd-card .cd-name{font-family:var(--font);font-size:15px;font-weight:600}
+.cd-card .cd-date{font-size:12px;color:var(--text-3);margin-top:3px}
+.cd-card .cd-days-wrap{text-align:right}
+.cd-card .cd-days{font-family:var(--font);font-size:26px;font-weight:700;color:var(--accent)}
+.cd-card .cd-unit{font-size:11px;color:var(--text-3)}
+
+/* ===== Birthday / Anniversary / Festival Card (extends cd-card) ===== */
+.birthday-card .cd-emoji{color:var(--clay)}
+.anniversary-card .cd-emoji{color:var(--seal)}
+.festival-card .cd-emoji{color:var(--earth)}
+.cd-sub{font-size:11px;color:var(--text-3);margin-top:2px}
+
+/* ===== Checkin Card ===== */
+.checkin-card{display:flex;align-items:center;gap:14px}
+.checkin-icon{width:40px;height:40px;border-radius:var(--radius-sm);background:rgba(107,140,106,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.checkin-info{flex:1;min-width:0}
+.checkin-title{font-size:15px;font-weight:600;font-family:var(--font)}
+.checkin-meta{font-size:12px;color:var(--text-3);margin-top:3px}
+.checkin-streak{font-family:var(--font);font-size:20px;font-weight:700;color:var(--moss);text-align:right;flex-shrink:0}
+.checkin-streak-label{font-size:10px;color:var(--text-3);font-weight:400}
 
 /* ===== Asset Card ===== */
+.asset-item-card{display:flex;align-items:center;gap:14px}
+.asset-item-icon{width:40px;height:40px;border-radius:var(--radius-sm);background:rgba(91,107,138,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.asset-item-info{flex:1;min-width:0}
+.asset-item-name{font-size:15px;font-weight:600;font-family:var(--font)}
+.asset-item-meta{font-size:12px;color:var(--text-3);margin-top:3px}
+.asset-item-val{font-family:var(--font);font-size:18px;font-weight:700;color:var(--indigo);flex-shrink:0}
+
+/* ===== Plan Card ===== */
+.plan-card .plan-top{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.plan-card .plan-icon{width:36px;height:36px;border-radius:var(--radius-sm);background:rgba(107,140,106,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.plan-card .plan-info{flex:1;min-width:0}
+.plan-card .plan-title{font-size:15px;font-weight:600;font-family:var(--font)}
+.plan-card .plan-date{font-size:12px;color:var(--text-3);margin-top:3px}
+.plan-card .plan-text{font-size:13px;color:var(--text-2);line-height:1.7;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ===== Asset Hero ===== */
 .asset-hero{margin:0 24px 16px;background:var(--text);border-radius:var(--radius-lg);padding:24px 20px;color:var(--bg);position:relative;overflow:hidden}
 .asset-hero::before{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:rgba(192,72,81,0.2);border-radius:50%}
 .asset-hero::after{content:'';position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;background:rgba(160,139,114,0.15);border-radius:50%}
@@ -194,11 +212,11 @@ a{text-decoration:none;color:inherit}
 
 /* ===== Empty State ===== */
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;color:var(--text-3)}
-.empty-icon{font-size:48px;margin-bottom:12px;opacity:0.4}
+.empty-icon{margin-bottom:12px;opacity:0.4}
 .empty-text{font-family:var(--font);font-size:15px;font-weight:600;margin-bottom:4px}
 .empty-hint{font-size:12px;opacity:0.6;letter-spacing:0.5px}
 
-/* ===== Day Group (Wabi-sabi Timeline) ===== */
+/* ===== Day Group ===== */
 .day-group{position:relative;padding-left:28px;margin-top:6px}
 .day-group::before{content:'';position:absolute;left:7px;top:20px;bottom:0;width:1.5px;background:var(--border);border-radius:1px}
 .day-group:last-child::before{display:none}
@@ -211,6 +229,11 @@ a{text-decoration:none;color:inherit}
 .day-date-year{font-size:10px;color:var(--text-3);margin-top:1px;letter-spacing:0.5px}
 .day-items{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;padding-bottom:8px}
 .day-count-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--text-3);background:var(--card);border:1px solid var(--border);padding:2px 10px;border-radius:10px;margin-bottom:4px;letter-spacing:0.3px}
+
+/* ===== Sub-tabs (for More page) ===== */
+.sub-tabs{display:flex;gap:4px;padding:10px 24px 6px;overflow-x:auto;scrollbar-width:none}
+.sub-tab{padding:6px 14px;border-radius:16px;font-size:12px;font-weight:500;white-space:nowrap;cursor:pointer;border:1.5px solid var(--border);background:transparent;color:var(--text-3);transition:all .25s}
+.sub-tab.active{border-color:var(--text);background:var(--text);color:var(--bg);font-weight:600}
 
 /* ===== FAB ===== */
 .fab-wrap{position:fixed;bottom:calc(24px + var(--safe-bottom));right:calc(50% - 195px);z-index:50}
@@ -255,7 +278,7 @@ a{text-decoration:none;color:inherit}
 .modal-spacer{width:36px}
 .modal-body{padding:24px 24px 0}
 
-/* ===== Form (Wabi-sabi) ===== */
+/* ===== Form ===== */
 .fg{margin-bottom:24px}
 .fg label{font-size:11px;color:var(--text-3);display:block;margin-bottom:8px;font-weight:600;letter-spacing:2px}
 .fg input,.fg textarea,.fg select{width:100%;border:none;border-bottom:1.5px solid var(--border);border-radius:0;padding:12px 2px;font-size:16px;background:transparent;outline:none;transition:border-color .3s;color:var(--text);font-family:var(--font-sans)}
@@ -278,7 +301,7 @@ a{text-decoration:none;color:inherit}
 .form-submit:active{transform:scale(0.97);opacity:0.9}
 .form-cancel{width:100%;padding:14px;border:none;border-radius:var(--radius);background:transparent;color:var(--text-3);font-size:14px;cursor:pointer;margin-top:8px;letter-spacing:1px}
 
-/* ===== Category Chips ===== */
+/* ===== Category chips ===== */
 .cat-chips{display:flex;gap:8px;flex-wrap:wrap}
 .cat-chip{padding:8px 16px;border-radius:24px;border:1.5px solid var(--border);background:transparent;font-size:13px;cursor:pointer;transition:all .25s;letter-spacing:0.5px}
 .cat-chip:active{transform:scale(0.95)}
@@ -367,8 +390,6 @@ a{text-decoration:none;color:inherit}
 .login-offline{font-size:12px;color:var(--text-3);text-align:center;margin-top:20px;z-index:1;letter-spacing:0.5px}
 .login-offline a{color:var(--accent);cursor:pointer;font-weight:500}
 
-/* ===== User Badge (removed from main, kept in settings) ===== */
-
 /* ===== Page Sections ===== */
 .page-sec{display:none}
 .page-sec.active{display:block;animation:fadeUp .3s ease both}
@@ -377,6 +398,7 @@ a{text-decoration:none;color:inherit}
 /* ===== SVG Icons ===== */
 .lucide{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
 .lucide svg{width:inherit;height:inherit;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lucide-12{width:12px;height:12px}
 .lucide-14{width:14px;height:14px}
 .lucide-16{width:16px;height:16px}
 .lucide-18{width:18px;height:18px}
@@ -424,51 +446,55 @@ a{text-decoration:none;color:inherit}
   <nav class="tabs" id="tabBar"></nav>
   <div id="searchWrap" class="search-wrap"></div>
 
-  <!-- All -->
+  <!-- 全部 -->
   <div class="page-sec active" id="page-all">
-    <div class="record-list" id="allDiaryList"></div>
+    <div id="allContent"></div>
   </div>
 
-  <!-- Diary -->
+  <!-- 日记 -->
   <div class="page-sec" id="page-diary">
-    <div class="sec-header"><span class="sec-title">我的日记</span><button class="sec-more" onclick="openTypePanel()">新建 ›</button></div>
+    <div class="sec-header"><span class="sec-title">我的日记</span><button class="sec-more" onclick="openModal('diary')">新建 ›</button></div>
     <div class="record-list" id="diaryList"></div>
   </div>
 
-  <!-- Expense -->
+  <!-- 消费(含订阅) -->
   <div class="page-sec" id="page-expense">
     <div class="sec-header"><span class="sec-title">消费记录</span><button class="sec-more" onclick="openModal('expense')">添加 ›</button></div>
     <div class="record-list" id="expenseList"></div>
   </div>
 
-  <!-- Asset -->
-  <div class="page-sec" id="page-asset">
-    <div class="asset-hero">
-      <div class="asset-label">总支出</div>
-      <div class="asset-total" id="totalAsset">¥0.00</div>
-      <div class="asset-sub" id="assetSubItems">
-        <div class="asset-sub-item"><div class="asset-sub-label"><span class="asset-sub-dot" style="background:var(--seal)"></span> 暂无</div><div class="asset-sub-val">¥0.00</div></div>
-      </div>
-    </div>
-    <div class="sec-header"><span class="sec-title">分类概览</span></div>
-    <div class="cash-grid" id="cashGrid">
-      <div class="cash-item wechat"><div class="cash-icon" id="iconCashEdit"></div><div class="cash-name">暂无</div><div class="cash-amount">¥0.00</div></div>
-    </div>
-    <button class="manage-btn" onclick="toast('管理功能开发中')">管理现金账户</button>
-    <div class="sec-header"><span class="sec-title">消费明细</span><button class="sec-more" onclick="openModal('expense')">添加 ›</button></div>
-    <div class="record-list" id="assetExpenseList"></div>
-  </div>
-
-  <!-- Todo -->
+  <!-- 待办 -->
   <div class="page-sec" id="page-todo">
     <div class="sec-header"><span class="sec-title">待办事项</span><button class="sec-more" onclick="openModal('todo')">新建 ›</button></div>
     <div class="record-list" id="todoList"></div>
   </div>
 
-  <!-- Countdown -->
+  <!-- 倒数日(含生日/纪念日/节日) -->
   <div class="page-sec" id="page-countdown">
-    <div class="sec-header"><span class="sec-title">倒数日</span><button class="sec-more" onclick="openModal('countdown')">新建 ›</button></div>
+    <div class="sec-header"><span class="sec-title">倒数日</span><button class="sec-more" onclick="openTypePanel()">新建 ›</button></div>
+    <div class="sub-tabs" id="cdSubTabs"></div>
     <div class="record-list" id="cdList"></div>
+  </div>
+
+  <!-- 资产 -->
+  <div class="page-sec" id="page-asset">
+    <div class="asset-hero">
+      <div class="asset-label">总资产</div>
+      <div class="asset-total" id="totalAsset">¥0.00</div>
+      <div class="asset-sub" id="assetSubItems"></div>
+    </div>
+    <div class="sec-header"><span class="sec-title">资产列表</span><button class="sec-more" onclick="openModal('asset')">添加 ›</button></div>
+    <div class="record-list" id="assetList"></div>
+    <div class="sec-header"><span class="sec-title">消费概览</span><button class="sec-more" onclick="switchTab('expense')">全部 ›</button></div>
+    <div class="cash-grid" id="cashGrid"></div>
+    <div class="sec-header"><span class="sec-title">消费明细</span></div>
+    <div class="record-list" id="assetExpenseList"></div>
+  </div>
+
+  <!-- 更多(餐食/打卡/计划) -->
+  <div class="page-sec" id="page-more">
+    <div class="sub-tabs" id="moreSubTabs"></div>
+    <div class="record-list" id="moreList"></div>
   </div>
 
   <!-- FAB -->
@@ -520,8 +546,14 @@ a{text-decoration:none;color:inherit}
 <!-- Detail Modal -->
 <div class="modal-overlay" id="detailOverlay" onclick="closeDetail()" style="z-index:202"></div>
 <div class="modal" id="detailModal" style="z-index:203">
-  <div class="modal-handle"></div>
-  <div class="detail-body" id="detailBody"></div>
+  <div class="modal-header">
+    <button class="modal-close" onclick="closeDetail()"></button>
+    <div class="modal-title-group"><h2 id="detailModalTitle">详情</h2></div>
+    <div class="modal-spacer"></div>
+  </div>
+  <div class="modal-body">
+    <div class="detail-body" id="detailBody"></div>
+  </div>
 </div>
 
 <!-- Confirm -->
@@ -575,60 +607,70 @@ const _I={
   pulse:'<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
   tag:'<path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>',
   feather:'<path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z"/><line x1="16" y1="8" x2="2" y2="22"/><line x1="17.5" y1="15" x2="9" y2="15"/>',
-  smile:'<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>',
   cloud:'<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>',
   flame:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
-  droplets:'<path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 14.69l1.55-1.55m0 0l1.55-1.55m-1.55 1.55l-1.55-1.55m1.55 1.55l1.55 1.55M17 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S17.29 6.75 17 5.3c-.29 1.45-1.14 2.84-2.29 3.76S13 11.1 13 12.25c0 2.22 1.8 4.05 4 4.05z"/>',
-  grin:'<circle cx="12" cy="12" r="10"/><path d="M8 12h.01M16 12h.01"/><path d="M8 16s1.5 2 4 2 4-2 4-2"/>',
-  hearts:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
-  moon:'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>',
-  helpCircle:'<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
-  sunglasses:'<circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M4 8l4 4"/><path d="M20 8l-4 4"/><rect x="2" y="10" width="8" height="4" rx="1"/><rect x="14" y="10" width="8" height="4" rx="1"/>',
   star:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+  moon:'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>',
+  grin:'<circle cx="12" cy="12" r="10"/><path d="M8 12h.01M16 12h.01"/><path d="M8 16s1.5 2 4 2 4-2 4-2"/>',
+  smile:'<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/>',
   plane:'<path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-3.5 2L3 13c-.5-.2-1-.1-1.3.3l-.3.5c-.2.5-.1 1 .3 1.3l2.5 1.5 1.5 2.5c.3.4.8.5 1.3.3l.5-.3c.4-.2.5-.8.3-1.3L7 14l2-3.5 5.5 5.5c.3.3.8.4 1.3.3l.5-.3c.4-.3.6-.7.5-1.2z"/>',
   tree:'<path d="M12 22v-7"/><path d="M17 8a5 5 0 0 0-10 0"/><path d="M19 12a5 5 0 0 0-14 0"/><path d="M21 16a5 5 0 0 0-18 0"/>',
-  graduation:'<path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 4 3 6 3s6-1 6-3v-5"/>',
   home:'<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
-  minus:'<line x1="5" y1="12" x2="19" y2="12"/>',
   trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>',
-  moreH:'<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
-  inbox:'<polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
   pin:'<path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.51V18a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2.5a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2z"/>',
-  pinOff:'<path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.51V18a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2.5a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2z"/><line x1="2" y1="2" x2="22" y2="22" stroke-width="2.5"/>'
+  pinOff:'<path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.51V18a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2.5a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2z"/><line x1="2" y1="2" x2="22" y2="22" stroke-width="2.5"/>',
+  inbox:'<polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
+  lantern:'<path d="M12 2v2M8 4h8M6 8h12M5 12h14M6 16h12M8 20h8M12 22v-2"/><path d="M8 4c-1 2-2 4-2 8s1 6 2 8"/><path d="M16 4c1 2 2 4 2 8s-1 6-2 8"/>',
+  target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>'
 };
 function icon(name,sz){const s=sz||20;return `<span class="lucide lucide-${s}"><svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${_I[name]||_I.edit}</svg></span>`}
 
 // ===== Constants =====
-const TABS=[{key:'all',label:'全部'},{key:'diary',label:'日记'},{key:'expense',label:'消费'},{key:'todo',label:'待办'},{key:'countdown',label:'倒数日'}];
-const TYPES=[
-  {key:'expense',icon:icon('receipt',20),bg:'rgba(192,72,81,0.12)',label:'消费',desc:'一文一物，皆有所值'},
-  {key:'meal',icon:icon('utensils',20),bg:'rgba(196,149,106,0.15)',label:'餐食',desc:'人间烟火，食之有味'},
-  {key:'countdown',icon:icon('calendar',20),bg:'rgba(91,107,138,0.12)',label:'倒数日',desc:'翘首以盼，不负归期'},
-  {key:'birthday',icon:icon('cake',20),bg:'rgba(160,139,114,0.12)',label:'生日',desc:'年年岁岁，生辰如歌'},
-  {key:'anniversary',icon:icon('heart',20),bg:'rgba(192,72,81,0.12)',label:'纪念日',desc:'此情可待，岁岁年年'},
-  {key:'checkin',icon:icon('checkCircle',20),bg:'rgba(107,140,106,0.15)',label:'打卡',desc:'日日不断，功不唐捐'},
-  {key:'diary',icon:icon('edit',20),bg:'rgba(196,149,106,0.15)',label:'日记',desc:'纸短情长，落笔生花'},
-  {key:'asset',icon:icon('wallet',20),bg:'rgba(91,107,138,0.12)',label:'资产',desc:'身外之物，亦需记之'},
-  {key:'subscribe',icon:icon('refresh',20),bg:'rgba(160,139,114,0.12)',label:'订阅',desc:'月月有约，按时而至'},
-  {key:'plan',icon:icon('clipboard',20),bg:'rgba(107,140,106,0.15)',label:'计划',desc:'谋定后动，行且坚毅'},
-  {key:'todo',icon:icon('bookmark',20),bg:'rgba(196,149,106,0.15)',label:'待办',desc:'待办之事，逐一了之'},
-  {key:'festival',icon:icon('sparkles',20),bg:'rgba(192,72,81,0.1)',label:'节日',desc:'节庆之时，人间值得'}
+const TABS=[
+  {key:'all',label:'全部'},
+  {key:'diary',label:'日记'},
+  {key:'expense',label:'消费'},
+  {key:'todo',label:'待办'},
+  {key:'countdown',label:'倒数日'},
+  {key:'asset',label:'资产'},
+  {key:'more',label:'更多'}
 ];
+
+const TYPES=[
+  {key:'diary',icon:icon('edit',20),bg:'rgba(196,149,106,0.15)',color:'#C4956A',label:'日记',desc:'纸短情长，落笔生花'},
+  {key:'expense',icon:icon('receipt',20),bg:'rgba(192,72,81,0.12)',color:'#C04851',label:'消费',desc:'一文一物，皆有所值'},
+  {key:'meal',icon:icon('utensils',20),bg:'rgba(196,149,106,0.15)',color:'#C4956A',label:'餐食',desc:'人间烟火，食之有味'},
+  {key:'countdown',icon:icon('calendar',20),bg:'rgba(91,107,138,0.12)',color:'#5B6B8A',label:'倒数日',desc:'翘首以盼，不负归期'},
+  {key:'birthday',icon:icon('cake',20),bg:'rgba(160,139,114,0.12)',color:'#A08B72',label:'生日',desc:'年年岁岁，生辰如歌'},
+  {key:'anniversary',icon:icon('heart',20),bg:'rgba(192,72,81,0.12)',color:'#C04851',label:'纪念日',desc:'此情可待，岁岁年年'},
+  {key:'checkin',icon:icon('checkCircle',20),bg:'rgba(107,140,106,0.15)',color:'#6B8C6A',label:'打卡',desc:'日日不断，功不唐捐'},
+  {key:'asset',icon:icon('wallet',20),bg:'rgba(91,107,138,0.12)',color:'#5B6B8A',label:'资产',desc:'身外之物，亦需记之'},
+  {key:'subscribe',icon:icon('refresh',20),bg:'rgba(160,139,114,0.12)',color:'#A08B72',label:'订阅',desc:'月月有约，按时而至'},
+  {key:'plan',icon:icon('clipboard',20),bg:'rgba(107,140,106,0.15)',color:'#6B8C6A',label:'计划',desc:'谋定后动，行且坚毅'},
+  {key:'todo',icon:icon('bookmark',20),bg:'rgba(196,149,106,0.15)',color:'#C4956A',label:'待办',desc:'待办之事，逐一了之'},
+  {key:'festival',icon:icon('sparkles',20),bg:'rgba(192,72,81,0.1)',color:'#C04851',label:'节日',desc:'节庆之时，人间值得'}
+];
+
+const TYPE_META=(function(){
+  const m={};
+  TYPES.forEach(t=>{m[t.key]={label:t.label,icon:t.icon,bg:t.bg,color:t.color,desc:t.desc}});
+  return m;
+})();
+
 const CAT_EMOJI={'餐饮':icon('utensils',20),'交通':icon('car',20),'日用品':icon('cart',20),'娱乐':icon('gamepad',20),'购物':icon('bag',20),'医疗':icon('pulse',20),'订阅':icon('refresh',20),'其他':icon('tag',20)};
 const CAT_BG={'餐饮':'rgba(196,149,106,0.15)','交通':'rgba(91,107,138,0.12)','日用品':'rgba(107,140,106,0.15)','娱乐':'rgba(160,139,114,0.12)','购物':'rgba(192,72,81,0.1)','医疗':'rgba(192,72,81,0.1)','订阅':'rgba(160,139,114,0.12)','其他':'rgba(184,169,154,0.12)'};
 const PRI_COLOR={high:'#C04851',medium:'#C4956A',low:'#6B8C6A'};
 
-// ===== Storage (账号隔离 + 变更检测) =====
+// ===== Storage =====
 const LEGACY_KEY='shiji_v2_data';
 function currentStorageKey(){const u=localStorage.getItem('shiji_user')||'';return u?('shiji_v2_data_'+u):'shiji_v2_data_local'}
 let _snap=null;
-let D=loadData();let curTab='all';let searchOn=false;let searchQ='';let confirmCb=null;
+let D=loadData();let curTab='all';let curCdSub='all';let curMoreSub='meal';let searchOn=false;let searchQ='';let confirmCb=null;
 
 function loadData(){
   try{
     const key=currentStorageKey();
     let r=localStorage.getItem(key);
-    // 旧版单 key 数据迁移到当前账号/离线 key
     if(!r&&localStorage.getItem(LEGACY_KEY)){
       r=localStorage.getItem(LEGACY_KEY);
       localStorage.setItem(key,r);localStorage.removeItem(LEGACY_KEY);
@@ -653,24 +695,35 @@ function save(){
 function nid(){return 'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
 function defaultData(){return{
   diaries:[
-    {id:1,title:'周末的午后',text:'今天阳光正好，去公园散步了两小时，路边的花开了好多，心情特别舒畅。回家后泡了一壶龙井，安安静静看了一会儿书。',time:'2026-08-02 15:30',source:'手动记录',mood:'😊',tags:['公园','散步','读书']},
-    {id:2,title:'尝试了新的菜谱',text:'跟视频学做了糖醋排骨，第一次做味道还不错！虽然卖相差了点，但口感很好，下次继续改进。',time:'2026-08-01 19:20',source:'手动记录',mood:'😋',tags:['做饭','排骨']},
-    {id:3,title:'加班赶项目',text:'项目快上线了，今天加班到晚上十点，进度还算顺利。回来路上听了几首歌放松了一下。',time:'2026-07-31 22:10',source:'手动记录',mood:'😤',tags:['加班','项目']}
+    {id:1,type:'diary',title:'周末的午后',text:'今天阳光正好，去公园散步了两小时，路边的花开了好多，心情特别舒畅。回家后泡了一壶龙井，安安静静看了一会儿书。',time:'2026-08-02 15:30',source:'手动记录',mood:'😊',tags:['公园','散步','读书'],pinned:false},
+    {id:2,type:'diary',title:'尝试了新的菜谱',text:'跟视频学做了糖醋排骨，第一次做味道还不错！虽然卖相差了点，但口感很好，下次继续改进。',time:'2026-08-01 19:20',source:'手动记录',mood:'😋',tags:['做饭','排骨'],pinned:false},
+    {id:3,type:'diary',title:'加班赶项目',text:'项目快上线了，今天加班到晚上十点，进度还算顺利。回来路上听了几首歌放松了一下。',time:'2026-07-31 22:10',source:'手动记录',mood:'😤',tags:['加班','项目'],pinned:false},
+    {id:10,type:'meal',title:'午餐·日式拉面',text:'公司楼下新开的日式拉面店，味增汤底很浓郁，叉烧也很入味。',time:'2026-08-03 12:30',source:'手动记录',mood:'😋',tags:['餐食'],pinned:false},
+    {id:11,type:'checkin',title:'早起打卡',text:'连续早起第7天',time:'2026-08-03 06:30',source:'打卡记录',streak:7,pinned:false},
+    {id:12,type:'asset',title:'储蓄卡余额',text:'工商银行',time:'2026-08-01 10:00',source:'资产记录',amount:52000,pinned:false},
+    {id:13,type:'plan',title:'学完前端课程',text:'目标完成全部CSS和JavaScript章节',time:'2026-08-01 09:00',source:'计划记录',date:'2026-09-30',pinned:false}
   ],
   todos:[
-    {id:1,title:'整理书桌',date:'2026-08-05',done:false,priority:'low'},
-    {id:2,title:'提交季度报告',date:'2026-08-04',done:false,priority:'high'},
-    {id:3,title:'预约牙科检查',date:'2026-08-10',done:true,priority:'medium'},
-    {id:4,title:'购买生日礼物',date:'2026-08-15',done:false,priority:'medium'}
+    {id:1,title:'整理书桌',date:'2026-08-05',done:false,priority:'low',pinned:false},
+    {id:2,title:'提交季度报告',date:'2026-08-04',done:false,priority:'high',pinned:false},
+    {id:3,title:'预约牙科检查',date:'2026-08-10',done:true,priority:'medium',pinned:false},
+    {id:4,title:'购买生日礼物',date:'2026-08-15',done:false,priority:'medium',pinned:false}
   ],
   expenses:[
-    {id:1,name:'午餐',amount:38,category:'餐饮',date:'2026-08-02'},
-    {id:2,name:'打车',amount:25,category:'交通',date:'2026-08-02'},
-    {id:3,name:'超市购物',amount:156,category:'日用品',date:'2026-08-01'},
-    {id:4,name:'咖啡',amount:32,category:'餐饮',date:'2026-08-01'}
+    {id:1,type:'expense',name:'午餐',amount:38,category:'餐饮',date:'2026-08-02',pinned:false},
+    {id:2,type:'expense',name:'打车',amount:25,category:'交通',date:'2026-08-02',pinned:false},
+    {id:3,type:'expense',name:'超市购物',amount:156,category:'日用品',date:'2026-08-01',pinned:false},
+    {id:4,type:'expense',name:'咖啡',amount:32,category:'餐饮',date:'2026-08-01',pinned:false},
+    {id:5,type:'subscribe',name:'网易云音乐',amount:15,category:'订阅',date:'2026-08-01',pinned:false}
   ],
-  countdowns:[{id:1,name:'中秋佳节',date:'2026-09-25',emoji:'🌕'},{id:2,name:'国庆假期',date:'2026-10-01',emoji:'🎉'}],
-  nextId:10
+  countdowns:[
+    {id:1,type:'countdown',name:'中秋佳节',date:'2026-09-25',emoji:'🌕',pinned:false},
+    {id:2,type:'countdown',name:'国庆假期',date:'2026-10-01',emoji:'🎉',pinned:false},
+    {id:20,type:'birthday',name:'小明的生日',date:'2026-08-20',emoji:'🎂',text:'记得准备礼物',pinned:false,linkId:21},
+    {id:30,type:'anniversary',name:'结婚纪念日',date:'2026-09-10',emoji:'💝',text:'三年纪念',pinned:false,linkId:31},
+    {id:40,type:'festival',name:'春节',date:'2027-02-06',emoji:'🏮',text:'回家过年',pinned:false,linkId:41}
+  ],
+  nextId:50
 }}
 
 // ===== Utils =====
@@ -679,32 +732,60 @@ function fmtDate(d){d=d||new Date();const p=n=>(n<10?'0':'')+n;return d.getFullY
 function daysBetween(s){const t=new Date();t.setHours(0,0,0,0);return Math.ceil((new Date(s)-t)/(864e5))}
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function $(id){return document.getElementById(id)}
-function toast(msg){const t=$('toastEl');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+function toast(msg){const t=$('toastEl');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2202)}
 function pinBadge(item){return item.pinned?`<span class="pin-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.51V18a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2.5a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2z"/></svg></span>`:''}
 
+// 按type+id查找记录，返回 {record, collection, colName}
+function findRecord(type,id){
+  const strId=String(id);
+  // 在diaries中查找
+  if(['diary','meal','checkin','asset','plan','birthday','anniversary','festival'].includes(type)){
+    const idx=D.diaries.findIndex(x=>String(x.id)===strId&&x.type===type);
+    if(idx>=0)return{record:D.diaries[idx],collection:D.diaries,colName:'diaries',idx};
+  }
+  // 在expenses中查找
+  if(['expense','subscribe'].includes(type)){
+    const idx=D.expenses.findIndex(x=>String(x.id)===strId&&x.type===type);
+    if(idx>=0)return{record:D.expenses[idx],collection:D.expenses,colName:'expenses',idx};
+  }
+  // 在countdowns中查找
+  if(['countdown','birthday','anniversary','festival'].includes(type)){
+    const idx=D.countdowns.findIndex(x=>String(x.id)===strId&&x.type===type);
+    if(idx>=0)return{record:D.countdowns[idx],collection:D.countdowns,colName:'countdowns',idx};
+  }
+  // 在todos中查找
+  if(type==='todo'){
+    const idx=D.todos.findIndex(x=>String(x.id)===strId);
+    if(idx>=0)return{record:D.todos[idx],collection:D.todos,colName:'todos',idx};
+  }
+  // 兜底：全量搜索
+  for(const[col,arr]of[['diaries',D.diaries],['expenses',D.expenses],['countdowns',D.countdowns],['todos',D.todos]]){
+    const idx=arr.findIndex(x=>String(x.id)===strId);
+    if(idx>=0)return{record:arr[idx],collection:arr,colName:col,idx};
+  }
+  return null;
+}
+
 // ===== Sorting =====
-// 通用：置顶优先 + 按时间字段倒序
 function sortByTime(arr,timeField){
   return [...arr].sort((a,b)=>{
-    const pa=a.pinned?1:0, pb=b.pinned?1:0;
-    if(pa!==pb)return pb-pa; // 置顶优先
-    const ta=a[timeField]||'', tb=b[timeField]||'';
-    return tb.localeCompare(ta); // 时间倒序
+    const pa=a.pinned?1:0,pb=b.pinned?1:0;
+    if(pa!==pb)return pb-pa;
+    const ta=a[timeField]||'',tb=b[timeField]||'';
+    return tb.localeCompare(ta);
   });
 }
-// 待办：置顶优先 + 未完成在前 + 日期排序
 function sortTodos(arr){
   return [...arr].sort((a,b)=>{
-    const pa=a.pinned?1:0, pb=b.pinned?1:0;
+    const pa=a.pinned?1:0,pb=b.pinned?1:0;
     if(pa!==pb)return pb-pa;
     if(a.done!==b.done)return a.done?1:-1;
     return (b.date||'').localeCompare(a.date||'');
   });
 }
-// 倒数日：置顶优先 + 目标日期正序（近的在前）
 function sortCountdowns(arr){
   return [...arr].sort((a,b)=>{
-    const pa=a.pinned?1:0, pb=b.pinned?1:0;
+    const pa=a.pinned?1:0,pb=b.pinned?1:0;
     if(pa!==pb)return pb-pa;
     return (a.date||'').localeCompare(b.date||'');
   });
@@ -714,31 +795,28 @@ function sortCountdowns(arr){
 function showConfirm(title,text,cb){$('confirmTitle').textContent=title;$('confirmText').textContent=text;confirmCb=cb;$('confirmOk').onclick=()=>{const fn=confirmCb;closeConfirm();if(fn)fn()};$('confirmOverlay').classList.add('show')}
 function closeConfirm(){$('confirmOverlay').classList.remove('show');confirmCb=null}
 
+// ===== Type Badge =====
+function typeBadge(type){
+  const m=TYPE_META[type];
+  if(!m)return '';
+  return `<span class="type-badge" style="background:${m.bg};color:${m.color}">${m.icon?`<span style="display:inline-flex;width:12px;height:12px">${m.icon}</span>`:''} ${esc(m.label)}</span>`;
+}
+
 // ===== Tabs =====
 function renderTabs(){$('tabBar').innerHTML=TABS.map(t=>`<button class="tab ${curTab===t.key?'active':''}" onclick="switchTab('${t.key}')">${t.label}</button>`).join('')}
 function switchTab(key){curTab=key;renderTabs();document.querySelectorAll('.page-sec').forEach(el=>el.classList.toggle('active',el.id==='page-'+key));renderPage()}
 
 // ===== Search =====
-function toggleSearch(){searchOn=!searchOn;const w=$('searchWrap');if(searchOn){w.style.display='block';w.innerHTML=`<div class="search-bar"><span>${icon('search',16)}</span><input placeholder="搜索记录..." oninput="onSearch(this.value)" autofocus><button class="search-cancel" onclick="toggleSearch()">取消</button></div>`;w.querySelector('input').focus()}else{w.style.display='none';searchQ='';renderAll()}}
+function toggleSearch(){searchOn=!searchOn;const w=$('searchWrap');if(searchOn){w.style.display='block';w.innerHTML=`<div class="search-bar"><span>${icon('search',16)}</span><input placeholder="搜索所有记录..." oninput="onSearch(this.value)" autofocus><button class="search-cancel" onclick="toggleSearch()">取消</button></div>`;w.querySelector('input').focus()}else{w.style.display='none';searchQ='';renderAll()}}
 function onSearch(v){searchQ=v.trim().toLowerCase();renderAll()}
 
-// ===== Render =====
-function renderStats(){
-  const mc=D.diaries.filter(d=>d.time&&d.time.startsWith(fmtDate().slice(0,7))).length;
-  const ta=D.todos.filter(t=>!t.done).length;
-  return `
-    <div class="stats">
-      <div class="stat-card" onclick="switchTab('diary')" style="cursor:pointer"><div class="stat-val">${mc}</div><div class="stat-lbl">日记</div></div>
-      <div class="stat-card" onclick="switchTab('todo')" style="cursor:pointer"><div class="stat-val">${ta}</div><div class="stat-lbl">待办</div></div>
-      <div class="stat-card" onclick="switchTab('countdown')" style="cursor:pointer"><div class="stat-val">${D.countdowns.length}</div><div class="stat-lbl">倒数日</div></div>
-      <div class="stat-card" onclick="switchTab('expense')" style="cursor:pointer"><div class="stat-val">${D.expenses.length}</div><div class="stat-lbl">消费</div></div>
-    </div>`;
-}
+// ===== Card Renderers (12 types) =====
 
-function diaryHTML(d){
-  return `<div class="diary-card" ontouchstart="startLongPress('diary','${d.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('diary','${d.id}')" onclick="if(!wasLongPress())showActionSheet('diary','${d.id}')">
+function diaryCard(d){
+  return `<div class="record-card diary-card" data-type="diary" data-id="${d.id}" ontouchstart="startLongPress('diary','${d.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('diary','${d.id}')" onclick="if(!wasLongPress())showActionSheet('diary','${d.id}')">
+    ${typeBadge('diary')}
     <div class="dc-top">
-      <div class="dc-mood">${d.mood?d.mood:icon('edit',18)}</div>
+      <div class="dc-mood">${d.mood||icon('edit',18)}</div>
       <div class="dc-info"><div class="dc-title">${esc(d.title||'未命名')}${pinBadge(d)}</div><div class="dc-meta">${esc(d.source||'手动记录')} · ${esc(d.time||'')}</div></div>
     </div>
     ${d.text?`<div class="dc-text">${esc(d.text)}</div>`:''}
@@ -746,74 +824,216 @@ function diaryHTML(d){
   </div>`;
 }
 
-function expenseHTML(e){
-  return `<div class="exp-card" ontouchstart="startLongPress('expense','${e.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('expense','${e.id}')" onclick="if(!wasLongPress())showActionSheet('expense','${e.id}')">
-    <div class="exp-icon" style="background:${CAT_BG[e.category]||'rgba(184,169,154,0.12)'}">${CAT_EMOJI[e.category]||icon('tag',20)}</div>
-    <div class="exp-info"><div class="exp-name">${esc(e.name)}${pinBadge(e)}</div><div class="exp-detail">${esc(e.category)} · ${esc(e.date)}</div></div>
-    <div class="exp-amount">-¥${e.amount.toFixed(2)}</div>
+function mealCard(d){
+  return `<div class="record-card meal-card" data-type="meal" data-id="${d.id}" ontouchstart="startLongPress('meal','${d.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('meal','${d.id}')" onclick="if(!wasLongPress())showActionSheet('meal','${d.id}')">
+    ${typeBadge('meal')}
+    <div class="dc-top">
+      <div class="dc-mood" style="background:rgba(196,149,106,0.15)">${icon('utensils',18)}</div>
+      <div class="dc-info"><div class="dc-title">${esc(d.title||'餐食')}${pinBadge(d)}</div><div class="dc-meta">${d.mood||''} ${esc(d.time||'')}</div></div>
+    </div>
+    ${d.text?`<div class="dc-text">${esc(d.text)}</div>`:''}
   </div>`;
 }
 
-function todoHTML(t){
-  return `<div class="todo-card">
+function expenseCard(e){
+  return `<div class="record-card exp-card" data-type="expense" data-id="${e.id}" ontouchstart="startLongPress('expense','${e.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('expense','${e.id}')" onclick="if(!wasLongPress())showActionSheet('expense','${e.id}')">
+    ${typeBadge('expense')}
+    <div class="exp-icon" style="background:${CAT_BG[e.category]||'rgba(184,169,154,0.12)'}">${CAT_EMOJI[e.category]||icon('tag',20)}</div>
+    <div class="exp-info"><div class="exp-name">${esc(e.name)}${pinBadge(e)}</div><div class="exp-detail">${esc(e.category)} · ${esc(e.date)}</div></div>
+    <div class="exp-amount">-¥${(e.amount||0).toFixed(2)}</div>
+  </div>`;
+}
+
+function subscribeCard(e){
+  return `<div class="record-card subscribe-card" data-type="subscribe" data-id="${e.id}" ontouchstart="startLongPress('subscribe','${e.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('subscribe','${e.id}')" onclick="if(!wasLongPress())showActionSheet('subscribe','${e.id}')">
+    ${typeBadge('subscribe')}
+    <div class="sub-icon" style="background:rgba(160,139,114,0.12)">${icon('refresh',20)}</div>
+    <div class="exp-info"><div class="exp-name">${esc(e.name)}${pinBadge(e)}</div><div class="exp-detail">月费订阅</div></div>
+    <div class="sub-amount">¥${(e.amount||0).toFixed(2)}/月</div>
+  </div>`;
+}
+
+function todoCard(t){
+  return `<div class="record-card todo-card" data-type="todo" data-id="${t.id}">
+    ${typeBadge('todo')}
     <div class="todo-cb ${t.done?'checked':''}" onclick="event.stopPropagation();toggleTodo('${t.id}')">${t.done?icon('check',14):''}</div>
-    <div class="todo-body" ontouchstart="startLongPress('todo','${t.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('todo','${t.id}')" onclick="if(!wasLongPress())editTodo('${t.id}')" style="cursor:pointer"><div class="todo-title ${t.done?'done':''}">${esc(t.title)}${pinBadge(t)}</div>${t.date?`<div class="todo-date">${esc(t.date)}</div>`:''}</div>
+    <div class="todo-body" ontouchstart="startLongPress('todo','${t.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('todo','${t.id}')" onclick="if(!wasLongPress())showActionSheet('todo','${t.id}')" style="cursor:pointer;flex:1;min-width:0"><div class="todo-title ${t.done?'done':''}">${esc(t.title)}${pinBadge(t)}</div>${t.date?`<div class="todo-date">${esc(t.date)}</div>`:''}</div>
     <div class="todo-pri" style="background:${PRI_COLOR[t.priority]||'#A08B72'}"></div>
   </div>`;
 }
 
-function countdownHTML(c){
+function countdownCard(c){
   const d=daysBetween(c.date);const past=d<0;
-  return `<div class="cd-card" ontouchstart="startLongPress('countdown','${c.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('countdown','${c.id}')" onclick="if(!wasLongPress())editCountdown('${c.id}')">
-    <div class="cd-emoji">${c.emoji?c.emoji:icon('calendar',32)}</div>
+  return `<div class="record-card cd-card" data-type="countdown" data-id="${c.id}" ontouchstart="startLongPress('countdown','${c.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('countdown','${c.id}')" onclick="if(!wasLongPress())showActionSheet('countdown','${c.id}')">
+    ${typeBadge('countdown')}
+    <div class="cd-emoji">${c.emoji||icon('calendar',32)}</div>
     <div class="cd-info"><div class="cd-name">${esc(c.name)}${pinBadge(c)}</div><div class="cd-date">${esc(c.date)}</div></div>
     <div class="cd-days-wrap"><div class="cd-days">${Math.abs(d)}</div><div class="cd-unit">${past?'天前已到':'天后'}</div></div>
   </div>`;
 }
 
+function birthdayCard(c){
+  const d=daysBetween(c.date);const past=d<0;
+  // 计算年龄
+  const birth=new Date(c.date);
+  const now=new Date();
+  let age=now.getFullYear()-birth.getFullYear();
+  if(now.getMonth()<birth.getMonth()||(now.getMonth()===birth.getMonth()&&now.getDate()<birth.getDate()))age--;
+  const ageText=age>=0?`将满${age+1}岁`:'';
+  return `<div class="record-card cd-card birthday-card" data-type="birthday" data-id="${c.id}" ontouchstart="startLongPress('birthday','${c.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('birthday','${c.id}')" onclick="if(!wasLongPress())showActionSheet('birthday','${c.id}')">
+    ${typeBadge('birthday')}
+    <div class="cd-emoji">${icon('cake',32)}</div>
+    <div class="cd-info"><div class="cd-name">${esc(c.name)}${pinBadge(c)}</div><div class="cd-date">${esc(c.date)}</div>${ageText?`<div class="cd-sub">${ageText}</div>`:''}</div>
+    <div class="cd-days-wrap"><div class="cd-days">${Math.abs(d)}</div><div class="cd-unit">${past?'天前已到':'天后'}</div></div>
+  </div>`;
+}
+
+function anniversaryCard(c){
+  const d=daysBetween(c.date);const past=d<0;
+  return `<div class="record-card cd-card anniversary-card" data-type="anniversary" data-id="${c.id}" ontouchstart="startLongPress('anniversary','${c.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('anniversary','${c.id}')" onclick="if(!wasLongPress())showActionSheet('anniversary','${c.id}')">
+    ${typeBadge('anniversary')}
+    <div class="cd-emoji">${icon('heart',32)}</div>
+    <div class="cd-info"><div class="cd-name">${esc(c.name)}${pinBadge(c)}</div><div class="cd-date">${esc(c.date)}</div></div>
+    <div class="cd-days-wrap"><div class="cd-days">${Math.abs(d)}</div><div class="cd-unit">${past?'天前已到':'天后'}</div></div>
+  </div>`;
+}
+
+function festivalCard(c){
+  const d=daysBetween(c.date);const past=d<0;
+  return `<div class="record-card cd-card festival-card" data-type="festival" data-id="${c.id}" ontouchstart="startLongPress('festival','${c.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('festival','${c.id}')" onclick="if(!wasLongPress())showActionSheet('festival','${c.id}')">
+    ${typeBadge('festival')}
+    <div class="cd-emoji">${icon('sparkles',32)}</div>
+    <div class="cd-info"><div class="cd-name">${esc(c.name)}${pinBadge(c)}</div><div class="cd-date">${esc(c.date)}</div></div>
+    <div class="cd-days-wrap"><div class="cd-days">${Math.abs(d)}</div><div class="cd-unit">${past?'天前已到':'天后'}</div></div>
+  </div>`;
+}
+
+function checkinCard(d){
+  return `<div class="record-card checkin-card" data-type="checkin" data-id="${d.id}" ontouchstart="startLongPress('checkin','${d.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('checkin','${d.id}')" onclick="if(!wasLongPress())showActionSheet('checkin','${d.id}')">
+    ${typeBadge('checkin')}
+    <div class="checkin-icon">${icon('checkCircle',20)}</div>
+    <div class="checkin-info"><div class="checkin-title">${esc(d.title||'打卡')}${pinBadge(d)}</div><div class="checkin-meta">${esc(d.time||'')}</div></div>
+    <div style="text-align:right;flex-shrink:0"><div class="checkin-streak">${d.streak||0}</div><div class="checkin-streak-label">连续天</div></div>
+  </div>`;
+}
+
+function assetItemCard(d){
+  return `<div class="record-card asset-item-card" data-type="asset" data-id="${d.id}" ontouchstart="startLongPress('asset','${d.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('asset','${d.id}')" onclick="if(!wasLongPress())showActionSheet('asset','${d.id}')">
+    ${typeBadge('asset')}
+    <div class="asset-item-icon">${icon('wallet',20)}</div>
+    <div class="asset-item-info"><div class="asset-item-name">${esc(d.title||'资产')}${pinBadge(d)}</div><div class="asset-item-meta">${esc(d.text||'')}</div></div>
+    <div class="asset-item-val">¥${(d.amount||0).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+  </div>`;
+}
+
+function planCard(d){
+  return `<div class="record-card plan-card" data-type="plan" data-id="${d.id}" ontouchstart="startLongPress('plan','${d.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('plan','${d.id}')" onclick="if(!wasLongPress())showActionSheet('plan','${d.id}')">
+    ${typeBadge('plan')}
+    <div class="plan-top">
+      <div class="plan-icon">${icon('clipboard',20)}</div>
+      <div class="plan-info"><div class="plan-title">${esc(d.title||'计划')}${pinBadge(d)}</div><div class="plan-date">${d.date?'目标：'+esc(d.date):''}</div></div>
+    </div>
+    ${d.text?`<div class="plan-text">${esc(d.text)}</div>`:''}
+  </div>`;
+}
+
+// 统一渲染：根据type派发到对应卡片函数
+function recordCard(record){
+  const t=record._displayType||record.type||'diary';
+  switch(t){
+    case 'diary':return diaryCard(record);
+    case 'meal':return mealCard(record);
+    case 'expense':return expenseCard(record);
+    case 'subscribe':return subscribeCard(record);
+    case 'todo':return todoCard(record);
+    case 'countdown':return countdownCard(record);
+    case 'birthday':return birthdayCard(record);
+    case 'anniversary':return anniversaryCard(record);
+    case 'festival':return festivalCard(record);
+    case 'checkin':return checkinCard(record);
+    case 'asset':return assetItemCard(record);
+    case 'plan':return planCard(record);
+    default:return diaryCard(record);
+  }
+}
+
 function emptyHTML(iconName,text){return `<div class="empty"><div class="empty-icon">${icon(iconName,48)}</div><div class="empty-text">${text}</div><div class="empty-hint">点击 + 开始记录</div></div>`}
 
+// ===== Page Renderers =====
+
+// 首页"全部"：欢迎区 + 4统计 + 混合时间线
 function renderAllPage(){
-  // 首页：欢迎区 + 统计 + 待办快捷 + 日记 + 倒数日 + 消费
   const now=new Date();const hour=now.getHours();
   const greeting=hour<6?'夜深了':hour<12?'早上好':hour<18?'下午好':'晚上好';
   const weekdays=['日','一','二','三','四','五','六'];
   const dateStr=`${now.getMonth()+1}月${now.getDate()}日 周${weekdays[now.getDay()]}`;
+
+  // 统计
+  const diaryCount=D.diaries.filter(d=>d.type==='diary').length;
+  const todoUndone=D.todos.filter(t=>!t.done).length;
+  const cdCount=D.countdowns.length;
+  const expCount=D.expenses.filter(e=>e.type==='expense').length;
+
   let h='';
-  // 欢迎区
   h+=`<div class="home-welcome"><div class="home-greeting">${greeting}</div><div class="home-date">${dateStr}</div></div>`;
-  // 统计卡片（1行4列）
-  h+=renderStats();
-  // 待办快捷区（未完成的待办，置顶+日期排序）
-  const undoneTodos=sortTodos(D.todos.filter(t=>!t.done));
-  if(undoneTodos.length){
-    h+=`<div class="home-sec"><div class="home-sec-header"><div class="home-sec-title">${icon('bookmark',18)} 待办 · ${D.todos.filter(t=>!t.done).length}</div><button class="home-sec-more" onclick="switchTab('todo')">全部 ›</button></div>`;
-    h+=`<div class="record-list">${undoneTodos.slice(0,4).map(todoHTML).join('')}</div></div>`;
+  h+=`<div class="stats">
+    <div class="stat-card" onclick="switchTab('diary')"><div class="stat-val">${diaryCount}</div><div class="stat-lbl">日记</div></div>
+    <div class="stat-card" onclick="switchTab('todo')"><div class="stat-val">${todoUndone}</div><div class="stat-lbl">待办</div></div>
+    <div class="stat-card" onclick="switchTab('countdown')"><div class="stat-val">${cdCount}</div><div class="stat-lbl">倒数日</div></div>
+    <div class="stat-card" onclick="switchTab('expense')"><div class="stat-val">${expCount}</div><div class="stat-lbl">消费</div></div>
+  </div>`;
+
+  // 收集所有记录用于混合显示
+  let allRecords=[];
+
+  // diaries中的记录（排除birthday/anniversary/festival的日记副本，避免重复）
+  D.diaries.forEach(d=>{
+    if(['birthday','anniversary','festival'].includes(d.type))return; // 这些在countdowns中展示
+    allRecords.push({...d,_displayType:d.type,_sortTime:d.time||d.date||''});
+  });
+  // expenses
+  D.expenses.forEach(e=>{
+    allRecords.push({...e,_displayType:e.type,_sortTime:e.date||''});
+  });
+  // todos
+  D.todos.forEach(t=>{
+    allRecords.push({...t,_displayType:'todo',_sortTime:t.date||''});
+  });
+  // countdowns
+  D.countdowns.forEach(c=>{
+    allRecords.push({...c,_displayType:c.type,_sortTime:c.date||''});
+  });
+
+  // 搜索过滤
+  if(searchQ){
+    allRecords=allRecords.filter(r=>{
+      const name=r.title||r.name||'';
+      const text=r.text||'';
+      const tags=r.tags||[];
+      return name.toLowerCase().includes(searchQ)||text.toLowerCase().includes(searchQ)||tags.some(t=>t.toLowerCase().includes(searchQ));
+    });
   }
-  // 最近日记（置顶+时间倒序）
-  const sortedDiaries=sortByTime(D.diaries,'time');
-  if(sortedDiaries.length){
-    h+=`<div class="home-sec"><div class="home-sec-header"><div class="home-sec-title">${icon('edit',18)} 日记</div><button class="home-sec-more" onclick="switchTab('diary')">全部 ›</button></div>`;
-    h+=`<div class="record-list">${sortedDiaries.slice(0,2).map(diaryHTML).join('')}</div></div>`;
+
+  // 排序：置顶优先 + 时间倒序
+  allRecords.sort((a,b)=>{
+    const pa=a.pinned?1:0,pb=b.pinned?1:0;
+    if(pa!==pb)return pb-pa;
+    return (b._sortTime||'').localeCompare(a._sortTime||'');
+  });
+
+  if(!allRecords.length){
+    h+=emptyHTML('inbox','暂无记录');
+  }else{
+    h+=`<div class="record-list">${allRecords.map(recordCard).join('')}</div>`;
   }
-  // 倒数日横滑（置顶+目标日期正序）
-  const sortedCds=sortCountdowns(D.countdowns);
-  if(sortedCds.length){
-    h+=`<div class="home-sec"><div class="home-sec-header"><div class="home-sec-title">${icon('calendar',18)} 倒数日</div><button class="home-sec-more" onclick="switchTab('countdown')">全部 ›</button></div>`;
-    h+=`<div class="cd-row">${sortedCds.map(c=>{const d=daysBetween(c.date);return `<div class="cd-mini" onclick="switchTab('countdown')">${c.pinned?'<div style="position:absolute;top:4px;right:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.51V18a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2.5a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2z"/></svg></div>':''}<div class="cd-mini-emoji">${c.emoji||'📅'}</div><div class="cd-mini-name">${esc(c.name)}</div><div class="cd-mini-days">${Math.abs(d)}</div><div class="cd-mini-unit">${d<0?'天前已到':'天后'}</div></div>`}).join('')}</div></div>`;
-  }
-  // 消费汇总（置顶+日期倒序）
-  const sortedExp=sortByTime(D.expenses,'date');
-  if(sortedExp.length){
-    const totalExp=D.expenses.reduce((s,e)=>s+(e.amount||0),0);
-    h+=`<div class="home-sec"><div class="home-sec-header"><div class="home-sec-title">${icon('receipt',18)} 消费</div><button class="home-sec-more" onclick="switchTab('expense')">全部 ›</button></div>`;
-    h+=`<div class="exp-summary" onclick="switchTab('expense')"><div class="exp-summary-left"><div class="exp-summary-icon">${icon('receipt',20)}</div><div class="exp-summary-info">${D.expenses.length}笔记录</div></div><div class="exp-summary-amount">¥${D.expenses.reduce((s,e)=>s+(e.amount||0),0).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2})}</div></div></div>`;
-  }
-  if(!h.includes('home-sec'))h+=emptyHTML('inbox','暂无记录');
-  $('allDiaryList').innerHTML=h;
+
+  $('allContent').innerHTML=h;
 }
+
+// 日记页
 function renderDiaries(){
-  let list=sortByTime(D.diaries,'time');
+  let list=D.diaries.filter(d=>d.type==='diary');
+  list=sortByTime(list,'time');
   if(searchQ)list=list.filter(d=>(d.title||'').toLowerCase().includes(searchQ)||(d.text||'').toLowerCase().includes(searchQ)||(d.tags||[]).some(t=>t.toLowerCase().includes(searchQ)));
   if(!list.length){$('diaryList').innerHTML=emptyHTML('edit','暂无日记');return}
   // 按日期分组
@@ -825,11 +1045,9 @@ function renderDiaries(){
   });
   const weekdays=['日','一','二','三','四','五','六'];
   const today=fmtDate();
-  const yd=new Date();yd.setDate(yd.getDate()-1);
-  const ydStr=fmtDate(yd);
+  const yd=new Date();yd.setDate(yd.getDate()-1);const ydStr=fmtDate(yd);
   let html='';
-  const sortedKeys=Object.keys(groups).sort((a,b)=>b.localeCompare(a));
-  sortedKeys.forEach(dateKey=>{
+  Object.keys(groups).sort((a,b)=>b.localeCompare(a)).forEach(dateKey=>{
     const items=groups[dateKey];
     let dateNum='',weekDay='',yearLabel='';
     if(dateKey!=='未知日期'){
@@ -841,146 +1059,228 @@ function renderDiaries(){
     html+=`<div class="day-group"><div class="day-marker"></div><div class="day-header">`;
     html+=`<div class="day-date-group"><div class="day-date-num">${esc(dateNum)}</div><div class="day-date-week">${esc(weekDay)}</div><div class="day-date-year">${esc(yearLabel)}</div></div>`;
     html+=`<div class="day-items"><div class="day-count-badge">${icon('edit',12)} ${items.length}篇</div>`;
-    html+=items.map(diaryHTML).join('');
+    html+=items.map(diaryCard).join('');
     html+=`</div></div></div>`;
   });
   $('diaryList').innerHTML=html;
 }
+
+// 消费页(含订阅)
 function renderExpenses(){
   const el=$('expenseList');if(!el)return;
-  if(!D.expenses.length){el.innerHTML=emptyHTML('receipt','暂无消费记录');return}
-  let list=sortByTime(D.expenses,'date');
+  let list=[...D.expenses];
+  list=sortByTime(list,'date');
   if(searchQ)list=list.filter(e=>(e.name||'').toLowerCase().includes(searchQ)||(e.category||'').toLowerCase().includes(searchQ));
-  el.innerHTML=list.map(expenseHTML).join('');
-  const ael=$('assetExpenseList');if(!ael)return;
-  ael.innerHTML=D.expenses.length?sortByTime(D.expenses,'date').map(expenseHTML).join(''):emptyHTML('receipt','暂无消费记录');
+  if(!list.length){el.innerHTML=emptyHTML('receipt','暂无消费记录');return}
+  el.innerHTML=list.map(e=>e.type==='subscribe'?subscribeCard(e):expenseCard(e)).join('');
 }
+
+// 待办页
 function renderTodos(){
   const el=$('todoList');
   if(!D.todos.length){el.innerHTML=emptyHTML('bookmark','暂无待办');return}
   let list=sortTodos(D.todos);
   if(searchQ)list=list.filter(t=>(t.title||'').toLowerCase().includes(searchQ));
-  el.innerHTML=list.map(todoHTML).join('');
+  el.innerHTML=list.map(todoCard).join('');
 }
+
+// 倒数日页(含生日/纪念日/节日)，有子tab
 function renderCountdowns(){
-  const el=$('cdList');
-  if(!D.countdowns.length){el.innerHTML=emptyHTML('calendar','暂无倒数日');return}
-  let list=sortCountdowns(D.countdowns);
+  // 子tab
+  const cdSubs=[{key:'all',label:'全部'},{key:'countdown',label:'倒数日'},{key:'birthday',label:'生日'},{key:'anniversary',label:'纪念日'},{key:'festival',label:'节日'}];
+  $('cdSubTabs').innerHTML=cdSubs.map(s=>`<button class="sub-tab ${curCdSub===s.key?'active':''}" onclick="curCdSub='${s.key}';renderCountdowns()">${s.label}</button>`).join('');
+
+  let list=D.countdowns.slice();
+  if(curCdSub!=='all')list=list.filter(c=>c.type===curCdSub);
+  list=sortCountdowns(list);
   if(searchQ)list=list.filter(c=>(c.name||'').toLowerCase().includes(searchQ));
-  el.innerHTML=list.map(countdownHTML).join('');
+  const el=$('cdList');
+  if(!list.length){el.innerHTML=emptyHTML('calendar','暂无倒数日');return}
+  el.innerHTML=list.map(c=>{
+    switch(c.type){
+      case 'birthday':return birthdayCard(c);
+      case 'anniversary':return anniversaryCard(c);
+      case 'festival':return festivalCard(c);
+      default:return countdownCard(c);
+    }
+  }).join('');
 }
+
+// 资产页
 function renderAsset(){
-  const totalExpense=D.expenses.reduce((s,e)=>s+(e.amount||0),0);
-  $('totalAsset').textContent='¥'+totalExpense.toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2});
+  // 总资产：asset类型日记的amount汇总
+  const assetDiaries=D.diaries.filter(d=>d.type==='asset');
+  const totalAssetVal=assetDiaries.reduce((s,d)=>s+(d.amount||0),0);
+  $('totalAsset').textContent='¥'+totalAssetVal.toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2});
+
+  // 子项：本月支出
+  const now=new Date();
+  const monthStr=now.getFullYear()+'-'+(now.getMonth()+1<10?'0':'')+(now.getMonth()+1);
+  const monthExpenses=D.expenses.filter(e=>e.type==='expense'&&(e.date||'').startsWith(monthStr));
+  const monthTotal=monthExpenses.reduce((s,e)=>s+(e.amount||0),0);
+  const monthSubs=D.expenses.filter(e=>e.type==='subscribe');
+  const subTotal=monthSubs.reduce((s,e)=>s+(e.amount||0),0);
+
   const subItems=$('assetSubItems');
   if(subItems){
-    const cats={};D.expenses.forEach(e=>{if(!cats[e.category])cats[e.category]=0;cats[e.category]+=e.amount||0});
-    const catColors={'餐饮':'#C04851','交通':'#5B6B8A','日用品':'#6B8C6A','娱乐':'#A08B72','购物':'#C04851','医疗':'#C04851','订阅':'#A08B72','其他':'#B8A99A'};
-    const topCats=Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,3);
-    subItems.innerHTML=topCats.map(([cat,val])=>`<div class="asset-sub-item"><div class="asset-sub-label"><span class="asset-sub-dot" style="background:${catColors[cat]||'#A08B72'}"></span> ${esc(cat)}</div><div class="asset-sub-val">¥${val.toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2})}</div></div>`).join('');
+    subItems.innerHTML=`
+      <div class="asset-sub-item"><div class="asset-sub-label"><span class="asset-sub-dot" style="background:var(--seal)"></span> 本月支出</div><div class="asset-sub-val">¥${monthTotal.toFixed(2)}</div></div>
+      <div class="asset-sub-item"><div class="asset-sub-label"><span class="asset-sub-dot" style="background:var(--earth)"></span> 月订阅</div><div class="asset-sub-val">¥${subTotal.toFixed(2)}</div></div>
+      <div class="asset-sub-item"><div class="asset-sub-label"><span class="asset-sub-dot" style="background:var(--moss)"></span> 资产项</div><div class="asset-sub-val">${assetDiaries.length}项</div></div>
+    `;
   }
+
+  // 资产列表
+  const assetListEl=$('assetList');
+  if(assetListEl){
+    const sorted=sortByTime(assetDiaries,'time');
+    if(!sorted.length)assetListEl.innerHTML=emptyHTML('wallet','暂无资产记录');
+    else assetListEl.innerHTML=sorted.map(assetItemCard).join('');
+  }
+
+  // 消费分类
   const cashGrid=$('cashGrid');
   if(cashGrid){
-    const cats={};D.expenses.forEach(e=>{if(!cats[e.category])cats[e.category]={count:0,total:0};cats[e.category].count++;cats[e.category].total+=e.amount||0});
-    const catEmojis={'餐饮':icon('utensils',20),'交通':icon('car',20),'日用品':icon('cart',20),'娱乐':icon('gamepad',20),'购物':icon('bag',20),'医疗':icon('pulse',20),'订阅':icon('refresh',20),'其他':icon('tag',20)};
-    const catClasses={'餐饮':'wechat','交通':'alipay','日用品':'bank','娱乐':'credit','购物':'wechat','医疗':'alipay','订阅':'bank','其他':'credit'};
+    const cats={};D.expenses.filter(e=>e.type==='expense').forEach(e=>{if(!cats[e.category])cats[e.category]={count:0,total:0};cats[e.category].count++;cats[e.category].total+=e.amount||0});
+    const catEmojis={'餐饮':icon('utensils',20),'交通':icon('car',20),'日用品':icon('cart',20),'娱乐':icon('gamepad',20),'购物':icon('bag',20),'医疗':icon('pulse',20),'其他':icon('tag',20)};
+    const catClasses={'餐饮':'wechat','交通':'alipay','日用品':'bank','娱乐':'credit','购物':'wechat','医疗':'alipay','其他':'credit'};
     cashGrid.innerHTML=Object.entries(cats).map(([cat,info])=>`<div class="cash-item ${catClasses[cat]||'wechat'}"><div class="cash-icon">${catEmojis[cat]||icon('tag',20)}</div><div class="cash-name">${esc(cat)}</div><div class="cash-amount">${info.count}笔 · ¥${info.total.toFixed(0)}</div></div>`).join('');
   }
+
+  // 消费明细
+  const ael=$('assetExpenseList');
+  if(ael){
+    const expList=sortByTime(D.expenses,'date');
+    ael.innerHTML=expList.length?expList.map(e=>e.type==='subscribe'?subscribeCard(e):expenseCard(e)).join(''):emptyHTML('receipt','暂无消费记录');
+  }
 }
+
+// 更多页(餐食/打卡/计划)
+function renderMore(){
+  const subs=[{key:'meal',label:'餐食'},{key:'checkin',label:'打卡'},{key:'plan',label:'计划'},{key:'asset',label:'资产'}];
+  $('moreSubTabs').innerHTML=subs.map(s=>`<button class="sub-tab ${curMoreSub===s.key?'active':''}" onclick="curMoreSub='${s.key}';renderMore()">${s.label}</button>`).join('');
+
+  const type=curMoreSub;
+  let list=D.diaries.filter(d=>d.type===type);
+  list=sortByTime(list,'time');
+  if(searchQ)list=list.filter(d=>(d.title||'').toLowerCase().includes(searchQ)||(d.text||'').toLowerCase().includes(searchQ));
+
+  const el=$('moreList');
+  if(!list.length){
+    const emptyIcons={meal:'utensils',checkin:'checkCircle',plan:'clipboard',asset:'wallet'};
+    const emptyTexts={meal:'暂无餐食记录',checkin:'暂无打卡记录',plan:'暂无计划',asset:'暂无资产记录'};
+    el.innerHTML=`<div style="margin-top:8px"><button class="manage-btn" onclick="openModal('${type}')">添加${subs.find(s=>s.key===type).label} +</button></div>`+emptyHTML(emptyIcons[type]||'inbox',emptyTexts[type]||'暂无记录');
+    return;
+  }
+
+  let html=`<div style="margin-top:8px"><button class="manage-btn" onclick="openModal('${type}')">添加${subs.find(s=>s.key===type).label} +</button></div>`;
+  switch(type){
+    case 'meal':html+=list.map(mealCard).join('');break;
+    case 'checkin':html+=list.map(checkinCard).join('');break;
+    case 'plan':html+=list.map(planCard).join('');break;
+    case 'asset':html+=list.map(assetItemCard).join('');break;
+  }
+  el.innerHTML=html;
+}
+
 function renderPage(){
-  if(curTab==='all'){renderAllPage()}
+  if(curTab==='all')renderAllPage();
   else if(curTab==='diary')renderDiaries();
   else if(curTab==='expense')renderExpenses();
-  else if(curTab==='asset'){renderAsset();renderExpenses()}
   else if(curTab==='todo')renderTodos();
   else if(curTab==='countdown')renderCountdowns();
+  else if(curTab==='asset')renderAsset();
+  else if(curTab==='more')renderMore();
 }
-function renderAll(){renderAllPage();renderDiaries();renderAsset();renderExpenses();renderTodos();renderCountdowns()}
+function renderAll(){renderAllPage();renderDiaries();renderExpenses();renderTodos();renderCountdowns();renderAsset();renderMore()}
 
 // ===== Action Sheet =====
 let _actionTarget=null,_longPressTimer=null,_longPressFired=false;
-function startLongPress(type,id){
-  _longPressFired=false;
-  _longPressTimer=setTimeout(()=>{_longPressFired=true;showActionSheet(type,id)},500)
-}
+function startLongPress(type,id){_longPressFired=false;_longPressTimer=setTimeout(()=>{_longPressFired=true;showActionSheet(type,id)},500)}
 function cancelLongPress(){if(_longPressTimer){clearTimeout(_longPressTimer);_longPressTimer=null}}
 function wasLongPress(){const r=_longPressFired;_longPressFired=false;return r}
 
 function showActionSheet(type,id){
   _actionTarget={type,id};
   const items=$('actionItems');
-  const pinLabel=pinToggleLabel(type,id);
-  const pinIcon=pinLabel.startsWith('取消')?'pinOff':'pin';
-  const actions={
-    diary:[{icon:pinIcon,label:pinLabel,action:'pin'},{icon:'pencil',label:'编辑',action:'edit'},{icon:'trash',label:'删除',action:'delete',danger:true}],
-    expense:[{icon:pinIcon,label:pinLabel,action:'pin'},{icon:'pencil',label:'编辑',action:'edit'},{icon:'trash',label:'删除',action:'delete',danger:true}],
-    todo:[{icon:pinIcon,label:pinLabel,action:'pin'},{icon:'pencil',label:'编辑',action:'edit'},{icon:'checkCircle',label:todoToggleLabel(id),action:'toggle'},{icon:'trash',label:'删除',action:'delete',danger:true}],
-    countdown:[{icon:pinIcon,label:pinLabel,action:'pin'},{icon:'pencil',label:'编辑',action:'edit'},{icon:'trash',label:'删除',action:'delete',danger:true}]
-  };
-  const list=actions[type]||[];
-  items.innerHTML=list.map(a=>`<button class="action-item ${a.danger?'danger':''}" onclick="doAction('${a.action}')">${icon(a.icon,20)} ${a.label}</button>`).join('');
+  const found=findRecord(type,id);
+  const isPinned=found&&found.record&&found.record.pinned;
+  const pinLabel=isPinned?'取消置顶':'置顶';
+  const pinIcon=isPinned?'pinOff':'pin';
+
+  let actions=[{icon:pinIcon,label:pinLabel,action:'pin'},{icon:'pencil',label:'编辑',action:'edit'}];
+
+  // 待办有标记完成
+  if(type==='todo'){
+    const t=D.todos.find(x=>String(x.id)===String(id));
+    actions.push({icon:'checkCircle',label:t&&t.done?'标记未完成':'标记完成',action:'toggle'});
+  }
+
+  actions.push({icon:'trash',label:'删除',action:'delete',danger:true});
+
+  items.innerHTML=actions.map(a=>`<button class="action-item ${a.danger?'danger':''}" onclick="doAction('${a.action}')">${icon(a.icon,20)} ${a.label}</button>`).join('');
   $('actionOverlay').classList.add('show');
 }
-function todoToggleLabel(id){const t=D.todos.find(x=>x.id===id);return t&&t.done?'标记未完成':'标记完成'}
-function pinToggleLabel(type,id){const arr=type==='diary'?D.diaries:type==='expense'?D.expenses:type==='todo'?D.todos:type==='countdown'?D.countdowns:[];const item=arr.find(x=>String(x.id)===String(id));return item&&item.pinned?'取消置顶':'置顶'}
+
 function closeActionSheet(){$('actionOverlay').classList.remove('show');_actionTarget=null}
+
 function doAction(action){
   const t=_actionTarget;if(!t)return;
   closeActionSheet();
-  if(action==='edit'){
-    if(t.type==='diary')editDiary(t.id);
-    else if(t.type==='expense')editExpense(t.id);
-    else if(t.type==='todo')editTodo(t.id);
-    else if(t.type==='countdown')editCountdown(t.id);
-  }else if(action==='delete'){
-    if(t.type==='diary')delDiary(t.id);
-    else if(t.type==='expense')delExpense(t.id);
-    else if(t.type==='todo')delTodo(t.id);
-    else if(t.type==='countdown')delCountdown(t.id);
-  }else if(action==='toggle'){
-    toggleTodo(t.id);
-  }else if(action==='pin'){
-    togglePin(t.type,t.id);
-  }
+  if(action==='edit')editRecord(t.type,t.id);
+  else if(action==='delete')delRecord(t.type,t.id);
+  else if(action==='toggle')toggleTodo(t.id);
+  else if(action==='pin')togglePinRecord(t.type,t.id);
 }
 
-// ===== CRUD =====
-function delDiary(id){showConfirm('删除日记','确定要删除这条日记吗？',()=>{D.diaries=D.diaries.filter(d=>String(d.id)!==String(id));save();renderAll();cloudDelete('diaries',String(id));toast('已删除')})}
-function delExpense(id){showConfirm('删除消费','确定要删除这条消费记录吗？',()=>{D.expenses=D.expenses.filter(e=>String(e.id)!==String(id));save();renderAll();cloudDelete('expenses',String(id));toast('已删除')})}
-function delTodo(id){showConfirm('删除待办','确定要删除这条待办吗？',()=>{D.todos=D.todos.filter(t=>String(t.id)!==String(id));save();renderAll();cloudDelete('todos',String(id));toast('已删除')})}
-function delCountdown(id){showConfirm('删除倒数日','确定要删除这条倒数日吗？',()=>{D.countdowns=D.countdowns.filter(c=>String(c.id)!==String(id));save();renderAll();cloudDelete('countdowns',String(id));toast('已删除')})}
-function toggleTodo(id){const t=D.todos.find(x=>String(x.id)===String(id));if(t){t.done=!t.done;save();renderAll();cloudUpdate('todos',String(id),t);toast(t.done?'已完成':'已恢复')}}
-function togglePin(type,id){
-  const colMap={diary:'diaries',expense:'expenses',todo:'todos',countdown:'countdowns'};
-  const arr=type==='diary'?D.diaries:type==='expense'?D.expenses:type==='todo'?D.todos:type==='countdown'?D.countdowns:null;
-  if(!arr)return;
-  const item=arr.find(x=>String(x.id)===String(id));
-  if(!item)return;
-  item.pinned=!item.pinned;
+// ===== CRUD (type-aware) =====
+function delRecord(type,id){
+  const label=TYPE_META[type]?TYPE_META[type].label:'记录';
+  showConfirm('删除'+label,'确定要删除这条'+label+'吗？',()=>{
+    const strId=String(id);
+    // 从主数组中删除
+    if(['diary','meal','checkin','asset','plan'].includes(type)){
+      D.diaries=D.diaries.filter(x=>!(String(x.id)===strId&&x.type===type));
+      save();renderAll();cloudDelete('diaries',strId);
+    }else if(['expense','subscribe'].includes(type)){
+      D.expenses=D.expenses.filter(x=>!(String(x.id)===strId&&x.type===type));
+      save();renderAll();cloudDelete('expenses',strId);
+    }else if(type==='todo'){
+      D.todos=D.todos.filter(x=>String(x.id)!==strId);
+      save();renderAll();cloudDelete('todos',strId);
+    }else if(['countdown','birthday','anniversary','festival'].includes(type)){
+      D.countdowns=D.countdowns.filter(x=>!(String(x.id)===strId&&x.type===type));
+      // 同时删除diaries中的关联记录
+      const found=D.diaries.find(x=>x.type===type&&String(x.linkId)===strId);
+      if(found){
+        D.diaries=D.diaries.filter(x=>x!==found);
+        cloudDelete('diaries',String(found.id));
+      }
+      save();renderAll();cloudDelete('countdowns',strId);
+    }
+    toast('已删除');
+  });
+}
+
+function toggleTodo(id){
+  const t=D.todos.find(x=>String(x.id)===String(id));
+  if(t){t.done=!t.done;save();renderAll();cloudUpdate('todos',String(id),t);toast(t.done?'已完成':'已恢复')}
+}
+
+function togglePinRecord(type,id){
+  const found=findRecord(type,id);
+  if(!found)return;
+  found.record.pinned=!found.record.pinned;
   save();renderAll();
-  cloudUpdate(colMap[type]||type,String(id),item);
-  toast(item.pinned?'已置顶':'已取消置顶');
+  cloudUpdate(found.colName,String(id),found.record);
+  toast(found.record.pinned?'已置顶':'已取消置顶');
 }
-function editDiary(id){const d=D.diaries.find(x=>String(x.id)===String(id));if(d)openModal('diary',d)}
-function editExpense(id){const e=D.expenses.find(x=>String(x.id)===String(id));if(e)openModal('expense',e)}
-function editTodo(id){const t=D.todos.find(x=>String(x.id)===String(id));if(t)openModal('todo',t)}
-function editCountdown(id){const c=D.countdowns.find(x=>String(x.id)===String(id));if(c)openModal('countdown',c)}
 
-// ===== Detail =====
-function showDiaryDetail(id){
-  const d=D.diaries.find(x=>String(x.id)===String(id));if(!d)return;
-  $('detailBody').innerHTML=`
-    <div class="detail-mood">${d.mood?d.mood:icon('edit',48)}</div>
-    <div class="detail-title">${esc(d.title||'未命名')}</div>
-    <div class="detail-time">${esc(d.source||'')} · ${esc(d.time||'')}</div>
-    ${d.text?`<div class="detail-text">${esc(d.text)}</div>`:''}
-    ${d.tags&&d.tags.length?`<div class="detail-tags">${d.tags.map(t=>`<span class="detail-tag">${esc(t)}</span>`).join('')}</div>`:''}
-    <div class="detail-actions">
-      <button class="detail-btn" style="background:var(--text);color:var(--bg)" onclick="closeDetail();showActionSheet('diary','${d.id}')">更多操作</button>
-    </div>`;
-  $('detailOverlay').classList.add('show');$('detailModal').classList.add('show');
+function editRecord(type,id){
+  const found=findRecord(type,id);
+  if(!found)return;
+  openModal(type,found.record);
 }
-function closeDetail(){$('detailOverlay').classList.remove('show');$('detailModal').classList.remove('show')}
 
 // ===== Type Panel =====
 function openTypePanel(){$('overlay').classList.add('show');$('typePanel').classList.add('show')}
@@ -988,13 +1288,15 @@ function closeTypePanel(){$('overlay').classList.remove('show');$('typePanel').c
 function renderTypeGrid(){$('typeGrid').innerHTML=TYPES.map(t=>`<div class="type-row" onclick="openModal('${t.key}')"><div class="type-row-icon" style="background:${t.bg}">${t.icon}</div><div class="type-row-info"><div class="type-row-name">${t.label}</div><div class="type-row-desc">${t.desc}</div></div><span class="type-row-arrow">›</span></div>`).join('')}
 
 // ===== Modal =====
-let editId=null;
+let editId=null;let editType=null;
 const TYPE_SUBTITLES={diary:'纸短情长，落笔生花',expense:'一文一物，皆有所值',meal:'人间烟火，食之有味',todo:'待办之事，逐一了之',countdown:'翘首以盼，不负归期',birthday:'年年岁岁，生辰如歌',anniversary:'此情可待，岁岁年年',checkin:'日日不断，功不唐捐',asset:'身外之物，亦需记之',subscribe:'月月有约，按时而至',plan:'谋定后动，行且坚毅',festival:'节庆之时，人间值得'};
+
 function openModal(type,editData){
-  closeTypePanel();editId=editData?editData.id:null;
+  closeTypePanel();editId=editData?editData.id:null;editType=type;
   const B=$('modalBody'),T=$('modalTitle'),S=$('modalSubtitle');let h='';const isEdit=!!editData;
   S.textContent=TYPE_SUBTITLES[type]||'记录此刻';
   $('modalCloseBtn').innerHTML=icon('x',18);
+
   switch(type){
     case 'diary':T.textContent=isEdit?'编辑日记':'写日记';h=`
       <div class="fg"><label>标题</label><input id="f_title" placeholder="今天的心情..." value="${esc(editData?.title||'')}"></div>
@@ -1002,68 +1304,83 @@ function openModal(type,editData){
       <div class="fg"><label>此刻心情</label><div class="mood-row" id="moodRow"></div></div>
       <div class="fg"><label>标签 · 逗号分隔</label><input id="f_tags" placeholder="如：读书,散步" value="${esc(editData?.tags?.join(',')||'')}"></div>
       <button class="form-submit" onclick="submitDiary()">${isEdit?'保存修改':'落笔'}</button>`;break;
+
     case 'expense':T.textContent=isEdit?'编辑消费':'记一笔';h=`
       <div class="fg"><label>消费项目</label><input id="f_name" placeholder="买了什么" value="${esc(editData?.name||'')}"></div>
       <div class="fg"><label>金额</label><input id="f_amount" type="number" step="0.01" placeholder="0.00" value="${editData?.amount||''}"></div>
       <div class="fg"><label>分类</label><div class="cat-chips" id="catChips"></div><input type="hidden" id="f_cat" value="${esc(editData?.category||'餐饮')}"></div>
       <div class="fg"><label>日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
       <button class="form-submit" onclick="submitExpense()">${isEdit?'保存修改':'入账'}</button>`;break;
+
     case 'meal':T.textContent=isEdit?'编辑餐食':'记餐食';h=`
-      <div class="fg"><label>吃了什么</label><input id="f_title" placeholder="餐食" value="${esc(editData?.title||'')}"></div>
+      <div class="fg"><label>吃了什么</label><input id="f_title" placeholder="餐食内容" value="${esc(editData?.title||'')}"></div>
       <div class="fg"><label>备注</label><textarea id="f_text" placeholder="味道如何..." rows="4">${esc(editData?.text||'')}</textarea></div>
       <div class="fg"><label>此刻心情</label><div class="mood-row" id="moodRow"></div></div>
       <button class="form-submit" onclick="submitMeal()">${isEdit?'保存修改':'记下'}</button>`;break;
+
     case 'todo':T.textContent=isEdit?'编辑待办':'加待办';h=`
       <div class="fg"><label>待办事项</label><input id="f_title" placeholder="要做什么" value="${esc(editData?.title||'')}"></div>
       <div class="fg"><label>截止日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
       <div class="fg"><label>优先级</label><div class="pri-row" id="priRow"></div></div>
       <button class="form-submit" onclick="submitTodo()">${isEdit?'保存修改':'记下'}</button>`;break;
+
     case 'countdown':T.textContent=isEdit?'编辑倒数日':'加倒数日';h=`
       <div class="fg"><label>名称</label><input id="f_name" placeholder="期待什么" value="${esc(editData?.name||'')}"></div>
       <div class="fg"><label>目标日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
       <div class="fg"><label>图标</label><div class="mood-row" id="emojiRow"></div></div>
       <button class="form-submit" onclick="submitCountdown()">${isEdit?'保存修改':'记下'}</button>`;break;
+
     case 'birthday':T.textContent=isEdit?'编辑生日':'记生日';h=`
-      <div class="fg"><label>谁的生日</label><input id="f_name" placeholder="姓名" value="${esc((editData?.name||'').replace('的生日',''))}"></div>
+      <div class="fg"><label>谁的生日</label><input id="f_name" placeholder="姓名" value="${esc(editData?.name||'')}"></div>
       <div class="fg"><label>日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
       <div class="fg"><label>备注</label><textarea id="f_text" placeholder="想记录些什么..." rows="4">${esc(editData?.text||'')}</textarea></div>
       <button class="form-submit" onclick="submitBirthday()">${isEdit?'保存修改':'记下'}</button>`;break;
+
     case 'anniversary':T.textContent=isEdit?'编辑纪念日':'记纪念日';h=`
       <div class="fg"><label>纪念日名称</label><input id="f_name" placeholder="如：结婚纪念日" value="${esc(editData?.name||'')}"></div>
       <div class="fg"><label>日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
       <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="4">${esc(editData?.text||'')}</textarea></div>
       <button class="form-submit" onclick="submitAnniversary()">${isEdit?'保存修改':'记下'}</button>`;break;
-    case 'checkin':T.textContent=isEdit?'编辑打卡':'打卡';h=`
-      <div class="fg"><label>打卡项目</label><input id="f_title" placeholder="如：早起/运动/阅读" value="${esc((editData?.title||'').replace('打卡：',''))}"></div>
-      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="4">${esc(editData?.text||'')}</textarea></div>
-      <button class="form-submit" onclick="submitCheckin()">${isEdit?'保存修改':'打卡'}</button>`;break;
-    case 'asset':T.textContent=isEdit?'编辑资产':'记资产';h=`
-      <div class="fg"><label>资产名称</label><input id="f_title" placeholder="如：笔记本电脑" value="${esc((editData?.title||'').replace('资产：',''))}"></div>
-      <div class="fg"><label>估值</label><input id="f_amount" type="number" step="0.01" placeholder="0.00" value="${editData?.amount||''}"></div>
-      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="4">${esc(editData?.text||'')}</textarea></div>
-      <button class="form-submit" onclick="submitAsset()">${isEdit?'保存修改':'记下'}</button>`;break;
-    case 'subscribe':T.textContent=isEdit?'编辑订阅':'记订阅';h=`
-      <div class="fg"><label>订阅名称</label><input id="f_name" placeholder="如：网易云音乐" value="${esc((editData?.name||'').replace(' (订阅)',''))}"></div>
-      <div class="fg"><label>月费</label><input id="f_amount" type="number" step="0.01" placeholder="0.00" value="${editData?.amount||''}"></div>
-      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="4">${esc(editData?.text||'')}</textarea></div>
-      <button class="form-submit" onclick="submitSubscribe()">${isEdit?'保存修改':'记下'}</button>`;break;
-    case 'plan':T.textContent=isEdit?'编辑计划':'记计划';h=`
-      <div class="fg"><label>计划名称</label><input id="f_title" placeholder="你的计划" value="${esc((editData?.title||'').replace('计划：',''))}"></div>
-      <div class="fg"><label>详细说明</label><textarea id="f_text" placeholder="详细描述..." rows="4">${esc(editData?.text||'')}</textarea></div>
-      <div class="fg"><label>目标日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
-      <button class="form-submit" onclick="submitPlan()">${isEdit?'保存修改':'记下'}</button>`;break;
+
     case 'festival':T.textContent=isEdit?'编辑节日':'记节日';h=`
-      <div class="fg"><label>节日名称</label><input id="f_name" placeholder="如：中秋节" value="${esc((editData?.name||'').replace('节日：',''))}"></div>
+      <div class="fg"><label>节日名称</label><input id="f_name" placeholder="如：中秋节" value="${esc(editData?.name||'')}"></div>
       <div class="fg"><label>日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
       <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="4">${esc(editData?.text||'')}</textarea></div>
       <button class="form-submit" onclick="submitFestival()">${isEdit?'保存修改':'记下'}</button>`;break;
+
+    case 'checkin':T.textContent=isEdit?'编辑打卡':'打卡';h=`
+      <div class="fg"><label>打卡项目</label><input id="f_title" placeholder="如：早起/运动/阅读" value="${esc(editData?.title||'')}"></div>
+      <div class="fg"><label>连续天数</label><input id="f_streak" type="number" placeholder="0" value="${editData?.streak||0}"></div>
+      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="4">${esc(editData?.text||'')}</textarea></div>
+      <button class="form-submit" onclick="submitCheckin()">${isEdit?'保存修改':'打卡'}</button>`;break;
+
+    case 'asset':T.textContent=isEdit?'编辑资产':'记资产';h=`
+      <div class="fg"><label>资产名称</label><input id="f_title" placeholder="如：储蓄卡余额" value="${esc(editData?.title||'')}"></div>
+      <div class="fg"><label>估值</label><input id="f_amount" type="number" step="0.01" placeholder="0.00" value="${editData?.amount||''}"></div>
+      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="4">${esc(editData?.text||'')}</textarea></div>
+      <button class="form-submit" onclick="submitAsset()">${isEdit?'保存修改':'记下'}</button>`;break;
+
+    case 'subscribe':T.textContent=isEdit?'编辑订阅':'记订阅';h=`
+      <div class="fg"><label>订阅名称</label><input id="f_name" placeholder="如：网易云音乐" value="${esc(editData?.name||'')}"></div>
+      <div class="fg"><label>月费</label><input id="f_amount" type="number" step="0.01" placeholder="0.00" value="${editData?.amount||''}"></div>
+      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="4">${esc(editData?.text||'')}</textarea></div>
+      <button class="form-submit" onclick="submitSubscribe()">${isEdit?'保存修改':'记下'}</button>`;break;
+
+    case 'plan':T.textContent=isEdit?'编辑计划':'记计划';h=`
+      <div class="fg"><label>计划名称</label><input id="f_title" placeholder="你的计划" value="${esc(editData?.title||'')}"></div>
+      <div class="fg"><label>详细说明</label><textarea id="f_text" placeholder="详细描述..." rows="4">${esc(editData?.text||'')}</textarea></div>
+      <div class="fg"><label>目标日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
+      <button class="form-submit" onclick="submitPlan()">${isEdit?'保存修改':'记下'}</button>`;break;
+
     default:T.textContent=isEdit?'编辑记录':'新建记录';h=`
       <div class="fg"><label>标题</label><input id="f_title" placeholder="标题" value="${esc(editData?.title||'')}"></div>
       <div class="fg"><label>内容</label><textarea id="f_text" placeholder="记录一下..." rows="4">${esc(editData?.text||'')}</textarea></div>
       <button class="form-submit" onclick="submitGeneric()">${isEdit?'保存修改':'记下'}</button>`;
   }
+
   h+=`<button class="form-cancel" onclick="closeModal()">取消</button>`;
   B.innerHTML=h;$('modalOverlay').classList.add('show');$('modal').classList.add('show');
+
   setTimeout(()=>{
     const mr=$('moodRow');
     if(mr){const moods=[{k:'😊',l:'😊'},{k:'😌',l:'😌'},{k:'😤',l:'😤'},{k:'😢',l:'😢'},{k:'😋',l:'😋'},{k:'🥰',l:'🥰'},{k:'😴',l:'😴'},{k:'🤔',l:'🤔'},{k:'😎',l:'😎'},{k:'🥳',l:'🥳'}];const cm=editData?.mood||'😊';pickedMood=cm;mr.innerHTML=moods.map(m=>`<div class="mood-opt ${m.k===cm?'active':''}" onclick="pickMood(this,'${m.k}')">${m.l}</div>`).join('')}
@@ -1076,26 +1393,206 @@ function openModal(type,editData){
     const fi=B.querySelector('input,textarea');if(fi)fi.focus();
   },50);
 }
+
 let pickedMood='😊',pickedEmoji='🌕',pickedPri='medium';
 function pickMood(el,val){el.parentElement.querySelectorAll('.mood-opt').forEach(x=>x.classList.remove('active'));el.classList.add('active');pickedMood=val;pickedEmoji=val}
 function pickPri(el,val){el.parentElement.querySelectorAll('.pri-opt').forEach(x=>x.classList.remove('active'));el.classList.add('active');pickedPri=val}
 function pickCat(el,val){el.parentElement.querySelectorAll('.cat-chip').forEach(x=>x.classList.remove('active'));el.classList.add('active');$('f_cat').value=val}
-function closeModal(){$('modalOverlay').classList.remove('show');$('modal').classList.remove('show');pickedMood='😊';pickedEmoji='🌕';pickedPri='medium';editId=null}
+function closeModal(){$('modalOverlay').classList.remove('show');$('modal').classList.remove('show');pickedMood='😊';pickedEmoji='🌕';pickedPri='medium';editId=null;editType=null}
 
-// ===== Submit =====
-async function submitDiary(){const title=$('f_title').value.trim(),text=$('f_text').value.trim();if(!title&&!text){toast('请填写内容');return}const tags=$('f_tags').value.split(/[,，]/).map(s=>s.trim()).filter(Boolean);if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title=title||'未命名日记';d.text=text||'';d.mood=pickedMood;d.tags=tags}save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();renderAll();toast('日记已修改')}else{const item={id:nid(),title:title||'未命名日记',text:text||'',time:fmtTime(),source:'手动记录',mood:pickedMood,tags};D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();renderAll();toast('日记已保存')}}
-async function submitExpense(){const name=$('f_name').value.trim(),amount=parseFloat($('f_amount').value);if(!name||isNaN(amount)){toast('请填写完整');return}if(editId){const e=D.expenses.find(x=>x.id===editId);if(e){e.name=name;e.amount=amount;e.category=$('f_cat').value;e.date=$('f_date').value||e.date}save();renderAll();await cloudUpdate('expenses',String(editId),e);closeModal();renderAll();toast('消费已修改')}else{const item={id:nid(),name,amount,category:$('f_cat').value,date:$('f_date').value||fmtDate()};D.expenses.unshift(item);save();renderAll();await cloudAdd('expenses',item);closeModal();renderAll();toast('消费已记录')}}
-async function submitMeal(){const title=$('f_title').value.trim();if(!title){toast('请填写内容');return}if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title=title;d.text=$('f_text').value.trim()||'';d.mood=pickedMood}save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();renderAll();toast('餐食已修改')}else{const item={id:nid(),title,text:$('f_text').value.trim()||'',time:fmtTime(),source:'手动记录',mood:pickedMood,tags:['餐食']};D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();renderAll();toast('餐食已记录')}}
-async function submitTodo(){const title=$('f_title').value.trim();if(!title){toast('请填写内容');return}if(editId){const t=D.todos.find(x=>x.id===editId);if(t){t.title=title;t.date=$('f_date').value||'';t.priority=pickedPri}save();renderAll();await cloudUpdate('todos',String(editId),t);closeModal();renderAll();toast('待办已修改')}else{const item={id:nid(),title,date:$('f_date').value||'',done:false,priority:pickedPri};D.todos.unshift(item);save();renderAll();await cloudAdd('todos',item);closeModal();renderAll();toast('待办已添加')}}
-async function submitCountdown(){const name=$('f_name').value.trim(),date=$('f_date').value;if(!name||!date){toast('请填写完整');return}if(editId){const c=D.countdowns.find(x=>x.id===editId);if(c){c.name=name;c.date=date;c.emoji=pickedEmoji}save();renderAll();await cloudUpdate('countdowns',String(editId),c);closeModal();renderAll();toast('倒数日已修改')}else{const item={id:nid(),name,date,emoji:pickedEmoji};D.countdowns.unshift(item);save();renderAll();await cloudAdd('countdowns',item);closeModal();renderAll();toast('倒数日已添加')}}
-async function submitBirthday(){const name=$('f_name').value.trim(),date=$('f_date').value;if(!name||!date){toast('请填写完整');return}if(editId){const c=D.countdowns.find(x=>x.id===editId);if(c){c.name=name+'的生日';c.date=date}save();renderAll();await cloudUpdate('countdowns',String(editId),c);closeModal();renderAll();toast('已修改')}else{const cdItem={id:nid(),name:name+'的生日',date,emoji:'🎂'};const dItem={id:nid(),title:name+'的生日',text:$('f_text').value.trim()||'',time:fmtTime(),source:'生日记录',mood:'🎂',tags:['生日']};D.countdowns.unshift(cdItem);D.diaries.unshift(dItem);save();renderAll();await cloudAdd('countdowns',cdItem);await cloudAdd('diaries',dItem);closeModal();renderAll();toast('已保存')}}
-async function submitAnniversary(){const name=$('f_name').value.trim(),date=$('f_date').value;if(!name||!date){toast('请填写完整');return}if(editId){const c=D.countdowns.find(x=>x.id===editId);if(c){c.name=name;c.date=date}save();renderAll();await cloudUpdate('countdowns',String(editId),c);closeModal();renderAll();toast('已修改')}else{const cdItem={id:nid(),name,date,emoji:'💝'};const dItem={id:nid(),title:'纪念日：'+name,text:$('f_text').value.trim()||'',time:fmtTime(),source:'纪念日',mood:'💝',tags:['纪念日']};D.countdowns.unshift(cdItem);D.diaries.unshift(dItem);save();renderAll();await cloudAdd('countdowns',cdItem);await cloudAdd('diaries',dItem);closeModal();renderAll();toast('已保存')}}
-async function submitCheckin(){const title=$('f_title').value.trim();if(!title){toast('请填写内容');return}if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title='打卡：'+title;d.text=$('f_text').value.trim()||''}save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();renderAll();toast('已修改')}else{const item={id:nid(),title:'打卡：'+title,text:$('f_text').value.trim()||'',time:fmtTime(),source:'打卡记录',mood:'✅',tags:['打卡']};D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();renderAll();toast('打卡成功')}}
-async function submitAsset(){const title=$('f_title').value.trim();if(!title){toast('请填写内容');return}const amt=$('f_amount').value;if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title='资产：'+title;d.text=(amt?'估值：¥'+amt+'\n':'')+($('f_text').value.trim()||'')}save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();renderAll();toast('已修改')}else{const item={id:nid(),title:'资产：'+title,text:(amt?'估值：¥'+amt+'\n':'')+($('f_text').value.trim()||''),time:fmtTime(),source:'资产记录',mood:'💰',tags:['资产']};D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();renderAll();toast('已保存')}}
-async function submitSubscribe(){const name=$('f_name').value.trim();if(!name){toast('请填写内容');return}if(editId){const e=D.expenses.find(x=>x.id===editId);if(e){e.name=name+' (订阅)';e.amount=parseFloat($('f_amount').value)||0}save();renderAll();await cloudUpdate('expenses',String(editId),e);closeModal();renderAll();toast('已修改')}else{const item={id:nid(),name:name+' (订阅)',amount:parseFloat($('f_amount').value)||0,category:'订阅',date:fmtDate()};D.expenses.unshift(item);save();renderAll();await cloudAdd('expenses',item);closeModal();renderAll();toast('已保存')}}
-async function submitPlan(){const title=$('f_title').value.trim();if(!title){toast('请填写内容');return}if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title='计划：'+title;d.text=$('f_text').value.trim()||''}save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();renderAll();toast('已修改')}else{const item={id:nid(),title:'计划：'+title,text:$('f_text').value.trim()||'',time:fmtTime(),source:'计划记录',mood:'📋',tags:['计划']};D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();renderAll();toast('已保存')}}
-async function submitFestival(){const name=$('f_name').value.trim(),date=$('f_date').value;if(!name||!date){toast('请填写完整');return}if(editId){const c=D.countdowns.find(x=>x.id===editId);if(c){c.name=name;c.date=date}save();renderAll();await cloudUpdate('countdowns',String(editId),c);closeModal();renderAll();toast('已修改')}else{const cdItem={id:nid(),name,date,emoji:'🏮'};const dItem={id:nid(),title:'节日：'+name,text:$('f_text').value.trim()||'',time:fmtTime(),source:'节日记录',mood:'🏮',tags:['节日']};D.countdowns.unshift(cdItem);D.diaries.unshift(dItem);save();renderAll();await cloudAdd('countdowns',cdItem);await cloudAdd('diaries',dItem);closeModal();renderAll();toast('已保存')}}
-async function submitGeneric(){const title=$('f_title').value.trim(),text=$('f_text').value.trim();if(!title&&!text){toast('请填写内容');return}if(editId){const d=D.diaries.find(x=>x.id===editId);if(d){d.title=title||'未命名记录';d.text=text||''}save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();renderAll();toast('已修改')}else{const item={id:nid(),title:title||'未命名记录',text:text||'',time:fmtTime(),source:'手动记录',mood:'📝',tags:[]};D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();renderAll();toast('已保存')}}
+// ===== Submit Functions (all set type field) =====
+
+async function submitDiary(){
+  const title=$('f_title').value.trim(),text=$('f_text').value.trim();
+  if(!title&&!text){toast('请填写内容');return}
+  const tags=$('f_tags').value.split(/[,，]/).map(s=>s.trim()).filter(Boolean);
+  if(editId){
+    const d=D.diaries.find(x=>String(x.id)===String(editId)&&x.type==='diary');
+    if(d){d.title=title||'未命名日记';d.text=text||'';d.mood=pickedMood;d.tags=tags}
+    save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();toast('日记已修改');
+  }else{
+    const item={id:nid(),type:'diary',title:title||'未命名日记',text:text||'',time:fmtTime(),source:'手动记录',mood:pickedMood,tags,pinned:false};
+    D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();toast('日记已保存');
+  }
+}
+
+async function submitExpense(){
+  const name=$('f_name').value.trim(),amount=parseFloat($('f_amount').value);
+  if(!name||isNaN(amount)){toast('请填写完整');return}
+  if(editId){
+    const e=D.expenses.find(x=>String(x.id)===String(editId)&&x.type==='expense');
+    if(e){e.name=name;e.amount=amount;e.category=$('f_cat').value;e.date=$('f_date').value||e.date}
+    save();renderAll();await cloudUpdate('expenses',String(editId),e);closeModal();toast('消费已修改');
+  }else{
+    const item={id:nid(),type:'expense',name,amount,category:$('f_cat').value,date:$('f_date').value||fmtDate(),pinned:false};
+    D.expenses.unshift(item);save();renderAll();await cloudAdd('expenses',item);closeModal();toast('消费已记录');
+  }
+}
+
+async function submitMeal(){
+  const title=$('f_title').value.trim();
+  if(!title){toast('请填写内容');return}
+  if(editId){
+    const d=D.diaries.find(x=>String(x.id)===String(editId)&&x.type==='meal');
+    if(d){d.title=title;d.text=$('f_text').value.trim()||'';d.mood=pickedMood}
+    save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();toast('餐食已修改');
+  }else{
+    const item={id:nid(),type:'meal',title,text:$('f_text').value.trim()||'',time:fmtTime(),source:'手动记录',mood:pickedMood,tags:['餐食'],pinned:false};
+    D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();toast('餐食已记录');
+  }
+}
+
+async function submitTodo(){
+  const title=$('f_title').value.trim();
+  if(!title){toast('请填写内容');return}
+  if(editId){
+    const t=D.todos.find(x=>String(x.id)===String(editId));
+    if(t){t.title=title;t.date=$('f_date').value||'';t.priority=pickedPri}
+    save();renderAll();await cloudUpdate('todos',String(editId),t);closeModal();toast('待办已修改');
+  }else{
+    const item={id:nid(),title,date:$('f_date').value||'',done:false,priority:pickedPri,pinned:false};
+    D.todos.unshift(item);save();renderAll();await cloudAdd('todos',item);closeModal();toast('待办已添加');
+  }
+}
+
+async function submitCountdown(){
+  const name=$('f_name').value.trim(),date=$('f_date').value;
+  if(!name||!date){toast('请填写完整');return}
+  if(editId){
+    const c=D.countdowns.find(x=>String(x.id)===String(editId)&&x.type==='countdown');
+    if(c){c.name=name;c.date=date;c.emoji=pickedEmoji}
+    save();renderAll();await cloudUpdate('countdowns',String(editId),c);closeModal();toast('倒数日已修改');
+  }else{
+    const item={id:nid(),type:'countdown',name,date,emoji:pickedEmoji,pinned:false};
+    D.countdowns.unshift(item);save();renderAll();await cloudAdd('countdowns',item);closeModal();toast('倒数日已添加');
+  }
+}
+
+async function submitBirthday(){
+  const name=$('f_name').value.trim(),date=$('f_date').value;
+  if(!name||!date){toast('请填写完整');return}
+  const text=$('f_text')?($('f_text').value||'').trim():'';
+  if(editId){
+    const c=D.countdowns.find(x=>String(x.id)===String(editId)&&x.type==='birthday');
+    if(c){c.name=name;c.date=date;c.text=text||c.text}
+    // 同步更新关联日记
+    const d=D.diaries.find(x=>x.type==='birthday'&&String(x.linkId)===String(editId));
+    if(d){d.title=name+'的生日';d.text=text||''}
+    save();renderAll();await cloudUpdate('countdowns',String(editId),c);if(d)await cloudUpdate('diaries',String(d.id),d);closeModal();toast('已修改');
+  }else{
+    const cdItem={id:nid(),type:'birthday',name,date,emoji:'🎂',text,text,linkId:null,pinned:false};
+    const dItem={id:nid(),type:'birthday',title:name+'的生日',text:text||'',time:fmtTime(),source:'生日记录',mood:'🎂',tags:['生日'],linkId:cdItem.id,pinned:false};
+    cdItem.linkId=dItem.id;
+    D.countdowns.unshift(cdItem);D.diaries.unshift(dItem);
+    save();renderAll();await cloudAdd('countdowns',cdItem);await cloudAdd('diaries',dItem);closeModal();toast('已保存');
+  }
+}
+
+async function submitAnniversary(){
+  const name=$('f_name').value.trim(),date=$('f_date').value;
+  if(!name||!date){toast('请填写完整');return}
+  const text=$('f_text')?($('f_text').value||'').trim():'';
+  if(editId){
+    const c=D.countdowns.find(x=>String(x.id)===String(editId)&&x.type==='anniversary');
+    if(c){c.name=name;c.date=date;c.text=text||c.text}
+    const d=D.diaries.find(x=>x.type==='anniversary'&&String(x.linkId)===String(editId));
+    if(d){d.title='纪念日：'+name;d.text=text||''}
+    save();renderAll();await cloudUpdate('countdowns',String(editId),c);if(d)await cloudUpdate('diaries',String(d.id),d);closeModal();toast('已修改');
+  }else{
+    const cdItem={id:nid(),type:'anniversary',name,date,emoji:'💝',text,linkId:null,pinned:false};
+    const dItem={id:nid(),type:'anniversary',title:'纪念日：'+name,text:text||'',time:fmtTime(),source:'纪念日',mood:'💝',tags:['纪念日'],linkId:cdItem.id,pinned:false};
+    cdItem.linkId=dItem.id;
+    D.countdowns.unshift(cdItem);D.diaries.unshift(dItem);
+    save();renderAll();await cloudAdd('countdowns',cdItem);await cloudAdd('diaries',dItem);closeModal();toast('已保存');
+  }
+}
+
+async function submitFestival(){
+  const name=$('f_name').value.trim(),date=$('f_date').value;
+  if(!name||!date){toast('请填写完整');return}
+  const text=$('f_text')?($('f_text').value||'').trim():'';
+  if(editId){
+    const c=D.countdowns.find(x=>String(x.id)===String(editId)&&x.type==='festival');
+    if(c){c.name=name;c.date=date;c.text=text||c.text}
+    const d=D.diaries.find(x=>x.type==='festival'&&String(x.linkId)===String(editId));
+    if(d){d.title='节日：'+name;d.text=text||''}
+    save();renderAll();await cloudUpdate('countdowns',String(editId),c);if(d)await cloudUpdate('diaries',String(d.id),d);closeModal();toast('已修改');
+  }else{
+    const cdItem={id:nid(),type:'festival',name,date,emoji:'🏮',text,linkId:null,pinned:false};
+    const dItem={id:nid(),type:'festival',title:'节日：'+name,text:text||'',time:fmtTime(),source:'节日记录',mood:'🏮',tags:['节日'],linkId:cdItem.id,pinned:false};
+    cdItem.linkId=dItem.id;
+    D.countdowns.unshift(cdItem);D.diaries.unshift(dItem);
+    save();renderAll();await cloudAdd('countdowns',cdItem);await cloudAdd('diaries',dItem);closeModal();toast('已保存');
+  }
+}
+
+async function submitCheckin(){
+  const title=$('f_title').value.trim();
+  if(!title){toast('请填写内容');return}
+  const streak=parseInt($('f_streak')?.value)||0;
+  if(editId){
+    const d=D.diaries.find(x=>String(x.id)===String(editId)&&x.type==='checkin');
+    if(d){d.title=title;d.streak=streak;d.text=$('f_text').value.trim()||''}
+    save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();toast('已修改');
+  }else{
+    const item={id:nid(),type:'checkin',title,streak,text:$('f_text').value.trim()||'',time:fmtTime(),source:'打卡记录',pinned:false};
+    D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();toast('打卡成功');
+  }
+}
+
+async function submitAsset(){
+  const title=$('f_title').value.trim();
+  if(!title){toast('请填写内容');return}
+  const amount=parseFloat($('f_amount').value)||0;
+  if(editId){
+    const d=D.diaries.find(x=>String(x.id)===String(editId)&&x.type==='asset');
+    if(d){d.title=title;d.amount=amount;d.text=$('f_text').value.trim()||''}
+    save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();toast('已修改');
+  }else{
+    const item={id:nid(),type:'asset',title,amount,text:$('f_text').value.trim()||'',time:fmtTime(),source:'资产记录',pinned:false};
+    D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();toast('已保存');
+  }
+}
+
+async function submitSubscribe(){
+  const name=$('f_name').value.trim();
+  if(!name){toast('请填写内容');return}
+  const amount=parseFloat($('f_amount').value)||0;
+  if(editId){
+    const e=D.expenses.find(x=>String(x.id)===String(editId)&&x.type==='subscribe');
+    if(e){e.name=name;e.amount=amount;e.text=$('f_text')?$('f_text').value.trim():''}
+    save();renderAll();await cloudUpdate('expenses',String(editId),e);closeModal();toast('已修改');
+  }else{
+    const item={id:nid(),type:'subscribe',name,amount,category:'订阅',date:fmtDate(),text:$('f_text')?$('f_text').value.trim():'',pinned:false};
+    D.expenses.unshift(item);save();renderAll();await cloudAdd('expenses',item);closeModal();toast('已保存');
+  }
+}
+
+async function submitPlan(){
+  const title=$('f_title').value.trim();
+  if(!title){toast('请填写内容');return}
+  if(editId){
+    const d=D.diaries.find(x=>String(x.id)===String(editId)&&x.type==='plan');
+    if(d){d.title=title;d.text=$('f_text').value.trim()||'';d.date=$('f_date').value||''}
+    save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();toast('已修改');
+  }else{
+    const item={id:nid(),type:'plan',title,text:$('f_text').value.trim()||'',time:fmtTime(),source:'计划记录',date:$('f_date').value||'',pinned:false};
+    D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();toast('已保存');
+  }
+}
+
+async function submitGeneric(){
+  const title=$('f_title').value.trim(),text=$('f_text').value.trim();
+  if(!title&&!text){toast('请填写内容');return}
+  if(editId){
+    const d=D.diaries.find(x=>String(x.id)===String(editId));
+    if(d){d.title=title||'未命名记录';d.text=text||''}
+    save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();toast('已修改');
+  }else{
+    const item={id:nid(),type:'diary',title:title||'未命名记录',text:text||'',time:fmtTime(),source:'手动记录',mood:'📝',tags:[],pinned:false};
+    D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();toast('已保存');
+  }
+}
 
 // ===== Settings =====
 function toggleSettings(){$('settingsPanel').classList.toggle('show')}
@@ -1127,12 +1624,7 @@ async function api(path,opts={}){
     throw e;
   }
 }
-function handleAuthExpired(){
-  authToken='';currentUser='';
-  localStorage.removeItem('shiji_token');localStorage.removeItem('shiji_user');
-  isOnline=false;updateSyncUI();
-  toast('登录已过期，请重新登录');
-}
+function handleAuthExpired(){authToken='';currentUser='';localStorage.removeItem('shiji_token');localStorage.removeItem('shiji_user');isOnline=false;updateSyncUI();toast('登录已过期，请重新登录')}
 function showLoginPage(){$('loginPage').style.display='flex';$('app').style.display='none'}
 function showApp(){$('loginPage').style.display='none';$('app').style.display='block';renderTabs();renderTypeGrid();renderAll();updateSyncUI()}
 function toggleLoginMode(){isLoginMode=!isLoginMode;$('loginCardTitle').textContent=isLoginMode?'登录账号':'注册账号';$('loginSubmitBtn').textContent=isLoginMode?'登录':'注册';$('loginSwitchBtn').textContent=isLoginMode?'没有账号？注册一个':'已有账号？去登录';$('loginPass2Field').style.display=isLoginMode?'none':'block';$('loginError').textContent=''}
@@ -1147,11 +1639,8 @@ async function handleLoginSubmit(){
     const data=await api(endpoint,{method:'POST',body:JSON.stringify({username:user,password:pass})});
     authToken=data.token;currentUser=data.username;
     localStorage.setItem('shiji_token',authToken);localStorage.setItem('shiji_user',currentUser);
-    D=loadData();
-    isOnline=true;
-    await loadCloudData();
-    showApp();
-    toast('欢迎回来，'+currentUser);
+    D=loadData();isOnline=true;
+    await loadCloudData();showApp();toast('欢迎回来，'+currentUser);
   }catch(e){
     if(e.message==='NETWORK_ERROR')errorEl.textContent='无法连接服务器，请检查网络';
     else errorEl.textContent=e.message;
@@ -1159,74 +1648,56 @@ async function handleLoginSubmit(){
 }
 function enterOffline(){currentUser='';authToken='';localStorage.removeItem('shiji_token');localStorage.removeItem('shiji_user');D=loadData();isOnline=false;showApp();toast('离线模式，数据仅保存在本地')}
 
-// ===== 同步核心（v5: 云端为主，直接CRUD） =====
+// 同步核心
 const SYNC_KEYS=['diaries','todos','expenses','countdowns'];
 
-// 从云端拉取全量数据到本地
 async function loadCloudData(){
   if(!authToken)return;
   try{
     setSyncStatus('syncing');
     const cloud=await api('/api/data');
-    // 用云端数据替换本地（已登录用户以云端为准）
-    for(const k of SYNC_KEYS){
-      D[k]=cloud[k]||[];
-    }
+    for(const k of SYNC_KEYS){D[k]=cloud[k]||[]}
     D.nextId=cloud.nextId||10;
-    D._m=D._m||{};
-    D._m.lastSyncAt=Date.now();
+    D._m=D._m||{};D._m.lastSyncAt=Date.now();
     _snap=JSON.stringify(D);
     localStorage.setItem(currentStorageKey(),JSON.stringify(D));
-    isOnline=true;
-    setSyncStatus('online');
-  }catch(e){
-    console.warn('拉取云端数据失败:',e.message);
-    setSyncStatus('offline');
-  }
+    isOnline=true;setSyncStatus('online');
+  }catch(e){console.warn('拉取云端数据失败:',e.message);setSyncStatus('offline')}
 }
 
-// 新增记录到云端
 async function cloudAdd(col,item){
-  save(); // 先存本地
+  save();
   if(!authToken)return;
   try{
     const result=await api('/api/records/'+col,{method:'POST',body:JSON.stringify(item)});
     if(result.success&&result.item){
-      // 用云端分配的 id 和 u 替换本地
       const idx=D[col].findIndex(x=>x.id===item.id);
-      if(idx>=0){D[col][idx]=result.item}
-      else{D[col].push(result.item)}
+      if(idx>=0){D[col][idx]=result.item}else{D[col].push(result.item)}
       D.nextId=Math.max(D.nextId||10,result.nextId||10);
-      _snap=JSON.stringify(D);
-      localStorage.setItem(currentStorageKey(),JSON.stringify(D));
+      _snap=JSON.stringify(D);localStorage.setItem(currentStorageKey(),JSON.stringify(D));
     }
   }catch(e){console.warn('云端新增失败:',e.message)}
 }
 
-// 修改云端记录
 async function cloudUpdate(col,id,item){
-  save(); // 先存本地
+  save();
   if(!authToken)return;
   try{
     const result=await api('/api/records/'+col+'/'+id,{method:'PUT',body:JSON.stringify(item)});
     if(result.success&&result.item){
       const idx=D[col].findIndex(x=>String(x.id)===String(id));
       if(idx>=0){D[col][idx]=result.item}
-      _snap=JSON.stringify(D);
-      localStorage.setItem(currentStorageKey(),JSON.stringify(D));
+      _snap=JSON.stringify(D);localStorage.setItem(currentStorageKey(),JSON.stringify(D));
     }
   }catch(e){console.warn('云端修改失败:',e.message)}
 }
 
-// 删除云端记录
 async function cloudDelete(col,id){
   if(!authToken)return;
-  try{
-    await api('/api/records/'+col+'/'+id,{method:'DELETE'});
-  }catch(e){console.warn('云端删除失败:',e.message)}
+  try{await api('/api/records/'+col+'/'+id,{method:'DELETE'})}catch(e){console.warn('云端删除失败:',e.message)}
 }
 
-function setSyncStatus(status){const text=$('syncStatusText');if(!text)return;const dot=$('syncDot');if(status==='syncing'){if(dot){dot.className='sync-dot syncing'}text.innerHTML=(dot?'<span class="sync-dot syncing"></span> ':'')+'同步中...'}else if(status==='online'){if(dot){dot.className='sync-dot'}text.innerHTML=(dot?'<span class="sync-dot"></span> ':'')+'已连接'}else{if(dot){dot.className='sync-dot offline'}text.innerHTML=(dot?'<span class="sync-dot offline"></span> ':'')+'离线'}}
+function setSyncStatus(status){const text=$('syncStatusText');if(!text)return;const dot=$('syncDot');if(status==='syncing'){if(dot)dot.className='sync-dot syncing';text.innerHTML='<span class="sync-dot syncing"></span> 同步中...'}else if(status==='online'){if(dot)dot.className='sync-dot';text.innerHTML='<span class="sync-dot"></span> 已连接'}else{if(dot)dot.className='sync-dot offline';text.innerHTML='<span class="sync-dot offline"></span> 离线'}}
 function updateSyncUI(){
   const loggedIn=!!currentUser;
   const as=$('accountSection');if(as)as.style.display=loggedIn?'block':'none';
@@ -1247,22 +1718,20 @@ loadTheme();
   const el1=$('iconLoginFeather');if(el1)el1.innerHTML=icon('feather',64);
   const el2=$('iconSearch');if(el2)el2.innerHTML=icon('search',18);
   const el3=$('iconSettings');if(el3)el3.innerHTML=icon('settings',18);
-  const el4=$('iconCashEdit');if(el4)el4.innerHTML=icon('edit',20);
   const el5=$('iconSettingsClose');if(el5)el5.innerHTML=icon('x',18);
   const serverInput=$('loginServer');if(serverInput)serverInput.value=BUILTIN_API;
+
   (async function detectServer(){try{await fetch(BUILTIN_API+'/api/login',{method:'OPTIONS',signal:AbortSignal.timeout(3000)});isOnline=true;updateSyncUI()}catch(e){isOnline=false;updateSyncUI()}})();
+
   if(authToken&&currentUser){
     showApp();
-    try{
-      await loadCloudData();
-      isOnline=true;renderAll();updateSyncUI();
-    }catch(e){
-      isOnline=false;updateSyncUI();
-    }
+    try{await loadCloudData();isOnline=true;renderAll();updateSyncUI()}
+    catch(e){isOnline=false;updateSyncUI()}
   }else{showLoginPage()}
-  // 页面离开时静默同步（拉取最新数据确保一致）
+
   window.addEventListener('beforeunload',()=>{if(authToken){navigator.sendBeacon(API_BASE+'/api/data?ping=1')}});
-  // 页面获得焦点时静默刷新数据（切换标签页/切回应用时自动同步）
   document.addEventListener('visibilitychange',async()=>{if(document.visibilityState==='visible'&&authToken){try{await loadCloudData();renderAll();updateSyncUI()}catch(e){}}});
 })();
 </script>
+</body>
+</html>
