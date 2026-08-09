@@ -1421,17 +1421,6 @@ async function syncPush(force){
   }catch(e){console.warn('同步失败:',e.message)}
   finally{isPushing=false}
 }
-      }
-    }
-    D.nextId=Math.max(D.nextId||10,(op.recordId||0)+1);
-  }
-  if(changed){
-    D._m=D._m||{};D._m.lastSyncAt=Date.now();
-    localStorage.setItem(currentStorageKey(),JSON.stringify(D));
-    _snap=JSON.stringify(D);
-  }
-  return changed;
-}
 
 // (pullRemoteOps/pushLocalOps 已在前方 v4 同步区定义)
 // (replaceWithCloud 已移除，统一使用 mergeCloudIntoLocal)
