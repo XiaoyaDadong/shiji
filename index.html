@@ -1226,10 +1226,20 @@ async function pushCloudData(){
 async function syncOnLogin(){
   if(!authToken)return;
   try{
-    // 首次同步：先全量拉取合并
+    // 优先增量拉取（OP_CURSOR > 0 表示之前已同步过）
+    if(OP_CURSOR>0){
+      const ops=await pullRemoteOps();
+      if(ops.length>0||OP_CURSOR>0){
+        // 增量拉取成功，推送本地 op
+        await pushCloudData();
+        renderAll();
+        return;
+      }
+    }
+    // 游标为0或增量失败：全量拉取合并
     const cloud=await api('/api/data');
     mergeCloudIntoLocal(cloud);
-    // 再推送本地数据（增量或全量）
+    // 再推送本地数据
     await pushCloudData();
     renderAll();
   }catch(e){console.warn('登录同步失败:',e.message)}
