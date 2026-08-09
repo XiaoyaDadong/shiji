@@ -614,19 +614,34 @@ function save(){
   const prev=_snap?JSON.parse(_snap):null;
   const now=Date.now();
   if(prev){
-    // 与上次快照对比：新增/变更记录打 u 时间戳，消失的记录记入墓碑
+    // 与上次快照对比：生成 OpLog
     for(const k of ['diaries','todos','expenses','countdowns']){
       const arr=D[k]||[],oldArr=prev[k]||[];
       const oldMap=new Map(oldArr.map(x=>[String(x.id),x]));
+      const curMap=new Map(arr.map(x=>[String(x.id),x]));
       const curIds=new Set(arr.map(x=>String(x.id)));
       for(const item of arr){
         const old=oldMap.get(String(item.id));
-        if(!old||JSON.stringify(old)!==JSON.stringify(item))item.u=now;
+        if(!old){
+          // 新增
+          item.u=now;
+          pushOp('add',k,item.id,item);
+        }else if(JSON.stringify(old)!==JSON.stringify(item)){
+          // 修改
+          item.u=now;
+          pushOp('update',k,item.id,item);
+        }
       }
-      for(const old of oldArr){if(!curIds.has(String(old.id)))addTombstone(k,old.id)}
+      for(const old of oldArr){
+        if(!curIds.has(String(old.id))){
+          // 删除
+          addTombstone(k,old.id);
+          pushOp('delete',k,old.id,null);
+        }
+      }
     }
   }else{
-    for(const k of ['diaries','todos','expenses','countdowns'])(D[k]||[]).forEach(x=>{if(x.u==null)x.u=now});
+    for(const k of ['diaries','todos','expenses','countdowns'])(D[k]||[]).forEach(x=>{if(x.u==null){x.u=now;pushOp('add',k,x.id,x)}});
   }
   D._m=D._m||{};D._m.dirty=true;D._m.localUpdatedAt=now;
   _snap=JSON.stringify(D);
@@ -638,7 +653,19 @@ function addTombstone(type,id){
   const sid=String(id);const list=D._m.deleted[type]=D._m.deleted[type]||[];
   if(!list.includes(sid))list.push(sid);
 }
-function isDirty(){return !!(D._m&&D._m.dirty)}
+function isDirty(){return !!(D._m&&D._m.dirty)||(localOps.length>0)}
+
+// ===== OpLog 生成 =====
+// 将变更转化为 op 并推入本地队列
+function pushOp(type,collection,recordId,data){
+  const op={id:nid(),type,collection,recordId:parseInt(recordId,10),ts:Date.now(),device:DEVICE_ID};
+  if(data)op.data=JSON.parse(JSON.stringify(data));
+  localOps.push(op);
+  saveLocalOps();
+}
+
+// 记录旧快照，在 save() 中 diff 生成 op
+let _prevSnapForOps=null;
 function nid(){return 'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
 function defaultData(){return{
   diaries:[
@@ -979,11 +1006,24 @@ function importDataTrigger(){$('importFile').click()}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);D=d;save();renderAll();toast('数据已导入')}catch(err){toast('文件格式错误')}};r.readAsText(f)}
 function confirmClear(){showConfirm('清空数据','确定要清空所有记录吗？此操作不可恢复！',()=>{D=defaultData();save();renderAll();toast('数据已清空')})}
 
-// ===== Sync (合并同步 + 墓碑 + 变更标记) =====
+// ===== Sync (v3: OpLog 增量同步 + 全量 fallback) =====
 const BUILTIN_API='https://shiji-api.liuyu-cwb.workers.dev';
 function getAPIBase(){const saved=localStorage.getItem('shiji_api_base')||'';if(saved)return saved;if(location.origin!==BUILTIN_API&&!location.origin.includes('localhost'))return BUILTIN_API;return location.origin}
 let API_BASE=getAPIBase();let authToken=localStorage.getItem('shiji_token')||'';let currentUser=localStorage.getItem('shiji_user')||'';let isOnline=false;let isLoginMode=true;let syncTimer=null;
 let isPushing=false,pushTimer=null;
+
+// 设备ID：每台设备生成唯一标识，用于 OpLog 的 device 字段
+let DEVICE_ID=localStorage.getItem('shiji_device_id');
+if(!DEVICE_ID){DEVICE_ID='dev_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8);localStorage.setItem('shiji_device_id',DEVICE_ID)}
+
+// OpLog 游标：记录本设备已同步到的云端游标
+let OP_CURSOR=parseInt(localStorage.getItem('shiji_op_cursor')||'0',10);
+
+// 本地待推送的 op 队列
+let localOps=JSON.parse(localStorage.getItem('shiji_local_ops')||'[]');
+
+function saveLocalOps(){localStorage.setItem('shiji_local_ops',JSON.stringify(localOps))}
+function saveOpCursor(){localStorage.setItem('shiji_op_cursor',String(OP_CURSOR))}
 
 async function api(path,opts={}){
   try{
@@ -1034,23 +1074,93 @@ async function handleLoginSubmit(){
 }
 function enterOffline(){currentUser='';authToken='';localStorage.removeItem('shiji_token');localStorage.removeItem('shiji_user');D=loadData();isOnline=false;showApp();toast('离线模式，数据仅保存在本地')}
 
-// ===== 同步核心：合并 + 墓碑 + 变更标记 =====
+// ===== 同步核心（v3: OpLog 增量同步 + 全量 fallback） =====
 const SYNC_KEYS=['diaries','todos','expenses','countdowns'];
+
+// 将远程 op 回放到本地数据
+function applyRemoteOps(ops){
+  if(!ops||!ops.length)return false;
+  let changed=false;
+  const myDevice=DEVICE_ID;
+  for(const op of ops){
+    // 跳过自己设备发出的 op（避免重复回放）
+    if(op.device===myDevice)continue;
+    const k=op.collection;
+    if(!SYNC_KEYS.includes(k))continue;
+    if(!D[k])D[k]=[];
+
+    if(op.type==='delete'){
+      const idx=D[k].findIndex(x=>String(x.id)===String(op.recordId));
+      if(idx>=0){D[k].splice(idx,1);changed=true}
+      addTombstone(k,op.recordId);
+    }else if(op.type==='add'||op.type==='update'){
+      if(op.data){
+        const idx=D[k].findIndex(x=>String(x.id)===String(op.recordId));
+        if(idx>=0){
+          // 已存在：u 大者胜
+          if((op.data.u||0)>(D[k][idx].u||0)){D[k][idx]=op.data;changed=true}
+        }else{
+          // 不存在且不在墓碑中：添加
+          const dels=new Set((D._m&&D._m.deleted&&D._m.deleted[k])||[]);
+          if(!dels.has(String(op.recordId))){D[k].push(op.data);changed=true}
+        }
+      }
+    }
+    D.nextId=Math.max(D.nextId||10,(op.recordId||0)+1);
+  }
+  if(changed){
+    D._m=D._m||{};D._m.lastSyncAt=Date.now();
+    localStorage.setItem(currentStorageKey(),JSON.stringify(D));
+    _snap=JSON.stringify(D);
+  }
+  return changed;
+}
+
+// 增量拉取远程 op
+async function pullRemoteOps(){
+  if(!authToken)return [];
+  try{
+    const result=await api('/api/ops?after='+OP_CURSOR);
+    if(result.ops&&result.ops.length>0){
+      applyRemoteOps(result.ops);
+      OP_CURSOR=result.cursor;
+      saveOpCursor();
+    }else if(result.cursor>OP_CURSOR){
+      // 游标更新但无 op（compact 后游标跳了）
+      OP_CURSOR=result.cursor;
+      saveOpCursor();
+    }
+    return result.ops||[];
+  }catch(e){console.warn('增量拉取失败:',e.message);return []}
+}
+
+// 增量推送本地 op
+async function pushLocalOps(){
+  if(!authToken||localOps.length===0)return true;
+  try{
+    const body={ops:localOps,nextId:D.nextId};
+    const result=await api('/api/ops',{method:'POST',body:JSON.stringify(body)});
+    if(result.success){
+      // 推送成功：清空本地 op 队列 + 更新游标
+      localOps=[];
+      saveLocalOps();
+      OP_CURSOR=result.cursor;
+      saveOpCursor();
+      // 推送成功后清墓碑、复位 dirty
+      if(D._m){D._m.deleted={diaries:[],todos:[],expenses:[],countdowns:[]};D._m.dirty=false}
+      D._m.lastSyncAt=Date.now();
+      localStorage.setItem(currentStorageKey(),JSON.stringify(D));
+      _snap=JSON.stringify(D);
+    }
+    return result.success;
+  }catch(e){console.warn('增量推送失败:',e.message);return false}
+}
+
+// 全量合并 fallback（首次同步 / 游标过期）
 function mergeCloudIntoLocal(cloud){
   if(!cloud||typeof cloud!=='object')return false;
   let changed=false;
   D._m=D._m||{};
-  // 1) 应用服务端墓碑：已被云端删除的记录 → 本地一并删除并记入本地墓碑
-  const serverDel=cloud._deleted||{};
-  for(const k of SYNC_KEYS){
-    const sdel=serverDel[k]||[];
-    for(const id of sdel){
-      const sid=String(id);
-      const idx=(D[k]||[]).findIndex(x=>String(x.id)===sid);
-      if(idx>=0){D[k].splice(idx,1);addTombstone(k,sid);changed=true}
-    }
-  }
-  // 2) 按 id 合并：u 大者胜；u 相同且内容不同取云端（幂等）
   for(const k of SYNC_KEYS){
     const localArr=(D[k]||[]).slice();
     const cloudArr=cloud[k]||[];
@@ -1062,16 +1172,16 @@ function mergeCloudIntoLocal(cloud){
       const prev=map.get(id);
       if(!prev){map.set(id,item);listChanged=true}
       else if((item.u||0)>(prev.u||0)){map.set(id,item);listChanged=true}
-      else if((item.u||0)===(prev.u||0)&&JSON.stringify(prev)!==JSON.stringify(item)){map.set(id,item);listChanged=true}
     }
     const dels=new Set((D._m.deleted&&D._m.deleted[k])||[]);
     const merged=[...map.values()].filter(x=>!dels.has(String(x.id)));
-    merged.sort((a,b)=>(b.u||0)-(a.u||0));
     if(listChanged||merged.length!==localArr.length)changed=true;
     D[k]=merged;
   }
   D.nextId=Math.max(D.nextId||10,cloud.nextId||10);
   D._m.lastSyncAt=Date.now();
+  // 更新 op 游标（如果云端返回了游标）
+  if(cloud._opCursor!=null){OP_CURSOR=cloud._opCursor;saveOpCursor()}
   localStorage.setItem(currentStorageKey(),JSON.stringify(D));
   _snap=JSON.stringify(D);
   return changed;
@@ -1079,6 +1189,12 @@ function mergeCloudIntoLocal(cloud){
 async function pullCloudData(){
   if(!authToken)return null;
   try{
+    // 优先增量拉取
+    if(OP_CURSOR>0){
+      const ops=await pullRemoteOps();
+      if(ops.length>0){isOnline=true;setSyncStatus('online');return{ops}}
+    }
+    // 游标为 0 或增量返回空：走全量 fallback
     const cloud=await api('/api/data');
     mergeCloudIntoLocal(cloud);
     isOnline=true;setSyncStatus('online');
@@ -1089,10 +1205,16 @@ async function pushCloudData(){
   if(!authToken)return false;
   try{
     setSyncStatus('syncing');
+    // 优先增量推送
+    if(localOps.length>0){
+      const ok=await pushLocalOps();
+      if(ok){isOnline=true;setSyncStatus('online');return true}
+      // 增量失败，fallback 到全量
+    }
+    // 全量 fallback
     const body={diaries:D.diaries,todos:D.todos,expenses:D.expenses,countdowns:D.countdowns,nextId:D.nextId,_fullSync:true};
     if(D._m&&D._m.deleted)body._deleted=D._m.deleted;
     await api('/api/data',{method:'POST',body:JSON.stringify(body)});
-    // 推送成功：服务端已持久化墓碑 → 本地清墓碑防膨胀，dirty 复位
     if(D._m){D._m.deleted={diaries:[],todos:[],expenses:[],countdowns:[]};D._m.dirty=false}
     D._m.lastSyncAt=Date.now();
     localStorage.setItem(currentStorageKey(),JSON.stringify(D));
@@ -1104,8 +1226,10 @@ async function pushCloudData(){
 async function syncOnLogin(){
   if(!authToken)return;
   try{
+    // 首次同步：先全量拉取合并
     const cloud=await api('/api/data');
     mergeCloudIntoLocal(cloud);
+    // 再推送本地数据（增量或全量）
     await pushCloudData();
     renderAll();
   }catch(e){console.warn('登录同步失败:',e.message)}
@@ -1114,9 +1238,12 @@ async function syncPush(force){
   if(!authToken||isPushing)return;
   isPushing=true;
   try{
-    const cloud=await api('/api/data');
-    mergeCloudIntoLocal(cloud);
-    if(force||isDirty())await pushCloudData();
+    // 先增量拉取远程 op
+    await pullRemoteOps();
+    // 再推送本地 op
+    if(force||localOps.length>0||isDirty()){
+      await pushCloudData();
+    }
     renderAll();
   }catch(e){console.warn('同步失败:',e.message)}
   finally{isPushing=false}
@@ -1138,8 +1265,8 @@ function updateSyncUI(){
     if(ls){const t=D._m&&D._m.lastSyncAt;ls.textContent=t?new Date(t).toLocaleString():'从未同步'}
   }
 }
-function startAutoSync(){if(syncTimer)clearInterval(syncTimer);syncTimer=setInterval(async()=>{if(isPushing)return;try{const cloud=await api('/api/data');mergeCloudIntoLocal(cloud);if(isDirty())await pushCloudData();renderAll()}catch(e){}},60000)}
-function manualSync(){if(!authToken){toast('未登录，无法同步');return}toast('正在同步...');(async()=>{try{const cloud=await api('/api/data');mergeCloudIntoLocal(cloud);await pushCloudData();renderAll();toast('同步完成')}catch(e){toast('同步失败：'+(e.message==='NETWORK_ERROR'?'网络异常':e.message))}})()}
+function startAutoSync(){if(syncTimer)clearInterval(syncTimer);syncTimer=setInterval(async()=>{if(isPushing)return;try{await pullRemoteOps();if(localOps.length>0||isDirty())await pushCloudData();renderAll()}catch(e){}},60000)}
+function manualSync(){if(!authToken){toast('未登录，无法同步');return}toast('正在同步...');(async()=>{try{await pullRemoteOps();await pushCloudData();renderAll();toast('同步完成')}catch(e){toast('同步失败：'+(e.message==='NETWORK_ERROR'?'网络异常':e.message))}})()}
 function handleLogout(){showConfirm('退出登录','退出后本地数据仍保留，但不再同步。',()=>{authToken='';currentUser='';localStorage.removeItem('shiji_token');localStorage.removeItem('shiji_user');if(syncTimer){clearInterval(syncTimer);syncTimer=null}isOnline=false;D=loadData();toggleSettings();showLoginPage();toast('已退出登录')})}
 
 // ===== Init =====
