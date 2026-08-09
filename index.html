@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>拾迹 · 生活值得你记录</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
@@ -1254,7 +1257,7 @@ function showActionSheet(type,id){
 
   actions.push({icon:'trash',label:'删除',action:'delete',danger:true});
 
-  items.innerHTML=actions.map(a=>`<button class="action-item ${a.danger?'danger':''}" onclick="doAction('${a.action}')">${icon(a.icon,20)} ${a.label}</button>`).join('');
+  items.innerHTML=actions.map(a=>`<button class="action-item ${a.danger?'danger':''}" ontouchend="event.preventDefault();doAction('${a.action}')" onclick="doAction('${a.action}')">${icon(a.icon,20)} ${a.label}</button>`).join('');
   $('actionOverlay').classList.add('show');
 }
 
