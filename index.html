@@ -1193,10 +1193,10 @@ async function handleLoginSubmit(){
 }
 function enterOffline(){currentUser='';authToken='';localStorage.removeItem('shiji_token');localStorage.removeItem('shiji_user');D=loadData();isOnline=false;showApp();toast('离线模式，数据仅保存在本地')}
 
-// ===== 同步核心（v3: OpLog 增量同步 + 全量 fallback） =====
+// ===== 同步核心（v4: 学习 Joplin 三步同步，修复覆盖→合并） =====
 const SYNC_KEYS=['diaries','todos','expenses','countdowns'];
 
-// 将远程 op 回放到本地数据
+// 将远程 op 回放到本地数据（u 大者胜）
 function applyRemoteOps(ops){
   if(!ops||!ops.length)return false;
   let changed=false;
@@ -1245,7 +1245,6 @@ async function pullRemoteOps(){
       OP_CURSOR=result.cursor;
       saveOpCursor();
     }else if(result.cursor>OP_CURSOR){
-      // 游标更新但无 op（compact 后游标跳了）
       OP_CURSOR=result.cursor;
       saveOpCursor();
     }
@@ -1260,13 +1259,21 @@ async function pushLocalOps(){
     const body={ops:localOps,nextId:D.nextId};
     const result=await api('/api/ops',{method:'POST',body:JSON.stringify(body)});
     if(result.success){
-      // 推送成功：清空本地 op 队列 + 更新游标
+      // 记录本次推送的 op 对应的 recordId，用于精确清墓碑
+      const pushedRecordIds=new Set(localOps.map(o=>o.collection+':'+String(o.recordId)));
       localOps=[];
       saveLocalOps();
       OP_CURSOR=result.cursor;
       saveOpCursor();
-      // 推送成功后清墓碑、复位 dirty
-      if(D._m){D._m.deleted={diaries:[],todos:[],expenses:[],countdowns:[]};D._m.dirty=false}
+      // 只清本次推送涉及的墓碑（而非全部清空）
+      if(D._m&&D._m.deleted){
+        for(const k of SYNC_KEYS){
+          if(D._m.deleted[k]){
+            D._m.deleted[k]=D._m.deleted[k].filter(id=>!pushedRecordIds.has(k+':'+String(id)));
+          }
+        }
+      }
+      D._m.dirty=false;
       D._m.lastSyncAt=Date.now();
       localStorage.setItem(currentStorageKey(),JSON.stringify(D));
       _snap=JSON.stringify(D);
@@ -1275,34 +1282,7 @@ async function pushLocalOps(){
   }catch(e){console.warn('增量推送失败:',e.message);return false}
 }
 
-// 全量替换（首次登录：云端为准，合并本地独有数据）
-function replaceWithCloud(cloud){
-  if(!cloud||typeof cloud!=='object')return false;
-  D._m=D._m||{};
-  for(const k of SYNC_KEYS){
-    const localArr=(D[k]||[]).slice();
-    const cloudArr=cloud[k]||[];
-    // 以云端为主
-    const cloudMap=new Map(cloudArr.map(x=>[String(x.id),x]));
-    // 保留本地独有且 u 大于云端的记录
-    for(const item of localArr){
-      const id=String(item.id);
-      if(!cloudMap.has(id)&&(item.u||0)>0){
-        cloudMap.set(id,item);
-      }
-    }
-    // 排除墓碑中的记录
-    const dels=new Set((D._m.deleted&&D._m.deleted[k])||[]);
-    D[k]=[...cloudMap.values()].filter(x=>!dels.has(String(x.id)));
-  }
-  D.nextId=Math.max(D.nextId||10,cloud.nextId||10);
-  D._m.lastSyncAt=Date.now();
-  if(cloud._opCursor!=null){OP_CURSOR=cloud._opCursor;saveOpCursor()}
-  localStorage.setItem(currentStorageKey(),JSON.stringify(D));
-  _snap=JSON.stringify(D);
-  return true;
-}
-// 全量合并 fallback（增量拉取后的补充合并）
+// 全量合并（双方 u 大者胜，不再无条件云端覆盖）
 function mergeCloudIntoLocal(cloud){
   if(!cloud||typeof cloud!=='object')return false;
   let changed=false;
@@ -1311,8 +1291,10 @@ function mergeCloudIntoLocal(cloud){
     const localArr=(D[k]||[]).slice();
     const cloudArr=cloud[k]||[];
     const map=new Map();
+    // 先放本地所有记录
     for(const item of localArr)map.set(String(item.id),item);
     let listChanged=false;
+    // 云端记录：u 大者覆盖，新记录直接添加
     for(const item of cloudArr){
       const id=String(item.id);
       const prev=map.get(id);
@@ -1326,12 +1308,12 @@ function mergeCloudIntoLocal(cloud){
   }
   D.nextId=Math.max(D.nextId||10,cloud.nextId||10);
   D._m.lastSyncAt=Date.now();
-  // 更新 op 游标（如果云端返回了游标）
   if(cloud._opCursor!=null){OP_CURSOR=cloud._opCursor;saveOpCursor()}
   localStorage.setItem(currentStorageKey(),JSON.stringify(D));
   _snap=JSON.stringify(D);
   return changed;
 }
+
 async function pullCloudData(){
   if(!authToken)return null;
   try{
@@ -1340,9 +1322,9 @@ async function pullCloudData(){
       const ops=await pullRemoteOps();
       if(ops.length>0){isOnline=true;setSyncStatus('online');return{ops}}
     }
-    // 游标为 0 或增量返回空：走全量 fallback（云端为准）
+    // 游标为 0 或增量返回空：走全量合并（不再覆盖）
     const cloud=await api('/api/data');
-    replaceWithCloud(cloud);
+    mergeCloudIntoLocal(cloud);
     isOnline=true;setSyncStatus('online');
     return cloud;
   }catch(e){console.warn('拉取云端数据失败:',e.message);return null}
@@ -1357,10 +1339,13 @@ async function pushCloudData(){
       if(ok){isOnline=true;setSyncStatus('online');return true}
       // 增量失败，fallback 到全量
     }
-    // 全量 fallback
-    const body={diaries:D.diaries,todos:D.todos,expenses:D.expenses,countdowns:D.countdowns,nextId:D.nextId,_fullSync:true};
+    // 全量 fallback（合并式推送：带墓碑，后端按 u 大者胜合并）
+    const body={diaries:D.diaries,todos:D.todos,expenses:D.expenses,
+                countdowns:D.countdowns,nextId:D.nextId,_fullSync:true};
     if(D._m&&D._m.deleted)body._deleted=D._m.deleted;
-    await api('/api/data',{method:'POST',body:JSON.stringify(body)});
+    const result=await api('/api/data',{method:'POST',body:JSON.stringify(body)});
+    // 全量推送成功后更新 cursor
+    if(result.cursor){OP_CURSOR=result.cursor;saveOpCursor()}
     if(D._m){D._m.deleted={diaries:[],todos:[],expenses:[],countdowns:[]};D._m.dirty=false}
     D._m.lastSyncAt=Date.now();
     localStorage.setItem(currentStorageKey(),JSON.stringify(D));
@@ -1375,7 +1360,6 @@ async function syncOnLogin(){
     // 先尝试增量拉取所有 op（从 after=0 开始全量回放）
     const opsResult=await api('/api/ops?after=0');
     if(opsResult.ops&&opsResult.ops.length>0){
-      // 增量回放：回放所有远程 op（跳过自己的设备）
       applyRemoteOps(opsResult.ops);
       OP_CURSOR=opsResult.cursor;
       saveOpCursor();
@@ -1384,9 +1368,9 @@ async function syncOnLogin(){
       renderAll();
       return;
     }
-    // 无 op：走全量 fallback
+    // 无 op：走全量合并（不再覆盖）
     const cloud=await api('/api/data');
-    replaceWithCloud(cloud);
+    mergeCloudIntoLocal(cloud);
     await pushCloudData();
     renderAll();
   }catch(e){console.warn('登录同步失败:',e.message)}
@@ -1395,9 +1379,9 @@ async function syncPush(force){
   if(!authToken||isPushing)return;
   isPushing=true;
   try{
-    // 先增量拉取远程 op
+    // 第一步：增量拉取远程变更
     await pullRemoteOps();
-    // 再做全量快照校验（双向修补：删本地多余 + 补云端独有）
+    // 第二步：全量快照校验（双向修补 + u 比较）
     try{
       const cloud=await api('/api/data');
       const pendingIds=new Set(localOps.map(o=>String(o.recordId)));
@@ -1406,10 +1390,17 @@ async function syncPush(force){
         const cloudMap=new Map(cloudArr.map(x=>[String(x.id),x]));
         const localMap=new Map(D[k].map(x=>[String(x.id),x]));
         let changed=false;
-        // 删除本地有但云端没有的（pendingIds例外）
+        // 删除本地有但云端没有的（pendingIds 例外）
         const before=D[k].length;
         D[k]=D[k].filter(item=>cloudMap.has(String(item.id))||pendingIds.has(String(item.id)));
         if(D[k].length!==before)changed=true;
+        // 处理双方都有但版本不同：u 大者胜
+        for(const item of D[k]){
+          const cloudItem=cloudMap.get(String(item.id));
+          if(cloudItem&&(cloudItem.u||0)>(item.u||0)){
+            Object.assign(item,cloudItem);changed=true;
+          }
+        }
         // 补充云端有但本地没有的
         for(const item of cloudArr){
           if(!localMap.has(String(item.id))){
@@ -1422,7 +1413,7 @@ async function syncPush(force){
         }
       }
     }catch(e){}
-    // 再推送本地 op
+    // 第三步：推送本地变更
     if(force||localOps.length>0||isDirty()){
       await pushCloudData();
     }
@@ -1430,6 +1421,22 @@ async function syncPush(force){
   }catch(e){console.warn('同步失败:',e.message)}
   finally{isPushing=false}
 }
+      }
+    }
+    D.nextId=Math.max(D.nextId||10,(op.recordId||0)+1);
+  }
+  if(changed){
+    D._m=D._m||{};D._m.lastSyncAt=Date.now();
+    localStorage.setItem(currentStorageKey(),JSON.stringify(D));
+    _snap=JSON.stringify(D);
+  }
+  return changed;
+}
+
+// (pullRemoteOps/pushLocalOps 已在前方 v4 同步区定义)
+// (replaceWithCloud 已移除，统一使用 mergeCloudIntoLocal)
+// (mergeCloudIntoLocal 已在前方 v4 同步区定义)
+// (pullCloudData/pushCloudData/syncOnLogin/syncPush 已在前方 v4 同步区定义)
 function immediatePush(){if(!authToken)return;if(pushTimer)clearTimeout(pushTimer);pushTimer=setTimeout(()=>syncPush(false),1500)}
 function setSyncStatus(status){const dot=$('syncDot'),text=$('syncText');if(!dot)return;dot.className='sync-dot';if(status==='syncing'){dot.classList.add('syncing');text.textContent='同步中...'}else if(status==='online'){text.textContent='已同步'}else{dot.classList.add('offline');text.textContent='离线'}}
 function updateSyncUI(){
