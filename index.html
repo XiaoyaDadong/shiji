@@ -1350,11 +1350,13 @@ async function syncPush(force){
     // 再做全量快照校验（修补增量同步可能遗漏的删除）
     try{
       const cloud=await api('/api/data');
-      // 以云端为准：删除本地有但云端没有的记录（除非本地有更新的 u）
+      // 以云端为准：删除本地有但云端没有的记录
+      // 例外：本地有未推送的op（说明本地刚修改/新增还没同步上去），需要保留
+      const pendingIds=new Set(localOps.map(o=>String(o.recordId)));
       for(const k of SYNC_KEYS){
         const cloudIds=new Set((cloud[k]||[]).map(x=>String(x.id)));
         const before=D[k].length;
-        D[k]=D[k].filter(item=>cloudIds.has(String(item.id))||(item.u||0)>0);
+        D[k]=D[k].filter(item=>cloudIds.has(String(item.id))||pendingIds.has(String(item.id)));
         if(D[k].length!==before){
           localStorage.setItem(currentStorageKey(),JSON.stringify(D));
           _snap=JSON.stringify(D);
@@ -1386,8 +1388,8 @@ function updateSyncUI(){
     if(ls){const t=D._m&&D._m.lastSyncAt;ls.textContent=t?new Date(t).toLocaleString():'从未同步'}
   }
 }
-function startAutoSync(){if(syncTimer)clearInterval(syncTimer);syncTimer=setInterval(async()=>{if(isPushing)return;try{await pullRemoteOps();if(localOps.length>0||isDirty())await pushCloudData();renderAll()}catch(e){}},60000)}
-function manualSync(){if(!authToken){toast('未登录，无法同步');return}toast('正在同步...');(async()=>{try{await pullRemoteOps();await pushCloudData();renderAll();toast('同步完成')}catch(e){toast('同步失败：'+(e.message==='NETWORK_ERROR'?'网络异常':e.message))}})()}
+function startAutoSync(){if(syncTimer)clearInterval(syncTimer);syncTimer=setInterval(async()=>{if(isPushing)return;try{await syncPush(false)}catch(e){}},60000)}
+function manualSync(){if(!authToken){toast('未登录，无法同步');return}toast('正在同步...');(async()=>{try{await syncPush(true);renderAll();toast('同步完成')}catch(e){toast('同步失败：'+(e.message==='NETWORK_ERROR'?'网络异常':e.message))}})()}
 function handleLogout(){showConfirm('退出登录','退出后本地数据仍保留，但不再同步。',()=>{authToken='';currentUser='';localStorage.removeItem('shiji_token');localStorage.removeItem('shiji_user');if(syncTimer){clearInterval(syncTimer);syncTimer=null}isOnline=false;D=loadData();toggleSettings();showLoginPage();toast('已退出登录')})}
 
 // ===== Init =====
