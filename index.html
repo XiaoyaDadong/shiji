@@ -584,12 +584,62 @@ const CAT_EMOJI={'餐饮':icon('utensils',20),'交通':icon('car',20),'日用品
 const CAT_BG={'餐饮':'rgba(196,149,106,0.15)','交通':'rgba(91,107,138,0.12)','日用品':'rgba(107,140,106,0.15)','娱乐':'rgba(160,139,114,0.12)','购物':'rgba(192,72,81,0.1)','医疗':'rgba(192,72,81,0.1)','订阅':'rgba(160,139,114,0.12)','其他':'rgba(184,169,154,0.12)'};
 const PRI_COLOR={high:'#C04851',medium:'#C4956A',low:'#6B8C6A'};
 
-const STORAGE_KEY='shiji_v2_data';
+// ===== Storage (账号隔离 + 变更检测) =====
+const LEGACY_KEY='shiji_v2_data';
+function currentStorageKey(){const u=localStorage.getItem('shiji_user')||'';return u?('shiji_v2_data_'+u):'shiji_v2_data_local'}
+let _snap=null;
 let D=loadData();let curTab='all';let searchOn=false;let searchQ='';let confirmCb=null;
 
-function loadData(){try{const r=localStorage.getItem(STORAGE_KEY);if(r)return JSON.parse(r)}catch(e){}return defaultData()}
-function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(D));if(authToken)immediatePush()}
-function nid(){D.nextId=(D.nextId||10)+1;save();return D.nextId}
+function loadData(){
+  try{
+    const key=currentStorageKey();
+    let r=localStorage.getItem(key);
+    // 旧版单 key 数据迁移到当前账号/离线 key
+    if(!r&&localStorage.getItem(LEGACY_KEY)){
+      r=localStorage.getItem(LEGACY_KEY);
+      localStorage.setItem(key,r);localStorage.removeItem(LEGACY_KEY);
+    }
+    if(r){
+      const d=JSON.parse(r);
+      for(const k of ['diaries','todos','expenses','countdowns'])(d[k]||[]).forEach(x=>{if(x.u==null)x.u=0});
+      _snap=JSON.stringify(d);
+      return d;
+    }
+  }catch(e){}
+  const fresh=defaultData();
+  _snap=JSON.stringify(fresh);
+  return fresh;
+}
+function save(){
+  const prev=_snap?JSON.parse(_snap):null;
+  const now=Date.now();
+  if(prev){
+    // 与上次快照对比：新增/变更记录打 u 时间戳，消失的记录记入墓碑
+    for(const k of ['diaries','todos','expenses','countdowns']){
+      const arr=D[k]||[],oldArr=prev[k]||[];
+      const oldMap=new Map(oldArr.map(x=>[String(x.id),x]));
+      const curIds=new Set(arr.map(x=>String(x.id)));
+      for(const item of arr){
+        const old=oldMap.get(String(item.id));
+        if(!old||JSON.stringify(old)!==JSON.stringify(item))item.u=now;
+      }
+      for(const old of oldArr){if(!curIds.has(String(old.id)))addTombstone(k,old.id)}
+    }
+  }else{
+    for(const k of ['diaries','todos','expenses','countdowns'])(D[k]||[]).forEach(x=>{if(x.u==null)x.u=now});
+  }
+  D._m=D._m||{};D._m.dirty=true;D._m.localUpdatedAt=now;
+  _snap=JSON.stringify(D);
+  localStorage.setItem(currentStorageKey(),JSON.stringify(D));
+  if(authToken)immediatePush();
+}
+function addTombstone(type,id){
+  D._m=D._m||{};D._m.deleted=D._m.deleted||{diaries:[],todos:[],expenses:[],countdowns:[]};
+  const sid=String(id);const list=D._m.deleted[type]=D._m.deleted[type]||[];
+  if(!list.includes(sid))list.push(sid);
+}
+function isDirty(){return !!(D._m&&D._m.dirty)}
+function nid(){return 'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
 function defaultData(){return{
   diaries:[
     {id:1,title:'周末的午后',text:'今天阳光正好，去公园散步了两小时，路边的花开了好多，心情特别舒畅。回家后泡了一壶龙井，安安静静看了一会儿书。',time:'2026-08-02 15:30',source:'手动记录',mood:'😊',tags:['公园','散步','读书']},
@@ -929,15 +979,35 @@ function importDataTrigger(){$('importFile').click()}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);D=d;save();renderAll();toast('数据已导入')}catch(err){toast('文件格式错误')}};r.readAsText(f)}
 function confirmClear(){showConfirm('清空数据','确定要清空所有记录吗？此操作不可恢复！',()=>{D=defaultData();save();renderAll();toast('数据已清空')})}
 
-// ===== Sync =====
+// ===== Sync (合并同步 + 墓碑 + 变更标记) =====
 const BUILTIN_API='https://shiji-api.liuyu-cwb.workers.dev';
 function getAPIBase(){const saved=localStorage.getItem('shiji_api_base')||'';if(saved)return saved;if(location.origin!==BUILTIN_API&&!location.origin.includes('localhost'))return BUILTIN_API;return location.origin}
 let API_BASE=getAPIBase();let authToken=localStorage.getItem('shiji_token')||'';let currentUser=localStorage.getItem('shiji_user')||'';let isOnline=false;let isLoginMode=true;let syncTimer=null;
+let isPushing=false,pushTimer=null;
 
 async function api(path,opts={}){
-  try{const headers={'Content-Type':'application/json'};if(authToken)headers['Authorization']='Bearer '+authToken;const res=await fetch(API_BASE+path,{...opts,headers:{...headers,...(opts.headers||{})}});const ct=res.headers.get('content-type')||'';if(!ct.includes('json')){await res.text();throw new Error('NETWORK_ERROR')}const data=await res.json();if(!res.ok)throw new Error(data.error||'请求失败');return data}catch(e){if(e instanceof TypeError||e instanceof SyntaxError||e.message==='NETWORK_ERROR'){isOnline=false;throw new Error('NETWORK_ERROR')}throw e}
+  try{
+    const headers={'Content-Type':'application/json'};
+    if(authToken)headers['Authorization']='Bearer '+authToken;
+    const res=await fetch(API_BASE+path,{...opts,headers:{...headers,...(opts.headers||{})}});
+    if(res.status===401){handleAuthExpired();throw new Error('登录已过期，请重新登录')}
+    const ct=res.headers.get('content-type')||'';
+    if(!ct.includes('json')){await res.text();throw new Error('NETWORK_ERROR')}
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.error||'请求失败');
+    return data;
+  }catch(e){
+    if(e instanceof TypeError||e instanceof SyntaxError||e.message==='NETWORK_ERROR'){isOnline=false;throw new Error('NETWORK_ERROR')}
+    throw e;
+  }
 }
-
+function handleAuthExpired(){
+  authToken='';currentUser='';
+  localStorage.removeItem('shiji_token');localStorage.removeItem('shiji_user');
+  if(syncTimer){clearInterval(syncTimer);syncTimer=null}
+  isOnline=false;updateSyncUI();
+  toast('登录已过期，请重新登录');
+}
 function showLoginPage(){$('loginPage').style.display='flex';$('app').style.display='none'}
 function showApp(){$('loginPage').style.display='none';$('app').style.display='block';renderTabs();renderTypeGrid();renderAll();updateSyncUI();if(currentUser)startAutoSync()}
 function toggleLoginMode(){isLoginMode=!isLoginMode;$('loginCardTitle').textContent=isLoginMode?'登录账号':'注册账号';$('loginSubmitBtn').textContent=isLoginMode?'登录':'注册';$('loginSwitchBtn').textContent=isLoginMode?'没有账号？注册一个':'已有账号？去登录';$('loginPass2Field').style.display=isLoginMode?'none':'block';$('loginError').textContent=''}
@@ -947,20 +1017,130 @@ async function handleLoginSubmit(){
   if(!user||!pass){errorEl.textContent='请输入用户名和密码';return}
   if(!isLoginMode){const pass2=$('loginPass2').value;if(pass!==pass2){errorEl.textContent='两次密码不一致';return}if(pass.length<4){errorEl.textContent='密码至少4位';return}}
   $('loginSubmitBtn').textContent='处理中...';$('loginSubmitBtn').disabled=true;
-  try{const endpoint=isLoginMode?'/api/login':'/api/register';const data=await api(endpoint,{method:'POST',body:JSON.stringify({username:user,password:pass})});authToken=data.token;currentUser=data.username;localStorage.setItem('shiji_token',authToken);localStorage.setItem('shiji_user',currentUser);isOnline=true;await syncOnLogin();showApp();toast('欢迎回来，'+currentUser)}catch(e){if(e.message==='NETWORK_ERROR')errorEl.textContent='无法连接服务器，请检查网络';else errorEl.textContent=e.message}finally{$('loginSubmitBtn').textContent=isLoginMode?'登录':'注册';$('loginSubmitBtn').disabled=false}
+  try{
+    const endpoint=isLoginMode?'/api/login':'/api/register';
+    const data=await api(endpoint,{method:'POST',body:JSON.stringify({username:user,password:pass})});
+    authToken=data.token;currentUser=data.username;
+    localStorage.setItem('shiji_token',authToken);localStorage.setItem('shiji_user',currentUser);
+    D=loadData();
+    isOnline=true;
+    await syncOnLogin();
+    showApp();
+    toast('欢迎回来，'+currentUser);
+  }catch(e){
+    if(e.message==='NETWORK_ERROR')errorEl.textContent='无法连接服务器，请检查网络';
+    else errorEl.textContent=e.message;
+  }finally{$('loginSubmitBtn').textContent=isLoginMode?'登录':'注册';$('loginSubmitBtn').disabled=false}
 }
-function enterOffline(){currentUser='';authToken='';isOnline=false;showApp();toast('离线模式，数据仅保存在本地')}
-async function pullCloudData(){if(!authToken)return;try{const cloud=await api('/api/data');if(cloud.diaries||cloud.todos||cloud.expenses||cloud.countdowns){D.diaries=cloud.diaries||[];D.todos=cloud.todos||[];D.expenses=cloud.expenses||[];D.countdowns=cloud.countdowns||[];D.nextId=Math.max(D.nextId||10,cloud.nextId||10);localStorage.setItem(STORAGE_KEY,JSON.stringify(D))}isOnline=true}catch(e){console.warn('拉取云端数据失败:',e.message)}}
-let isPushing=false,pushTimer=null;
-async function syncOnLogin(){if(!authToken)return;try{const cloud=await api('/api/data');const cloudTotal=(cloud.diaries||[]).length+(cloud.todos||[]).length+(cloud.expenses||[]).length+(cloud.countdowns||[]).length;if(cloudTotal>0){D.diaries=cloud.diaries||[];D.todos=cloud.todos||[];D.expenses=cloud.expenses||[];D.countdowns=cloud.countdowns||[];D.nextId=Math.max(D.nextId||10,cloud.nextId||10);localStorage.setItem(STORAGE_KEY,JSON.stringify(D))}else{await pushCloudData()}}catch(e){console.warn('登录同步失败:',e.message)}}
-async function syncPush(){if(!authToken||isPushing)return;isPushing=true;try{await pullCloudData();await pushCloudData();isOnline=true;renderAll()}catch(e){console.warn('同步失败:',e.message)}finally{isPushing=false}}
-function immediatePush(){if(!authToken)return;if(pushTimer)clearTimeout(pushTimer);pushTimer=setTimeout(syncPush,1500)}
-async function pushCloudData(){if(!authToken)return;try{setSyncStatus('syncing');await api('/api/data',{method:'POST',body:JSON.stringify({diaries:D.diaries,todos:D.todos,expenses:D.expenses,countdowns:D.countdowns,nextId:D.nextId,_fullSync:true})});isOnline=true;setSyncStatus('online')}catch(e){setSyncStatus('offline')}}
+function enterOffline(){currentUser='';authToken='';localStorage.removeItem('shiji_token');localStorage.removeItem('shiji_user');D=loadData();isOnline=false;showApp();toast('离线模式，数据仅保存在本地')}
+
+// ===== 同步核心：合并 + 墓碑 + 变更标记 =====
+const SYNC_KEYS=['diaries','todos','expenses','countdowns'];
+function mergeCloudIntoLocal(cloud){
+  if(!cloud||typeof cloud!=='object')return false;
+  let changed=false;
+  D._m=D._m||{};
+  // 1) 应用服务端墓碑：已被云端删除的记录 → 本地一并删除并记入本地墓碑
+  const serverDel=cloud._deleted||{};
+  for(const k of SYNC_KEYS){
+    const sdel=serverDel[k]||[];
+    for(const id of sdel){
+      const sid=String(id);
+      const idx=(D[k]||[]).findIndex(x=>String(x.id)===sid);
+      if(idx>=0){D[k].splice(idx,1);addTombstone(k,sid);changed=true}
+    }
+  }
+  // 2) 按 id 合并：u 大者胜；u 相同且内容不同取云端（幂等）
+  for(const k of SYNC_KEYS){
+    const localArr=(D[k]||[]).slice();
+    const cloudArr=cloud[k]||[];
+    const map=new Map();
+    for(const item of localArr)map.set(String(item.id),item);
+    let listChanged=false;
+    for(const item of cloudArr){
+      const id=String(item.id);
+      const prev=map.get(id);
+      if(!prev){map.set(id,item);listChanged=true}
+      else if((item.u||0)>(prev.u||0)){map.set(id,item);listChanged=true}
+      else if((item.u||0)===(prev.u||0)&&JSON.stringify(prev)!==JSON.stringify(item)){map.set(id,item);listChanged=true}
+    }
+    const dels=new Set((D._m.deleted&&D._m.deleted[k])||[]);
+    const merged=[...map.values()].filter(x=>!dels.has(String(x.id)));
+    merged.sort((a,b)=>(b.u||0)-(a.u||0));
+    if(listChanged||merged.length!==localArr.length)changed=true;
+    D[k]=merged;
+  }
+  D.nextId=Math.max(D.nextId||10,cloud.nextId||10);
+  D._m.lastSyncAt=Date.now();
+  localStorage.setItem(currentStorageKey(),JSON.stringify(D));
+  _snap=JSON.stringify(D);
+  return changed;
+}
+async function pullCloudData(){
+  if(!authToken)return null;
+  try{
+    const cloud=await api('/api/data');
+    mergeCloudIntoLocal(cloud);
+    isOnline=true;setSyncStatus('online');
+    return cloud;
+  }catch(e){console.warn('拉取云端数据失败:',e.message);return null}
+}
+async function pushCloudData(){
+  if(!authToken)return false;
+  try{
+    setSyncStatus('syncing');
+    const body={diaries:D.diaries,todos:D.todos,expenses:D.expenses,countdowns:D.countdowns,nextId:D.nextId,_fullSync:true};
+    if(D._m&&D._m.deleted)body._deleted=D._m.deleted;
+    await api('/api/data',{method:'POST',body:JSON.stringify(body)});
+    // 推送成功：服务端已持久化墓碑 → 本地清墓碑防膨胀，dirty 复位
+    if(D._m){D._m.deleted={diaries:[],todos:[],expenses:[],countdowns:[]};D._m.dirty=false}
+    D._m.lastSyncAt=Date.now();
+    localStorage.setItem(currentStorageKey(),JSON.stringify(D));
+    _snap=JSON.stringify(D);
+    isOnline=true;setSyncStatus('online');
+    return true;
+  }catch(e){setSyncStatus('offline');console.warn('推送失败:',e.message);return false}
+}
+async function syncOnLogin(){
+  if(!authToken)return;
+  try{
+    const cloud=await api('/api/data');
+    mergeCloudIntoLocal(cloud);
+    await pushCloudData();
+    renderAll();
+  }catch(e){console.warn('登录同步失败:',e.message)}
+}
+async function syncPush(force){
+  if(!authToken||isPushing)return;
+  isPushing=true;
+  try{
+    const cloud=await api('/api/data');
+    mergeCloudIntoLocal(cloud);
+    if(force||isDirty())await pushCloudData();
+    renderAll();
+  }catch(e){console.warn('同步失败:',e.message)}
+  finally{isPushing=false}
+}
+function immediatePush(){if(!authToken)return;if(pushTimer)clearTimeout(pushTimer);pushTimer=setTimeout(()=>syncPush(false),1500)}
 function setSyncStatus(status){const dot=$('syncDot'),text=$('syncText');if(!dot)return;dot.className='sync-dot';if(status==='syncing'){dot.classList.add('syncing');text.textContent='同步中...'}else if(status==='online'){text.textContent='已同步'}else{dot.classList.add('offline');text.textContent='离线'}}
-function updateSyncUI(){const loggedIn=!!currentUser;$('syncBar').style.display=loggedIn?'flex':'none';$('userBadge').style.display=loggedIn?'flex':'none';$('accountSection').style.display=loggedIn?'block':'none';if(loggedIn){$('userAvatar').textContent=currentUser.charAt(0).toUpperCase();$('userName').textContent=currentUser;$('userId').textContent='已登录';$('settingsUser').textContent=currentUser;setSyncStatus(isOnline?'online':'offline')}}
-function startAutoSync(){if(syncTimer)clearInterval(syncTimer);syncTimer=setInterval(async()=>{if(isPushing)return;try{await pullCloudData();await pushCloudData();renderAll()}catch(e){}},30000)}
-function manualSync(){if(!authToken){toast('未登录，无法同步');return}toast('正在同步...');(async()=>{try{await pullCloudData();await pushCloudData();renderAll();toast('同步完成')}catch(e){toast('同步失败')}})()}
-function handleLogout(){showConfirm('退出登录','退出后本地数据仍保留，但不再同步。',()=>{authToken='';currentUser='';localStorage.removeItem('shiji_token');localStorage.removeItem('shiji_user');if(syncTimer)clearInterval(syncTimer);isOnline=false;toggleSettings();showLoginPage();toast('已退出登录')})}
+function updateSyncUI(){
+  const loggedIn=!!currentUser;
+  const bar=$('syncBar');if(bar)bar.style.display=loggedIn?'flex':'none';
+  const ub=$('userBadge');if(ub)ub.style.display=loggedIn?'flex':'none';
+  const as=$('accountSection');if(as)as.style.display=loggedIn?'block':'none';
+  if(loggedIn){
+    const av=$('userAvatar');if(av)av.textContent=currentUser.charAt(0).toUpperCase();
+    const un=$('userName');if(un)un.textContent=currentUser;
+    const uid=$('userId');if(uid)uid.textContent='已登录';
+    const su=$('settingsUser');if(su)su.textContent=currentUser;
+    setSyncStatus(isOnline?'online':'offline');
+    const ls=$('lastSyncTime');
+    if(ls){const t=D._m&&D._m.lastSyncAt;ls.textContent=t?new Date(t).toLocaleString():'从未同步'}
+  }
+}
+function startAutoSync(){if(syncTimer)clearInterval(syncTimer);syncTimer=setInterval(async()=>{if(isPushing)return;try{const cloud=await api('/api/data');mergeCloudIntoLocal(cloud);if(isDirty())await pushCloudData();renderAll()}catch(e){}},60000)}
+function manualSync(){if(!authToken){toast('未登录，无法同步');return}toast('正在同步...');(async()=>{try{const cloud=await api('/api/data');mergeCloudIntoLocal(cloud);await pushCloudData();renderAll();toast('同步完成')}catch(e){toast('同步失败：'+(e.message==='NETWORK_ERROR'?'网络异常':e.message))}})()}
+function handleLogout(){showConfirm('退出登录','退出后本地数据仍保留，但不再同步。',()=>{authToken='';currentUser='';localStorage.removeItem('shiji_token');localStorage.removeItem('shiji_user');if(syncTimer){clearInterval(syncTimer);syncTimer=null}isOnline=false;D=loadData();toggleSettings();showLoginPage();toast('已退出登录')})}
 
 // ===== Init =====
 loadTheme();
