@@ -337,7 +337,7 @@ a{text-decoration:none;color:inherit}
 
 <!-- ====== Login ====== -->
 <div class="login-page" id="loginPage" style="display:none">
-  <div class="login-logo">${icon('feather',64)}</div>
+  <div class="login-logo" id="iconLoginFeather"></div>
   <div class="login-title">拾迹</div>
   <div class="login-slogan">生活值得你记录</div>
   <div class="login-card">
@@ -358,8 +358,8 @@ a{text-decoration:none;color:inherit}
   <header class="header">
     <div class="header-left"><h1>拾迹</h1><p>生活值得你记录</p></div>
     <div class="header-right">
-      <button class="hbtn" onclick="toggleSearch()" title="搜索">${icon('search',18)}</button>
-      <button class="hbtn" onclick="toggleSettings()" title="设置">${icon('settings',18)}</button>
+      <button class="hbtn" onclick="toggleSearch()" title="搜索" id="iconSearch"></button>
+      <button class="hbtn" onclick="toggleSettings()" title="设置" id="iconSettings"></button>
     </div>
   </header>
 
@@ -400,7 +400,7 @@ a{text-decoration:none;color:inherit}
     </div>
     <div class="sec-header"><span class="sec-title">分类概览</span></div>
     <div class="cash-grid" id="cashGrid">
-      <div class="cash-item wechat"><div class="cash-icon">${icon('edit',20)}</div><div class="cash-name">暂无</div><div class="cash-amount">¥0.00</div></div>
+      <div class="cash-item wechat"><div class="cash-icon" id="iconCashEdit"></div><div class="cash-name">暂无</div><div class="cash-amount">¥0.00</div></div>
     </div>
     <button class="manage-btn" onclick="toast('管理功能开发中')">管理现金账户</button>
     <div class="sec-header"><span class="sec-title">消费记录</span><button class="sec-more" onclick="openTypePanel()">添加 ›</button></div>
@@ -427,7 +427,7 @@ a{text-decoration:none;color:inherit}
 
 <!-- Settings -->
 <div class="settings-panel" id="settingsPanel">
-  <div class="settings-header"><button class="settings-close" onclick="toggleSettings()">${icon('x',18)}</button><h2>设置</h2></div>
+  <div class="settings-header"><button class="settings-close" onclick="toggleSettings()" id="iconSettingsClose"></button><h2>设置</h2></div>
   <div class="settings-section"><div class="settings-section-title">外观</div><div class="settings-item"><span class="settings-item-label">深色模式</span><button class="toggle" id="darkToggle" onclick="toggleTheme()"></button></div></div>
   <div class="settings-section">
     <div class="settings-section-title">数据</div>
@@ -933,6 +933,12 @@ function handleLogout(){showConfirm('退出登录','退出后本地数据仍保�
 // ===== Init =====
 loadTheme();
 (async function init(){
+  // Fill static HTML icons
+  const el1=$('iconLoginFeather');if(el1)el1.innerHTML=icon('feather',64);
+  const el2=$('iconSearch');if(el2)el2.innerHTML=icon('search',18);
+  const el3=$('iconSettings');if(el3)el3.innerHTML=icon('settings',18);
+  const el4=$('iconCashEdit');if(el4)el4.innerHTML=icon('edit',20);
+  const el5=$('iconSettingsClose');if(el5)el5.innerHTML=icon('x',18);
   const serverInput=$('loginServer');if(serverInput)serverInput.value=BUILTIN_API;
   (async function detectServer(){try{await fetch(BUILTIN_API+'/api/login',{method:'OPTIONS',signal:AbortSignal.timeout(3000)});isOnline=true;updateSyncUI()}catch(e){isOnline=false;updateSyncUI()}})();
   if(authToken&&currentUser){showApp();try{await syncOnLogin();isOnline=true;renderAll();updateSyncUI();toast('欢迎回来，'+currentUser)}catch(e){isOnline=false;updateSyncUI();toast('离线模式，'+currentUser)}}else{showLoginPage()}
