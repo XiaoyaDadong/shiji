@@ -809,7 +809,7 @@ function closeConfirm(){$('confirmOverlay').classList.remove('show');confirmCb=n
 function typeBadge(type){
   const m=TYPE_META[type];
   if(!m)return '';
-  return `<span class="type-badge" style="background:${m.bg};color:${m.color}">${m.icon?`<span style="display:inline-flex;width:12px;height:12px">${m.icon}</span>`:''}</span>`;
+  return `<span class="type-badge" style="background:transparent;color:${m.color};padding:0">${m.icon||''}</span>`;
 }
 
 // ===== Tabs =====
