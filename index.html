@@ -97,7 +97,7 @@ a{text-decoration:none;color:inherit}
 
 /* ===== Home Countdown Row ===== */
 .cd-row{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
-.cd-mini{min-width:120px;background:var(--card);border-radius:var(--radius);padding:12px 14px;border:1px solid var(--border);cursor:pointer;transition:transform .15s}
+.cd-mini{min-width:120px;background:var(--card);border-radius:var(--radius);padding:12px 14px;border:1px solid var(--border);cursor:pointer;transition:transform .15s;position:relative}
 .cd-mini:active{transform:scale(0.97)}
 .cd-mini-emoji{font-size:24px;margin-bottom:4px}
 .cd-mini-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -189,6 +189,10 @@ a{text-decoration:none;color:inherit}
 
 .manage-btn{display:block;width:calc(100% - 48px);margin:4px 24px 16px;padding:12px;border:1.5px dashed var(--border-strong);border-radius:var(--radius);background:transparent;font-size:14px;color:var(--text-3);cursor:pointer;transition:background .2s;letter-spacing:0.3px}
 .manage-btn:active{background:var(--accent-bg)}
+
+/* ===== Pin Badge ===== */
+.pin-badge{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;color:var(--accent);flex-shrink:0;margin-left:4px;vertical-align:middle}
+.pin-badge svg{width:14px;height:14px}
 
 /* ===== Empty State ===== */
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;color:var(--text-3)}
@@ -589,7 +593,9 @@ const _I={
   minus:'<line x1="5" y1="12" x2="19" y2="12"/>',
   trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>',
   moreH:'<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
-  inbox:'<polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>'
+  inbox:'<polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
+  pin:'<path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.51V18a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2.5a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2z"/>',
+  pinOff:'<path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.51V18a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2.5a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2z"/><line x1="2" y1="2" x2="22" y2="22" stroke-width="2.5"/>'
 };
 function icon(name,sz){const s=sz||20;return `<span class="lucide lucide-${s}"><svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${_I[name]||_I.edit}</svg></span>`}
 
@@ -725,6 +731,35 @@ function daysBetween(s){const t=new Date();t.setHours(0,0,0,0);return Math.ceil(
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function $(id){return document.getElementById(id)}
 function toast(msg){const t=$('toastEl');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+function pinBadge(item){return item.pinned?`<span class="pin-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.51V18a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2.5a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2z"/></svg></span>`:''}
+
+// ===== Sorting =====
+// 通用：置顶优先 + 按时间字段倒序
+function sortByTime(arr,timeField){
+  return [...arr].sort((a,b)=>{
+    const pa=a.pinned?1:0, pb=b.pinned?1:0;
+    if(pa!==pb)return pb-pa; // 置顶优先
+    const ta=a[timeField]||'', tb=b[timeField]||'';
+    return tb.localeCompare(ta); // 时间倒序
+  });
+}
+// 待办：置顶优先 + 未完成在前 + 日期排序
+function sortTodos(arr){
+  return [...arr].sort((a,b)=>{
+    const pa=a.pinned?1:0, pb=b.pinned?1:0;
+    if(pa!==pb)return pb-pa;
+    if(a.done!==b.done)return a.done?1:-1;
+    return (b.date||'').localeCompare(a.date||'');
+  });
+}
+// 倒数日：置顶优先 + 目标日期正序（近的在前）
+function sortCountdowns(arr){
+  return [...arr].sort((a,b)=>{
+    const pa=a.pinned?1:0, pb=b.pinned?1:0;
+    if(pa!==pb)return pb-pa;
+    return (a.date||'').localeCompare(b.date||'');
+  });
+}
 
 // ===== Confirm =====
 function showConfirm(title,text,cb){$('confirmTitle').textContent=title;$('confirmText').textContent=text;confirmCb=cb;$('confirmOk').onclick=()=>{const fn=confirmCb;closeConfirm();if(fn)fn()};$('confirmOverlay').classList.add('show')}
@@ -755,7 +790,7 @@ function diaryHTML(d){
   return `<div class="diary-card" ontouchstart="startLongPress('diary','${d.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('diary','${d.id}')" onclick="if(!wasLongPress())showActionSheet('diary','${d.id}')">
     <div class="dc-top">
       <div class="dc-mood">${d.mood?d.mood:icon('edit',18)}</div>
-      <div class="dc-info"><div class="dc-title">${esc(d.title||'未命名')}</div><div class="dc-meta">${esc(d.source||'手动记录')} · ${esc(d.time||'')}</div></div>
+      <div class="dc-info"><div class="dc-title">${esc(d.title||'未命名')}${pinBadge(d)}</div><div class="dc-meta">${esc(d.source||'手动记录')} · ${esc(d.time||'')}</div></div>
     </div>
     ${d.text?`<div class="dc-text">${esc(d.text)}</div>`:''}
     ${d.tags&&d.tags.length?`<div class="dc-tags">${d.tags.map(t=>`<span class="dc-tag">${esc(t)}</span>`).join('')}</div>`:''}
@@ -765,7 +800,7 @@ function diaryHTML(d){
 function expenseHTML(e){
   return `<div class="exp-card" ontouchstart="startLongPress('expense','${e.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('expense','${e.id}')" onclick="if(!wasLongPress())showActionSheet('expense','${e.id}')">
     <div class="exp-icon" style="background:${CAT_BG[e.category]||'rgba(184,169,154,0.12)'}">${CAT_EMOJI[e.category]||icon('tag',20)}</div>
-    <div class="exp-info"><div class="exp-name">${esc(e.name)}</div><div class="exp-detail">${esc(e.category)} · ${esc(e.date)}</div></div>
+    <div class="exp-info"><div class="exp-name">${esc(e.name)}${pinBadge(e)}</div><div class="exp-detail">${esc(e.category)} · ${esc(e.date)}</div></div>
     <div class="exp-amount">-¥${e.amount.toFixed(2)}</div>
   </div>`;
 }
@@ -773,7 +808,7 @@ function expenseHTML(e){
 function todoHTML(t){
   return `<div class="todo-card">
     <div class="todo-cb ${t.done?'checked':''}" onclick="event.stopPropagation();toggleTodo('${t.id}')">${t.done?icon('check',14):''}</div>
-    <div class="todo-body" ontouchstart="startLongPress('todo','${t.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('todo','${t.id}')" onclick="if(!wasLongPress())editTodo('${t.id}')" style="cursor:pointer"><div class="todo-title ${t.done?'done':''}">${esc(t.title)}</div>${t.date?`<div class="todo-date">${esc(t.date)}</div>`:''}</div>
+    <div class="todo-body" ontouchstart="startLongPress('todo','${t.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('todo','${t.id}')" onclick="if(!wasLongPress())editTodo('${t.id}')" style="cursor:pointer"><div class="todo-title ${t.done?'done':''}">${esc(t.title)}${pinBadge(t)}</div>${t.date?`<div class="todo-date">${esc(t.date)}</div>`:''}</div>
     <div class="todo-pri" style="background:${PRI_COLOR[t.priority]||'#A08B72'}"></div>
   </div>`;
 }
@@ -782,7 +817,7 @@ function countdownHTML(c){
   const d=daysBetween(c.date);const past=d<0;
   return `<div class="cd-card" ontouchstart="startLongPress('countdown','${c.id}')" ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()" oncontextmenu="event.preventDefault();showActionSheet('countdown','${c.id}')" onclick="if(!wasLongPress())editCountdown('${c.id}')">
     <div class="cd-emoji">${c.emoji?c.emoji:icon('calendar',32)}</div>
-    <div class="cd-info"><div class="cd-name">${esc(c.name)}</div><div class="cd-date">${esc(c.date)}</div></div>
+    <div class="cd-info"><div class="cd-name">${esc(c.name)}${pinBadge(c)}</div><div class="cd-date">${esc(c.date)}</div></div>
     <div class="cd-days-wrap"><div class="cd-days">${Math.abs(d)}</div><div class="cd-unit">${past?'天前已到':'天后'}</div></div>
   </div>`;
 }
@@ -800,57 +835,59 @@ function renderAllPage(){
   h+=`<div class="home-welcome"><div class="home-greeting">${greeting}</div><div class="home-date">${dateStr}</div></div>`;
   // 统计卡片（1行4列）
   h+=renderStats();
-  // 待办快捷区（未完成的待办）
-  const undoneTodos=D.todos.filter(t=>!t.done);
+  // 待办快捷区（未完成的待办，置顶+日期排序）
+  const undoneTodos=sortTodos(D.todos.filter(t=>!t.done));
   if(undoneTodos.length){
-    h+=`<div class="home-sec"><div class="home-sec-header"><div class="home-sec-title">${icon('bookmark',18)} 待办 · ${undoneTodos.length}</div><button class="home-sec-more" onclick="switchTab('todo')">全部 ›</button></div>`;
+    h+=`<div class="home-sec"><div class="home-sec-header"><div class="home-sec-title">${icon('bookmark',18)} 待办 · ${D.todos.filter(t=>!t.done).length}</div><button class="home-sec-more" onclick="switchTab('todo')">全部 ›</button></div>`;
     h+=`<div class="record-list">${undoneTodos.slice(0,4).map(todoHTML).join('')}</div></div>`;
   }
-  // 最近日记
-  if(D.diaries.length){
+  // 最近日记（置顶+时间倒序）
+  const sortedDiaries=sortByTime(D.diaries,'time');
+  if(sortedDiaries.length){
     h+=`<div class="home-sec"><div class="home-sec-header"><div class="home-sec-title">${icon('edit',18)} 日记</div><button class="home-sec-more" onclick="switchTab('diary')">全部 ›</button></div>`;
-    h+=`<div class="record-list">${D.diaries.slice(0,2).map(diaryHTML).join('')}</div></div>`;
+    h+=`<div class="record-list">${sortedDiaries.slice(0,2).map(diaryHTML).join('')}</div></div>`;
   }
-  // 倒数日横滑
-  if(D.countdowns.length){
+  // 倒数日横滑（置顶+目标日期正序）
+  const sortedCds=sortCountdowns(D.countdowns);
+  if(sortedCds.length){
     h+=`<div class="home-sec"><div class="home-sec-header"><div class="home-sec-title">${icon('calendar',18)} 倒数日</div><button class="home-sec-more" onclick="switchTab('countdown')">全部 ›</button></div>`;
-    h+=`<div class="cd-row">${D.countdowns.map(c=>{const d=daysBetween(c.date);return `<div class="cd-mini" onclick="switchTab('countdown')"><div class="cd-mini-emoji">${c.emoji||'📅'}</div><div class="cd-mini-name">${esc(c.name)}</div><div class="cd-mini-days">${Math.abs(d)}</div><div class="cd-mini-unit">${d<0?'天前已到':'天后'}</div></div>`}).join('')}</div></div>`;
+    h+=`<div class="cd-row">${sortedCds.map(c=>{const d=daysBetween(c.date);return `<div class="cd-mini" onclick="switchTab('countdown')">${c.pinned?'<div style="position:absolute;top:4px;right:4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.51V18a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2.5a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V5a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2z"/></svg></div>':''}<div class="cd-mini-emoji">${c.emoji||'📅'}</div><div class="cd-mini-name">${esc(c.name)}</div><div class="cd-mini-days">${Math.abs(d)}</div><div class="cd-mini-unit">${d<0?'天前已到':'天后'}</div></div>`}).join('')}</div></div>`;
   }
-  // 消费汇总
-  if(D.expenses.length){
+  // 消费汇总（置顶+日期倒序）
+  const sortedExp=sortByTime(D.expenses,'date');
+  if(sortedExp.length){
     const totalExp=D.expenses.reduce((s,e)=>s+(e.amount||0),0);
     h+=`<div class="home-sec"><div class="home-sec-header"><div class="home-sec-title">${icon('receipt',18)} 消费</div><button class="home-sec-more" onclick="switchTab('expense')">全部 ›</button></div>`;
-    h+=`<div class="exp-summary" onclick="switchTab('expense')"><div class="exp-summary-left"><div class="exp-summary-icon">${icon('receipt',20)}</div><div class="exp-summary-info">${D.expenses.length}笔记录</div></div><div class="exp-summary-amount">¥${totalExp.toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2})}</div></div></div>`;
+    h+=`<div class="exp-summary" onclick="switchTab('expense')"><div class="exp-summary-left"><div class="exp-summary-icon">${icon('receipt',20)}</div><div class="exp-summary-info">${D.expenses.length}笔记录</div></div><div class="exp-summary-amount">¥${D.expenses.reduce((s,e)=>s+(e.amount||0),0).toLocaleString('zh-CN',{minimumFractionDigits:2,maximumFractionDigits:2})}</div></div></div>`;
   }
   if(!h.includes('home-sec'))h+=emptyHTML('inbox','暂无记录');
   $('allDiaryList').innerHTML=h;
 }
 function renderDiaries(){
-  let list=D.diaries;
+  let list=sortByTime(D.diaries,'time');
   if(searchQ)list=list.filter(d=>(d.title||'').toLowerCase().includes(searchQ)||(d.text||'').toLowerCase().includes(searchQ)||(d.tags||[]).some(t=>t.toLowerCase().includes(searchQ)));
   $('diaryList').innerHTML=list.length?list.map(diaryHTML).join(''):emptyHTML('edit','暂无日记');
 }
 function renderExpenses(){
   const el=$('expenseList');if(!el)return;
   if(!D.expenses.length){el.innerHTML=emptyHTML('receipt','暂无消费记录');return}
-  let list=D.expenses;
+  let list=sortByTime(D.expenses,'date');
   if(searchQ)list=list.filter(e=>(e.name||'').toLowerCase().includes(searchQ)||(e.category||'').toLowerCase().includes(searchQ));
   el.innerHTML=list.map(expenseHTML).join('');
   const ael=$('assetExpenseList');if(!ael)return;
-  ael.innerHTML=D.expenses.length?D.expenses.map(expenseHTML).join(''):emptyHTML('receipt','暂无消费记录');
+  ael.innerHTML=D.expenses.length?sortByTime(D.expenses,'date').map(expenseHTML).join(''):emptyHTML('receipt','暂无消费记录');
 }
 function renderTodos(){
   const el=$('todoList');
   if(!D.todos.length){el.innerHTML=emptyHTML('bookmark','暂无待办');return}
-  let list=[...D.todos];
+  let list=sortTodos(D.todos);
   if(searchQ)list=list.filter(t=>(t.title||'').toLowerCase().includes(searchQ));
-  const sorted=list.sort((a,b)=>(a.done===b.done?0:a.done?1:-1));
-  el.innerHTML=sorted.map(todoHTML).join('');
+  el.innerHTML=list.map(todoHTML).join('');
 }
 function renderCountdowns(){
   const el=$('cdList');
   if(!D.countdowns.length){el.innerHTML=emptyHTML('calendar','暂无倒数日');return}
-  let list=D.countdowns;
+  let list=sortCountdowns(D.countdowns);
   if(searchQ)list=list.filter(c=>(c.name||'').toLowerCase().includes(searchQ));
   el.innerHTML=list.map(countdownHTML).join('');
 }
@@ -894,17 +931,20 @@ function wasLongPress(){const r=_longPressFired;_longPressFired=false;return r}
 function showActionSheet(type,id){
   _actionTarget={type,id};
   const items=$('actionItems');
+  const pinLabel=pinToggleLabel(type,id);
+  const pinIcon=pinLabel.startsWith('取消')?'pinOff':'pin';
   const actions={
-    diary:[{icon:'pencil',label:'编辑',action:'edit'},{icon:'trash',label:'删除',action:'delete',danger:true}],
-    expense:[{icon:'pencil',label:'编辑',action:'edit'},{icon:'trash',label:'删除',action:'delete',danger:true}],
-    todo:[{icon:'pencil',label:'编辑',action:'edit'},{icon:'checkCircle',label:todoToggleLabel(id),action:'toggle'},{icon:'trash',label:'删除',action:'delete',danger:true}],
-    countdown:[{icon:'pencil',label:'编辑',action:'edit'},{icon:'trash',label:'删除',action:'delete',danger:true}]
+    diary:[{icon:pinIcon,label:pinLabel,action:'pin'},{icon:'pencil',label:'编辑',action:'edit'},{icon:'trash',label:'删除',action:'delete',danger:true}],
+    expense:[{icon:pinIcon,label:pinLabel,action:'pin'},{icon:'pencil',label:'编辑',action:'edit'},{icon:'trash',label:'删除',action:'delete',danger:true}],
+    todo:[{icon:pinIcon,label:pinLabel,action:'pin'},{icon:'pencil',label:'编辑',action:'edit'},{icon:'checkCircle',label:todoToggleLabel(id),action:'toggle'},{icon:'trash',label:'删除',action:'delete',danger:true}],
+    countdown:[{icon:pinIcon,label:pinLabel,action:'pin'},{icon:'pencil',label:'编辑',action:'edit'},{icon:'trash',label:'删除',action:'delete',danger:true}]
   };
   const list=actions[type]||[];
   items.innerHTML=list.map(a=>`<button class="action-item ${a.danger?'danger':''}" onclick="doAction('${a.action}')">${icon(a.icon,20)} ${a.label}</button>`).join('');
   $('actionOverlay').classList.add('show');
 }
 function todoToggleLabel(id){const t=D.todos.find(x=>x.id===id);return t&&t.done?'标记未完成':'标记完成'}
+function pinToggleLabel(type,id){const arr=type==='diary'?D.diaries:type==='expense'?D.expenses:type==='todo'?D.todos:type==='countdown'?D.countdowns:[];const item=arr.find(x=>String(x.id)===String(id));return item&&item.pinned?'取消置顶':'置顶'}
 function closeActionSheet(){$('actionOverlay').classList.remove('show');_actionTarget=null}
 function doAction(action){
   const t=_actionTarget;if(!t)return;
@@ -921,6 +961,8 @@ function doAction(action){
     else if(t.type==='countdown')delCountdown(t.id);
   }else if(action==='toggle'){
     toggleTodo(t.id);
+  }else if(action==='pin'){
+    togglePin(t.type,t.id);
   }
 }
 
@@ -930,6 +972,14 @@ function delExpense(id){showConfirm('删除消费','确定要删除这条消费�
 function delTodo(id){showConfirm('删除待办','确定要删除这条待办吗？',()=>{D.todos=D.todos.filter(t=>String(t.id)!==String(id));save();renderAll();toast('已删除')})}
 function delCountdown(id){showConfirm('删除倒数日','确定要删除这条倒数日吗？',()=>{D.countdowns=D.countdowns.filter(c=>String(c.id)!==String(id));save();renderAll();toast('已删除')})}
 function toggleTodo(id){const t=D.todos.find(x=>String(x.id)===String(id));if(t){t.done=!t.done;save();renderAll();toast(t.done?'已完成':'已恢复')}}
+function togglePin(type,id){
+  const arr=type==='diary'?D.diaries:type==='expense'?D.expenses:type==='todo'?D.todos:type==='countdown'?D.countdowns:null;
+  if(!arr)return;
+  const item=arr.find(x=>String(x.id)===String(id));
+  if(!item)return;
+  item.pinned=!item.pinned;
+  save();renderAll();toast(item.pinned?'已置顶':'已取消置顶');
+}
 function editDiary(id){const d=D.diaries.find(x=>String(x.id)===String(id));if(d)openModal('diary',d)}
 function editExpense(id){const e=D.expenses.find(x=>String(x.id)===String(id));if(e)openModal('expense',e)}
 function editTodo(id){const t=D.todos.find(x=>String(x.id)===String(id));if(t)openModal('todo',t)}
