@@ -1426,11 +1426,26 @@ function mergeById(localArr, cloudArr) {
   return Array.from(map.values()).sort((a,b) => b.id - a.id);
 }
 
-// 防抖推送：避免save()高频调用导致频繁请求
+// 防抖推送：删除/添加操作立即推送，其他操作2秒防抖
 let pushDebounceTimer = null;
-function debouncePush() {
-  if(pushDebounceTimer) clearTimeout(pushDebounceTimer);
-  pushDebounceTimer = setTimeout(() => { pushCloudData(); }, 2000);
+function debouncePush() { immediatePush(); }
+
+// 立即推送：先拉再推，确保多设备数据不丢
+let isPushing = false;
+async function immediatePush() {
+  if(!authToken || isPushing) return;
+  isPushing = true;
+  try {
+    // 先拉取云端最新数据并合并
+    await pullCloudData();
+    renderAll();
+    // 再推送本地完整数据（全量覆盖）
+    await pushCloudData();
+  } catch(e) {
+    console.warn('同步失败:', e.message);
+  } finally {
+    isPushing = false;
+  }
 }
 
 async function pushCloudData() {
@@ -1441,7 +1456,8 @@ async function pushCloudData() {
       method:'POST',
       body:JSON.stringify({
         diaries: D.diaries, todos: D.todos,
-        expenses: D.expenses, countdowns: D.countdowns, nextId: D.nextId
+        expenses: D.expenses, countdowns: D.countdowns, nextId: D.nextId,
+        _fullSync: true  // 标记为全量同步，后端直接覆盖
       })
     });
     isOnline = true;
@@ -1480,6 +1496,7 @@ function startAutoSync() {
   if(syncTimer) clearInterval(syncTimer);
   // 每30秒自动同步：先拉后推，保证多设备数据不丢
   syncTimer = setInterval(async ()=>{
+    if(isPushing) return; // 避免与立即推送冲突
     try { await pullCloudData(); renderAll(); } catch(e) {}
     pushCloudData();
   }, 30000);
@@ -1488,7 +1505,7 @@ function startAutoSync() {
 function manualSync() {
   if(!authToken) { toast('未登录，无法同步'); return; }
   toast('正在同步...');
-  pullCloudData().then(()=>{ renderAll(); pushCloudData(); }).catch(()=>{ pushCloudData(); });
+  immediatePush().then(()=>{ toast('同步完成'); }).catch(()=>{ pushCloudData(); });
 }
 
 function handleLogout() {
