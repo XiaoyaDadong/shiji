@@ -871,7 +871,7 @@ function emptyHTML(icon, text) {
 function renderDiaries() {
   let list = D.diaries;
   if(searchQ) list = list.filter(d => (d.title||'').toLowerCase().includes(searchQ) || (d.text||'').toLowerCase().includes(searchQ));
-  $('allDiaryList').innerHTML = list.length ? list.slice(0,3).map(d=>diaryHTML(d,true)).join('') : emptyHTML('📭','暂无记录');
+  $('allDiaryList').innerHTML = list.length ? list.map(d=>diaryHTML(d,true)).join('') : emptyHTML('📭','暂无记录');
   $('diaryList').innerHTML = list.length ? list.map(d=>diaryHTML(d,true)).join('') : emptyHTML('📭','暂无日记');
 }
 
