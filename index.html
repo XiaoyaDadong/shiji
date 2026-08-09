@@ -1347,17 +1347,26 @@ async function syncPush(force){
   try{
     // 先增量拉取远程 op
     await pullRemoteOps();
-    // 再做全量快照校验（修补增量同步可能遗漏的删除）
+    // 再做全量快照校验（双向修补：删本地多余 + 补云端独有）
     try{
       const cloud=await api('/api/data');
-      // 以云端为准：删除本地有但云端没有的记录
-      // 例外：本地有未推送的op（说明本地刚修改/新增还没同步上去），需要保留
       const pendingIds=new Set(localOps.map(o=>String(o.recordId)));
       for(const k of SYNC_KEYS){
-        const cloudIds=new Set((cloud[k]||[]).map(x=>String(x.id)));
+        const cloudArr=cloud[k]||[];
+        const cloudMap=new Map(cloudArr.map(x=>[String(x.id),x]));
+        const localMap=new Map(D[k].map(x=>[String(x.id),x]));
+        let changed=false;
+        // 删除本地有但云端没有的（pendingIds例外）
         const before=D[k].length;
-        D[k]=D[k].filter(item=>cloudIds.has(String(item.id))||pendingIds.has(String(item.id)));
-        if(D[k].length!==before){
+        D[k]=D[k].filter(item=>cloudMap.has(String(item.id))||pendingIds.has(String(item.id)));
+        if(D[k].length!==before)changed=true;
+        // 补充云端有但本地没有的
+        for(const item of cloudArr){
+          if(!localMap.has(String(item.id))){
+            D[k].push(item);changed=true;
+          }
+        }
+        if(changed){
           localStorage.setItem(currentStorageKey(),JSON.stringify(D));
           _snap=JSON.stringify(D);
         }
