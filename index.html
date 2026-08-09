@@ -180,59 +180,66 @@ a{text-decoration:none;color:inherit}
 .fab svg{width:22px;height:22px}
 
 /* ===== Bottom Sheet ===== */
-.overlay{position:fixed;inset:0;background:rgba(26,22,18,0.35);z-index:100;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(6px)}
+.overlay{position:fixed;inset:0;background:rgba(26,22,18,0.4);z-index:100;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(6px)}
 .overlay.show{opacity:1;pointer-events:auto}
-.sheet{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:430px;background:var(--bg);border-radius:20px 20px 0 0;padding:8px 0 calc(20px + var(--safe-bottom));z-index:101;transition:transform .35s cubic-bezier(0.32,0.72,0,1);max-height:85vh;overflow-y:auto}
+.sheet{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:430px;background:var(--bg);border-radius:24px 24px 0 0;padding:12px 0 calc(20px + var(--safe-bottom));z-index:101;transition:transform .4s cubic-bezier(0.32,0.72,0,1);max-height:85vh;overflow-y:auto}
 .sheet.show{transform:translateX(-50%) translateY(0)}
-.sheet-handle{width:36px;height:4px;background:var(--border-strong);border-radius:2px;margin:8px auto 16px}
-.sheet-header{padding:0 24px 12px}
-.sheet-header h2{font-family:var(--font);font-size:20px;font-weight:700}
-.sheet-header p{font-size:13px;color:var(--text-2);margin-top:4px;letter-spacing:0.5px}
+.sheet-handle{width:36px;height:4px;background:var(--border-strong);border-radius:2px;margin:8px auto 8px}
+.sheet-header{padding:4px 24px 0;text-align:center}
+.sheet-header h2{font-family:var(--font);font-size:22px;font-weight:700;letter-spacing:2px}
+.sheet-header p{font-size:12px;color:var(--text-3);margin-top:6px;letter-spacing:2px;font-style:italic}
 
 /* ===== Type Grid ===== */
-.type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:0 24px 24px}
-.type-item{background:var(--card);border-radius:var(--radius-lg);padding:20px 4px 16px;text-align:center;cursor:pointer;border:1px solid var(--border);outline:none;transition:all .2s}
-.type-item:active{transform:scale(0.94);border-color:var(--earth);background:var(--card-hover)}
-.type-icon{width:52px;height:52px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:24px;transition:transform .2s}
-.type-item:active .type-icon{transform:scale(1.1)}
-.type-label{font-size:13px;font-weight:500;color:var(--text-2);letter-spacing:1px;font-family:var(--font)}
-.type-hint{font-family:var(--font);font-size:13px;color:var(--text-3);text-align:center;padding:0 24px 16px;letter-spacing:2px;line-height:1.6}
-.type-divider{width:32px;height:1px;background:var(--border-strong);margin:4px auto 12px}
+.type-list{padding:16px 20px 24px;display:flex;flex-direction:column;gap:8px}
+.type-row{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--card);border-radius:var(--radius-lg);cursor:pointer;border:1px solid var(--border);transition:all .2s}
+.type-row:active{transform:scale(0.97);border-color:var(--earth);background:var(--card-hover)}
+.type-row-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.type-row-info{flex:1;min-width:0}
+.type-row-name{font-family:var(--font);font-size:15px;font-weight:600;letter-spacing:1px}
+.type-row-desc{font-size:11px;color:var(--text-3);margin-top:2px;letter-spacing:0.5px}
+.type-row-arrow{color:var(--text-3);font-size:18px;flex-shrink:0;opacity:0.4}
 
 /* ===== Modal ===== */
-.modal-overlay{position:fixed;inset:0;background:rgba(26,22,18,0.45);z-index:200;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(8px)}
+.modal-overlay{position:fixed;inset:0;background:rgba(26,22,18,0.5);z-index:200;opacity:0;pointer-events:none;transition:opacity .35s;backdrop-filter:blur(10px)}
 .modal-overlay.show{opacity:1;pointer-events:auto}
-.modal{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:100%;max-width:430px;background:var(--bg);border-radius:24px 24px 0 0;padding:12px 24px calc(28px + var(--safe-bottom));z-index:201;transition:transform .4s cubic-bezier(0.32,0.72,0,1);max-height:90vh;overflow-y:auto}
-.modal.show{transform:translateX(-50%) translateY(0)}
-.modal-handle{width:36px;height:4px;background:var(--border-strong);border-radius:2px;margin:4px auto 20px}
-.modal h2{font-family:var(--font);font-size:20px;font-weight:700;margin-bottom:20px;text-align:center;letter-spacing:1px}
-.modal-subtitle{font-family:var(--font);font-size:12px;color:var(--text-3);text-align:center;margin-top:-16px;margin-bottom:20px;letter-spacing:1.5px}
+.modal{position:fixed;top:0;right:-100%;width:100%;max-width:430px;height:100vh;background:var(--bg);z-index:201;transition:right .4s cubic-bezier(0.32,0.72,0,1);overflow-y:auto;padding:0 0 calc(40px + var(--safe-bottom))}
+.modal.show{right:50%;transform:translateX(50%)}
+@media(max-width:430px){.modal.show{right:0;transform:none}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:1}
+.modal-close{width:36px;height:36px;border-radius:50%;background:var(--card);border:none;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-2);transition:background .2s}
+.modal-close:active{background:var(--border)}
+.modal-title-group{flex:1;text-align:center}
+.modal-title-group h2{font-family:var(--font);font-size:18px;font-weight:700;letter-spacing:1px}
+.modal-title-group p{font-size:11px;color:var(--text-3);margin-top:2px;letter-spacing:1.5px}
+.modal-spacer{width:36px}
+.modal-body{padding:24px 24px 0}
 
 /* ===== Form (Wabi-sabi) ===== */
-.fg{margin-bottom:18px}
-.fg label{font-size:11px;color:var(--text-3);display:block;margin-bottom:8px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase}
-.fg input,.fg textarea,.fg select{width:100%;border:none;border-bottom:1.5px solid var(--border);border-radius:0;padding:10px 2px;font-size:16px;background:transparent;outline:none;transition:border-color .3s;color:var(--text);font-family:var(--font-sans)}
+.fg{margin-bottom:24px}
+.fg label{font-size:11px;color:var(--text-3);display:block;margin-bottom:8px;font-weight:600;letter-spacing:2px}
+.fg input,.fg textarea,.fg select{width:100%;border:none;border-bottom:1.5px solid var(--border);border-radius:0;padding:12px 2px;font-size:16px;background:transparent;outline:none;transition:border-color .3s;color:var(--text);font-family:var(--font-sans)}
 .fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--accent)}
-.fg textarea{resize:vertical;min-height:80px;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px}
+.fg textarea{resize:vertical;min-height:100px;border:1.5px solid var(--border);border-radius:var(--radius);padding:14px 16px;line-height:1.7}
 .fg textarea:focus{border-color:var(--accent)}
-.fg select{-webkit-appearance:none;appearance:none;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px}
+.fg select{-webkit-appearance:none;appearance:none;border:1.5px solid var(--border);border-radius:var(--radius);padding:10px 14px}
 .fg select:focus{border-color:var(--accent)}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--text-3);opacity:0.6}
 .mood-row{display:flex;gap:10px;flex-wrap:wrap}
-.mood-opt{width:44px;height:44px;border-radius:50%;border:2px solid var(--border);background:transparent;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s}
+.mood-opt{width:46px;height:46px;border-radius:50%;border:2px solid var(--border);background:transparent;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s}
 .mood-opt:active{transform:scale(0.9)}
-.mood-opt.active{border-color:var(--accent);background:var(--accent-bg);transform:scale(1.1);box-shadow:0 2px 8px rgba(192,72,81,0.15)}
+.mood-opt.active{border-color:var(--accent);background:var(--accent-bg);transform:scale(1.08);box-shadow:0 2px 12px rgba(192,72,81,0.18)}
 .pri-row{display:flex;gap:10px}
-.pri-opt{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:20px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:13px;transition:all .25s;letter-spacing:0.5px}
+.pri-opt{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:24px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:13px;transition:all .25s;letter-spacing:0.5px}
 .pri-opt:active{transform:scale(0.95)}
 .pri-opt.active{border-color:var(--accent);background:var(--accent-bg)}
 .pri-dot{width:8px;height:8px;border-radius:50%}
-.form-submit{width:100%;padding:15px;border:none;border-radius:var(--radius);background:var(--seal);color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:8px;font-family:var(--font-sans);letter-spacing:1px;box-shadow:0 2px 12px rgba(192,72,81,0.2)}
+.form-submit{width:100%;padding:16px;border:none;border-radius:var(--radius);background:var(--seal);color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:12px;font-family:var(--font-sans);letter-spacing:2px;box-shadow:0 4px 16px rgba(192,72,81,0.2)}
 .form-submit:active{transform:scale(0.97);opacity:0.9}
-.form-cancel{width:100%;padding:13px;border:none;border-radius:var(--radius);background:transparent;color:var(--text-3);font-size:15px;cursor:pointer;margin-top:6px;letter-spacing:0.5px}
+.form-cancel{width:100%;padding:14px;border:none;border-radius:var(--radius);background:transparent;color:var(--text-3);font-size:14px;cursor:pointer;margin-top:8px;letter-spacing:1px}
 
-/* ===== Category Chips (for expense form) ===== */
+/* ===== Category Chips ===== */
 .cat-chips{display:flex;gap:8px;flex-wrap:wrap}
-.cat-chip{padding:8px 16px;border-radius:20px;border:1.5px solid var(--border);background:transparent;font-size:13px;cursor:pointer;transition:all .25s;letter-spacing:0.5px}
+.cat-chip{padding:8px 16px;border-radius:24px;border:1.5px solid var(--border);background:transparent;font-size:13px;cursor:pointer;transition:all .25s;letter-spacing:0.5px}
 .cat-chip:active{transform:scale(0.95)}
 .cat-chip.active{border-color:var(--earth);background:rgba(160,139,114,0.12);color:var(--ink)}
 
@@ -464,18 +471,18 @@ a{text-decoration:none;color:inherit}
 <div class="sheet" id="typePanel">
   <div class="sheet-handle"></div>
   <div class="sheet-header"><h2>记录此刻</h2><p>一笔一画，皆是生活</p></div>
-  <div class="type-divider"></div>
-  <div class="type-hint">选择你要留下的痕迹</div>
-  <div class="type-grid" id="typeGrid"></div>
+  <div class="type-list" id="typeGrid"></div>
 </div>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
 <div class="modal" id="modal">
-  <div class="modal-handle"></div>
-  <h2 id="modalTitle">新建记录</h2>
-  <div class="modal-subtitle" id="modalSubtitle"></div>
-  <div id="modalBody"></div>
+  <div class="modal-header">
+    <button class="modal-close" id="modalCloseBtn" onclick="closeModal()"></button>
+    <div class="modal-title-group"><h2 id="modalTitle">新建记录</h2><p id="modalSubtitle"></p></div>
+    <div class="modal-spacer"></div>
+  </div>
+  <div class="modal-body" id="modalBody"></div>
 </div>
 
 <!-- Detail Modal -->
@@ -560,18 +567,18 @@ function icon(name,sz){const s=sz||20;return `<span class="lucide lucide-${s}"><
 // ===== Constants =====
 const TABS=[{key:'all',label:'全部'},{key:'diary',label:'日记'},{key:'asset',label:'资产'},{key:'todo',label:'待办'},{key:'countdown',label:'倒数日'}];
 const TYPES=[
-  {key:'expense',icon:icon('receipt',22),bg:'rgba(192,72,81,0.12)',label:'消费'},
-  {key:'meal',icon:icon('utensils',22),bg:'rgba(196,149,106,0.15)',label:'餐食'},
-  {key:'countdown',icon:icon('calendar',22),bg:'rgba(91,107,138,0.12)',label:'倒数日'},
-  {key:'birthday',icon:icon('cake',22),bg:'rgba(160,139,114,0.12)',label:'生日'},
-  {key:'anniversary',icon:icon('heart',22),bg:'rgba(192,72,81,0.12)',label:'纪念日'},
-  {key:'checkin',icon:icon('checkCircle',22),bg:'rgba(107,140,106,0.15)',label:'打卡'},
-  {key:'diary',icon:icon('edit',22),bg:'rgba(196,149,106,0.15)',label:'日记'},
-  {key:'asset',icon:icon('wallet',22),bg:'rgba(91,107,138,0.12)',label:'资产'},
-  {key:'subscribe',icon:icon('refresh',22),bg:'rgba(160,139,114,0.12)',label:'订阅'},
-  {key:'plan',icon:icon('clipboard',22),bg:'rgba(107,140,106,0.15)',label:'计划'},
-  {key:'todo',icon:icon('bookmark',22),bg:'rgba(196,149,106,0.15)',label:'待办'},
-  {key:'festival',icon:icon('sparkles',22),bg:'rgba(192,72,81,0.1)',label:'节日'}
+  {key:'expense',icon:icon('receipt',20),bg:'rgba(192,72,81,0.12)',label:'消费',desc:'一文一物，皆有所值'},
+  {key:'meal',icon:icon('utensils',20),bg:'rgba(196,149,106,0.15)',label:'餐食',desc:'人间烟火，食之有味'},
+  {key:'countdown',icon:icon('calendar',20),bg:'rgba(91,107,138,0.12)',label:'倒数日',desc:'翘首以盼，不负归期'},
+  {key:'birthday',icon:icon('cake',20),bg:'rgba(160,139,114,0.12)',label:'生日',desc:'年年岁岁，生辰如歌'},
+  {key:'anniversary',icon:icon('heart',20),bg:'rgba(192,72,81,0.12)',label:'纪念日',desc:'此情可待，岁岁年年'},
+  {key:'checkin',icon:icon('checkCircle',20),bg:'rgba(107,140,106,0.15)',label:'打卡',desc:'日日不断，功不唐捐'},
+  {key:'diary',icon:icon('edit',20),bg:'rgba(196,149,106,0.15)',label:'日记',desc:'纸短情长，落笔生花'},
+  {key:'asset',icon:icon('wallet',20),bg:'rgba(91,107,138,0.12)',label:'资产',desc:'身外之物，亦需记之'},
+  {key:'subscribe',icon:icon('refresh',20),bg:'rgba(160,139,114,0.12)',label:'订阅',desc:'月月有约，按时而至'},
+  {key:'plan',icon:icon('clipboard',20),bg:'rgba(107,140,106,0.15)',label:'计划',desc:'谋定后动，行且坚毅'},
+  {key:'todo',icon:icon('bookmark',20),bg:'rgba(196,149,106,0.15)',label:'待办',desc:'待办之事，逐一了之'},
+  {key:'festival',icon:icon('sparkles',20),bg:'rgba(192,72,81,0.1)',label:'节日',desc:'节庆之时，人间值得'}
 ];
 const CAT_EMOJI={'餐饮':icon('utensils',20),'交通':icon('car',20),'日用品':icon('cart',20),'娱乐':icon('gamepad',20),'购物':icon('bag',20),'医疗':icon('pulse',20),'订阅':icon('refresh',20),'其他':icon('tag',20)};
 const CAT_BG={'餐饮':'rgba(196,149,106,0.15)','交通':'rgba(91,107,138,0.12)','日用品':'rgba(107,140,106,0.15)','娱乐':'rgba(160,139,114,0.12)','购物':'rgba(192,72,81,0.1)','医疗':'rgba(192,72,81,0.1)','订阅':'rgba(160,139,114,0.12)','其他':'rgba(184,169,154,0.12)'};
@@ -801,7 +808,7 @@ function closeDetail(){$('detailOverlay').classList.remove('show');$('detailModa
 // ===== Type Panel =====
 function openTypePanel(){$('overlay').classList.add('show');$('typePanel').classList.add('show')}
 function closeTypePanel(){$('overlay').classList.remove('show');$('typePanel').classList.remove('show')}
-function renderTypeGrid(){$('typeGrid').innerHTML=TYPES.map(t=>`<button class="type-item" onclick="openModal('${t.key}')"><div class="type-icon" style="background:${t.bg}">${t.icon}</div><div class="type-label">${t.label}</div></button>`).join('')}
+function renderTypeGrid(){$('typeGrid').innerHTML=TYPES.map(t=>`<div class="type-row" onclick="openModal('${t.key}')"><div class="type-row-icon" style="background:${t.bg}">${t.icon}</div><div class="type-row-info"><div class="type-row-name">${t.label}</div><div class="type-row-desc">${t.desc}</div></div><span class="type-row-arrow">›</span></div>`).join('')}
 
 // ===== Modal =====
 let editId=null;
@@ -810,10 +817,11 @@ function openModal(type,editData){
   closeTypePanel();editId=editData?editData.id:null;
   const B=$('modalBody'),T=$('modalTitle'),S=$('modalSubtitle');let h='';const isEdit=!!editData;
   S.textContent=TYPE_SUBTITLES[type]||'记录此刻';
+  $('modalCloseBtn').innerHTML=icon('x',18);
   switch(type){
     case 'diary':T.textContent=isEdit?'编辑日记':'写日记';h=`
       <div class="fg"><label>标题</label><input id="f_title" placeholder="今天的心情..." value="${esc(editData?.title||'')}"></div>
-      <div class="fg"><label>内容</label><textarea id="f_text" placeholder="纸短情长，慢慢写..." rows="4">${esc(editData?.text||'')}</textarea></div>
+      <div class="fg"><label>内容</label><textarea id="f_text" placeholder="纸短情长，慢慢写..." rows="5">${esc(editData?.text||'')}</textarea></div>
       <div class="fg"><label>此刻心情</label><div class="mood-row" id="moodRow"></div></div>
       <div class="fg"><label>标签 · 逗号分隔</label><input id="f_tags" placeholder="如：读书,散步" value="${esc(editData?.tags?.join(',')||'')}"></div>
       <button class="form-submit" onclick="submitDiary()">${isEdit?'保存修改':'落笔'}</button>`;break;
@@ -825,7 +833,7 @@ function openModal(type,editData){
       <button class="form-submit" onclick="submitExpense()">${isEdit?'保存修改':'入账'}</button>`;break;
     case 'meal':T.textContent=isEdit?'编辑餐食':'记餐食';h=`
       <div class="fg"><label>吃了什么</label><input id="f_title" placeholder="餐食" value="${esc(editData?.title||'')}"></div>
-      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="味道如何..." rows="3">${esc(editData?.text||'')}</textarea></div>
+      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="味道如何..." rows="4">${esc(editData?.text||'')}</textarea></div>
       <div class="fg"><label>此刻心情</label><div class="mood-row" id="moodRow"></div></div>
       <button class="form-submit" onclick="submitMeal()">${isEdit?'保存修改':'记下'}</button>`;break;
     case 'todo':T.textContent=isEdit?'编辑待办':'加待办';h=`
@@ -841,40 +849,40 @@ function openModal(type,editData){
     case 'birthday':T.textContent=isEdit?'编辑生日':'记生日';h=`
       <div class="fg"><label>谁的生日</label><input id="f_name" placeholder="姓名" value="${esc((editData?.name||'').replace('的生日',''))}"></div>
       <div class="fg"><label>日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
-      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="想记录些什么..." rows="3">${esc(editData?.text||'')}</textarea></div>
+      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="想记录些什么..." rows="4">${esc(editData?.text||'')}</textarea></div>
       <button class="form-submit" onclick="submitBirthday()">${isEdit?'保存修改':'记下'}</button>`;break;
     case 'anniversary':T.textContent=isEdit?'编辑纪念日':'记纪念日';h=`
       <div class="fg"><label>纪念日名称</label><input id="f_name" placeholder="如：结婚纪念日" value="${esc(editData?.name||'')}"></div>
       <div class="fg"><label>日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
-      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="3">${esc(editData?.text||'')}</textarea></div>
+      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="4">${esc(editData?.text||'')}</textarea></div>
       <button class="form-submit" onclick="submitAnniversary()">${isEdit?'保存修改':'记下'}</button>`;break;
     case 'checkin':T.textContent=isEdit?'编辑打卡':'打卡';h=`
       <div class="fg"><label>打卡项目</label><input id="f_title" placeholder="如：早起/运动/阅读" value="${esc((editData?.title||'').replace('打卡：',''))}"></div>
-      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="3">${esc(editData?.text||'')}</textarea></div>
+      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="4">${esc(editData?.text||'')}</textarea></div>
       <button class="form-submit" onclick="submitCheckin()">${isEdit?'保存修改':'打卡'}</button>`;break;
     case 'asset':T.textContent=isEdit?'编辑资产':'记资产';h=`
       <div class="fg"><label>资产名称</label><input id="f_title" placeholder="如：笔记本电脑" value="${esc((editData?.title||'').replace('资产：',''))}"></div>
       <div class="fg"><label>估值</label><input id="f_amount" type="number" step="0.01" placeholder="0.00" value="${editData?.amount||''}"></div>
-      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="3">${esc(editData?.text||'')}</textarea></div>
+      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="4">${esc(editData?.text||'')}</textarea></div>
       <button class="form-submit" onclick="submitAsset()">${isEdit?'保存修改':'记下'}</button>`;break;
     case 'subscribe':T.textContent=isEdit?'编辑订阅':'记订阅';h=`
       <div class="fg"><label>订阅名称</label><input id="f_name" placeholder="如：网易云音乐" value="${esc((editData?.name||'').replace(' (订阅)',''))}"></div>
       <div class="fg"><label>月费</label><input id="f_amount" type="number" step="0.01" placeholder="0.00" value="${editData?.amount||''}"></div>
-      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="3">${esc(editData?.text||'')}</textarea></div>
+      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="4">${esc(editData?.text||'')}</textarea></div>
       <button class="form-submit" onclick="submitSubscribe()">${isEdit?'保存修改':'记下'}</button>`;break;
     case 'plan':T.textContent=isEdit?'编辑计划':'记计划';h=`
       <div class="fg"><label>计划名称</label><input id="f_title" placeholder="你的计划" value="${esc((editData?.title||'').replace('计划：',''))}"></div>
-      <div class="fg"><label>详细说明</label><textarea id="f_text" placeholder="详细描述..." rows="3">${esc(editData?.text||'')}</textarea></div>
+      <div class="fg"><label>详细说明</label><textarea id="f_text" placeholder="详细描述..." rows="4">${esc(editData?.text||'')}</textarea></div>
       <div class="fg"><label>目标日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
       <button class="form-submit" onclick="submitPlan()">${isEdit?'保存修改':'记下'}</button>`;break;
     case 'festival':T.textContent=isEdit?'编辑节日':'记节日';h=`
       <div class="fg"><label>节日名称</label><input id="f_name" placeholder="如：中秋节" value="${esc((editData?.name||'').replace('节日：',''))}"></div>
       <div class="fg"><label>日期</label><input id="f_date" type="date" value="${editData?.date||''}"></div>
-      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="3">${esc(editData?.text||'')}</textarea></div>
+      <div class="fg"><label>备注</label><textarea id="f_text" placeholder="记录一下..." rows="4">${esc(editData?.text||'')}</textarea></div>
       <button class="form-submit" onclick="submitFestival()">${isEdit?'保存修改':'记下'}</button>`;break;
     default:T.textContent=isEdit?'编辑记录':'新建记录';h=`
       <div class="fg"><label>标题</label><input id="f_title" placeholder="标题" value="${esc(editData?.title||'')}"></div>
-      <div class="fg"><label>内容</label><textarea id="f_text" placeholder="记录一下..." rows="3">${esc(editData?.text||'')}</textarea></div>
+      <div class="fg"><label>内容</label><textarea id="f_text" placeholder="记录一下..." rows="4">${esc(editData?.text||'')}</textarea></div>
       <button class="form-submit" onclick="submitGeneric()">${isEdit?'保存修改':'记下'}</button>`;
   }
   h+=`<button class="form-cancel" onclick="closeModal()">取消</button>`;
@@ -888,6 +896,7 @@ function openModal(type,editData){
     if(pr){const cp=editData?.priority||'medium';pickedPri=cp;pr.innerHTML=[{k:'low',l:'从容',c:'#6B8C6A'},{k:'medium',l:'寻常',c:'#C4956A'},{k:'high',l:'紧迫',c:'#C04851'}].map(p=>`<div class="pri-opt ${p.k===cp?'active':''}" onclick="pickPri(this,'${p.k}')"><div class="pri-dot" style="background:${p.c}"></div>${p.l}</div>`).join('')}
     const cc=$('catChips');
     if(cc){const cats=['餐饮','交通','日用品','娱乐','购物','医疗','订阅','其他'];const cur=$('f_cat').value||'餐饮';cc.innerHTML=cats.map(c=>`<div class="cat-chip ${c===cur?'active':''}" onclick="pickCat(this,'${c}')">${c}</div>`).join('')}
+    const fi=B.querySelector('input,textarea');if(fi)fi.focus();
   },50);
 }
 let pickedMood='😊',pickedEmoji='🌕',pickedPri='medium';
@@ -942,9 +951,10 @@ async function handleLoginSubmit(){
 }
 function enterOffline(){currentUser='';authToken='';isOnline=false;showApp();toast('离线模式，数据仅保存在本地')}
 async function pullCloudData(){if(!authToken)return;try{const cloud=await api('/api/data');if(cloud.diaries||cloud.todos||cloud.expenses||cloud.countdowns){D.diaries=cloud.diaries||[];D.todos=cloud.todos||[];D.expenses=cloud.expenses||[];D.countdowns=cloud.countdowns||[];D.nextId=Math.max(D.nextId||10,cloud.nextId||10);localStorage.setItem(STORAGE_KEY,JSON.stringify(D))}isOnline=true}catch(e){console.warn('拉取云端数据失败:',e.message)}}
-let isPushing=false;
+let isPushing=false,pushTimer=null;
 async function syncOnLogin(){if(!authToken)return;try{const cloud=await api('/api/data');const cloudTotal=(cloud.diaries||[]).length+(cloud.todos||[]).length+(cloud.expenses||[]).length+(cloud.countdowns||[]).length;if(cloudTotal>0){D.diaries=cloud.diaries||[];D.todos=cloud.todos||[];D.expenses=cloud.expenses||[];D.countdowns=cloud.countdowns||[];D.nextId=Math.max(D.nextId||10,cloud.nextId||10);localStorage.setItem(STORAGE_KEY,JSON.stringify(D))}else{await pushCloudData()}}catch(e){console.warn('登录同步失败:',e.message)}}
-async function immediatePush(){if(!authToken||isPushing)return;isPushing=true;try{await pushCloudData();isOnline=true;renderAll()}catch(e){console.warn('同步失败:',e.message)}finally{isPushing=false}}
+async function syncPush(){if(!authToken||isPushing)return;isPushing=true;try{await pullCloudData();await pushCloudData();isOnline=true;renderAll()}catch(e){console.warn('同步失败:',e.message)}finally{isPushing=false}}
+function immediatePush(){if(!authToken)return;if(pushTimer)clearTimeout(pushTimer);pushTimer=setTimeout(syncPush,1500)}
 async function pushCloudData(){if(!authToken)return;try{setSyncStatus('syncing');await api('/api/data',{method:'POST',body:JSON.stringify({diaries:D.diaries,todos:D.todos,expenses:D.expenses,countdowns:D.countdowns,nextId:D.nextId,_fullSync:true})});isOnline=true;setSyncStatus('online')}catch(e){setSyncStatus('offline')}}
 function setSyncStatus(status){const dot=$('syncDot'),text=$('syncText');if(!dot)return;dot.className='sync-dot';if(status==='syncing'){dot.classList.add('syncing');text.textContent='同步中...'}else if(status==='online'){text.textContent='已同步'}else{dot.classList.add('offline');text.textContent='离线'}}
 function updateSyncUI(){const loggedIn=!!currentUser;$('syncBar').style.display=loggedIn?'flex':'none';$('userBadge').style.display=loggedIn?'flex':'none';$('accountSection').style.display=loggedIn?'block':'none';if(loggedIn){$('userAvatar').textContent=currentUser.charAt(0).toUpperCase();$('userName').textContent=currentUser;$('userId').textContent='已登录';$('settingsUser').textContent=currentUser;setSyncStatus(isOnline?'online':'offline')}}
