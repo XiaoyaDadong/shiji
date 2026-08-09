@@ -424,7 +424,6 @@ a{text-decoration:none;color:inherit}
 
   <!-- All -->
   <div class="page-sec active" id="page-all">
-    <div class="stats" id="statsBar"></div>
     <div class="record-list" id="allDiaryList"></div>
   </div>
 
@@ -743,11 +742,13 @@ function onSearch(v){searchQ=v.trim().toLowerCase();renderAll()}
 function renderStats(){
   const mc=D.diaries.filter(d=>d.time&&d.time.startsWith(fmtDate().slice(0,7))).length;
   const ta=D.todos.filter(t=>!t.done).length;
-  $('statsBar').innerHTML=`
-    <div class="stat-card" onclick="switchTab('diary')" style="cursor:pointer"><div class="stat-val">${mc}</div><div class="stat-lbl">记录</div></div>
-    <div class="stat-card" onclick="switchTab('todo')" style="cursor:pointer"><div class="stat-val">${ta}</div><div class="stat-lbl">待办</div></div>
-    <div class="stat-card" onclick="switchTab('countdown')" style="cursor:pointer"><div class="stat-val">${D.countdowns.length}</div><div class="stat-lbl">倒数日</div></div>
-    <div class="stat-card" onclick="switchTab('expense')" style="cursor:pointer"><div class="stat-val">${D.expenses.length}</div><div class="stat-lbl">消费</div></div>`;
+  return `
+    <div class="stats">
+      <div class="stat-card" onclick="switchTab('diary')" style="cursor:pointer"><div class="stat-val">${mc}</div><div class="stat-lbl">日记</div></div>
+      <div class="stat-card" onclick="switchTab('todo')" style="cursor:pointer"><div class="stat-val">${ta}</div><div class="stat-lbl">待办</div></div>
+      <div class="stat-card" onclick="switchTab('countdown')" style="cursor:pointer"><div class="stat-val">${D.countdowns.length}</div><div class="stat-lbl">倒数日</div></div>
+      <div class="stat-card" onclick="switchTab('expense')" style="cursor:pointer"><div class="stat-val">${D.expenses.length}</div><div class="stat-lbl">消费</div></div>
+    </div>`;
 }
 
 function diaryHTML(d){
@@ -797,6 +798,8 @@ function renderAllPage(){
   let h='';
   // 欢迎区
   h+=`<div class="home-welcome"><div class="home-greeting">${greeting}</div><div class="home-date">${dateStr}</div></div>`;
+  // 统计卡片（1行4列）
+  h+=renderStats();
   // 待办快捷区（未完成的待办）
   const undoneTodos=D.todos.filter(t=>!t.done);
   if(undoneTodos.length){
@@ -870,14 +873,14 @@ function renderAsset(){
   }
 }
 function renderPage(){
-  if(curTab==='all'){renderStats();renderAllPage()}
+  if(curTab==='all'){renderAllPage()}
   else if(curTab==='diary')renderDiaries();
   else if(curTab==='expense')renderExpenses();
   else if(curTab==='asset'){renderAsset();renderExpenses()}
   else if(curTab==='todo')renderTodos();
   else if(curTab==='countdown')renderCountdowns();
 }
-function renderAll(){renderStats();renderAllPage();renderDiaries();renderAsset();renderExpenses();renderTodos();renderCountdowns()}
+function renderAll(){renderAllPage();renderDiaries();renderAsset();renderExpenses();renderTodos();renderCountdowns()}
 
 // ===== Action Sheet =====
 let _actionTarget=null,_longPressTimer=null,_longPressFired=false;
