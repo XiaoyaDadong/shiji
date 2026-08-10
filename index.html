@@ -828,7 +828,7 @@ function diaryCard(d){
     ${typeBadge('diary')}
     <div class="dc-top">
       <div class="dc-mood">${d.mood||icon('edit',18)}</div>
-      <div class="dc-info"><div class="dc-title">${esc(d.title||'无题')}${pinBadge(d)}</div><div class="dc-meta">${esc(d.source||'手动记录')} · ${esc(d.time||'')}</div></div>
+      <div class="dc-info"><div class="dc-title">${esc(d.title||'')}${pinBadge(d)}</div><div class="dc-meta">${esc(d.source||'手动记录')} · ${esc(d.time||'')}</div></div>
     </div>
     ${d.text?`<div class="dc-text">${esc(d.text)}</div>`:''}
     ${d.tags&&d.tags.length?`<div class="dc-tags">${d.tags.map(t=>`<span class="dc-tag">${esc(t)}</span>`).join('')}</div>`:''}
@@ -1466,10 +1466,10 @@ async function submitDiary(){
   const tags=$('f_tags').value.split(/[,，]/).map(s=>s.trim()).filter(Boolean);
   if(editId){
     const d=D.diaries.find(x=>String(x.id)===String(editId)&&x.type==='diary');
-    if(d){d.title=title||'无题日记';d.text=text||'';d.mood=pickedMood;d.tags=tags}
+    if(d){d.title=title||'';d.text=text||'';d.mood=pickedMood;d.tags=tags}
     save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();toast('日记已修改');
   }else{
-    const item={id:nid(),type:'diary',title:title||'无题日记',text:text||'',time:fmtTime(),source:'手动记录',mood:pickedMood,tags,pinned:false};
+    const item={id:nid(),type:'diary',title:title||'',text:text||'',time:fmtTime(),source:'手动记录',mood:pickedMood,tags,pinned:false};
     D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();toast('日记已保存');
   }
 }
@@ -1643,10 +1643,10 @@ async function submitGeneric(){
   if(!title&&!text){toast('请填写内容');return}
   if(editId){
     const d=D.diaries.find(x=>String(x.id)===String(editId));
-    if(d){d.title=title||'无题';d.text=text||''}
+    if(d){d.title=title||'';d.text=text||''}
     save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();toast('已修改');
   }else{
-    const item={id:nid(),type:'diary',title:title||'无题',text:text||'',time:fmtTime(),source:'手动记录',mood:'📝',tags:[],pinned:false};
+    const item={id:nid(),type:'diary',title:title||'',text:text||'',time:fmtTime(),source:'手动记录',mood:'📝',tags:[],pinned:false};
     D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();toast('已保存');
   }
 }
