@@ -222,8 +222,7 @@ a{text-decoration:none;color:inherit}
 /* ===== Section Header with New Button ===== */
 .sec-header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px 8px}
 .sec-title{font-family:var(--font);font-size:18px;font-weight:700;letter-spacing:1px}
-.sec-new-btn{padding:6px 14px;border-radius:20px;border:none;background:var(--accent);color:#fff;font-size:12px;font-weight:600;cursor:pointer;transition:transform .15s;letter-spacing:0.3px}
-.sec-new-btn:active{transform:scale(0.95)}
+
 
 /* ===== Cash Grid ===== */
 .cash-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 24px 12px}
@@ -238,8 +237,7 @@ a{text-decoration:none;color:inherit}
 .cash-name{font-size:11px;color:var(--text-3)}
 .cash-amount{font-family:var(--font);font-size:17px;font-weight:700;margin-top:2px}
 
-.manage-btn{display:block;width:calc(100% - 48px);margin:4px 24px 16px;padding:12px;border:1.5px dashed var(--border-strong);border-radius:var(--radius);background:transparent;font-size:14px;color:var(--text-3);cursor:pointer;transition:background .2s;letter-spacing:0.3px}
-.manage-btn:active{background:var(--accent-bg)}
+
 
 /* ===== Pin Badge ===== */
 .pin-badge{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;color:var(--accent);flex-shrink:0;margin-left:4px;vertical-align:middle}
@@ -516,7 +514,7 @@ a{text-decoration:none;color:inherit}
 
   <!-- FAB -->
   <div class="fab-wrap">
-    <button class="fab fab-primary" onclick="openTypePanel()" title="新建"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+    <button class="fab fab-primary" onclick="fabAdd()" id="fabBtn" title="新建"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
   </div>
 </div>
 
@@ -830,7 +828,7 @@ function diaryCard(d){
     ${typeBadge('diary')}
     <div class="dc-top">
       <div class="dc-mood">${d.mood||icon('edit',18)}</div>
-      <div class="dc-info"><div class="dc-title">${esc(d.title||'未命名')}${pinBadge(d)}</div><div class="dc-meta">${esc(d.source||'手动记录')} · ${esc(d.time||'')}</div></div>
+      <div class="dc-info"><div class="dc-title">${esc(d.title||'无题')}${pinBadge(d)}</div><div class="dc-meta">${esc(d.source||'手动记录')} · ${esc(d.time||'')}</div></div>
     </div>
     ${d.text?`<div class="dc-text">${esc(d.text)}</div>`:''}
     ${d.tags&&d.tags.length?`<div class="dc-tags">${d.tags.map(t=>`<span class="dc-tag">${esc(t)}</span>`).join('')}</div>`:''}
@@ -1063,7 +1061,7 @@ function renderDiaries(){
   list=sortByTime(list,'time');
   if(searchQ)list=list.filter(d=>(d.title||'').toLowerCase().includes(searchQ)||(d.text||'').toLowerCase().includes(searchQ)||(d.tags||[]).some(t=>t.toLowerCase().includes(searchQ)));
 
-  let h=`<div class="sec-header"><span class="sec-title">我的日记</span><button class="sec-new-btn" onclick="openModal('diary')">+ 新建</button></div>`;
+  let h=`<div class="sec-header"><span class="sec-title">我的日记</span></div>`;
 
   if(!list.length){h+=emptyHTML('edit','暂无日记');$('diaryContent').innerHTML=h;return}
 
@@ -1127,7 +1125,7 @@ function renderFinance(){
 
   // 各子分类内容
   if(curFinSub==='expense'){
-    h+=`<div class="sec-header"><span class="sec-title">消费记录</span><button class="sec-new-btn" onclick="openModal('expense')">+ 新建</button></div>`;
+    h+=`<div class="sec-header"><span class="sec-title">消费记录</span></div>`;
     let list=D.expenses.filter(e=>e.type==='expense');
     list=sortByTime(list,'date');
     if(searchQ)list=list.filter(e=>(e.name||'').toLowerCase().includes(searchQ)||(e.category||'').toLowerCase().includes(searchQ));
@@ -1138,17 +1136,16 @@ function renderFinance(){
     h+=`<div class="cash-grid">${Object.entries(cats).map(([cat,info])=>`<div class="cash-item ${catClasses[cat]||'wechat'}"><div class="cash-icon">${catEmojis[cat]||icon('tag',20)}</div><div class="cash-name">${esc(cat)}</div><div class="cash-amount">${info.count}笔 · ¥${info.total.toFixed(0)}</div></div>`).join('')}</div>`;
     h+=list.length?`<div class="record-list">${list.map(expenseCard).join('')}</div>`:emptyHTML('receipt','暂无消费记录');
   }else if(curFinSub==='subscribe'){
-    h+=`<div class="sec-header"><span class="sec-title">订阅记录</span><button class="sec-new-btn" onclick="openModal('subscribe')">+ 新建</button></div>`;
+    h+=`<div class="sec-header"><span class="sec-title">订阅记录</span></div>`;
     let list=D.expenses.filter(e=>e.type==='subscribe');
     list=sortByTime(list,'date');
     if(searchQ)list=list.filter(e=>(e.name||'').toLowerCase().includes(searchQ));
     h+=list.length?`<div class="record-list">${list.map(subscribeCard).join('')}</div>`:emptyHTML('refresh','暂无订阅记录');
   }else if(curFinSub==='asset'){
-    h+=`<div class="sec-header"><span class="sec-title">资产列表</span><button class="sec-new-btn" onclick="openModal('asset')">+ 新建</button></div>`;
+    h+=`<div class="sec-header"><span class="sec-title">资产列表</span></div>`;
     let list=sortByTime(assetDiaries,'time');
     if(searchQ)list=list.filter(d=>(d.title||'').toLowerCase().includes(searchQ));
     h+=list.length?`<div class="record-list">${list.map(assetItemCard).join('')}</div>`:emptyHTML('wallet','暂无资产记录');
-    h+=`<button class="manage-btn" onclick="openModal('asset')">+ 添加资产</button>`;
   }
 
   $('financeContent').innerHTML=h;
@@ -1156,7 +1153,7 @@ function renderFinance(){
 
 // === 待办Tab ===
 function renderTodos(){
-  let h=`<div class="sec-header"><span class="sec-title">待办事项</span><button class="sec-new-btn" onclick="openModal('todo')">+ 新建</button></div>`;
+  let h=`<div class="sec-header"><span class="sec-title">待办事项</span></div>`;
   if(!D.todos.length){h+=emptyHTML('bookmark','暂无待办');$('todoContent').innerHTML=h;return}
   let list=sortTodos(D.todos);
   if(searchQ)list=list.filter(t=>(t.title||'').toLowerCase().includes(searchQ));
@@ -1166,7 +1163,7 @@ function renderTodos(){
 
 // === 时光Tab (time) ===
 function renderTime(){
-  let h=`<div class="sec-header"><span class="sec-title">时光</span><button class="sec-new-btn" onclick="openTypePanel()">+ 新建</button></div>`;
+  let h=`<div class="sec-header"><span class="sec-title">时光</span></div>`;
 
   // 5个子分类tab
   const timeSubs=[{key:'all',label:'全部'},{key:'countdown',label:'倒数日'},{key:'birthday',label:'生日'},{key:'anniversary',label:'纪念日'},{key:'festival',label:'节日'}];
@@ -1194,7 +1191,7 @@ function renderTime(){
 
 // === 生活Tab (life) ===
 function renderLife(){
-  let h=`<div class="sec-header"><span class="sec-title">生活</span><button class="sec-new-btn" onclick="openTypePanel()">+ 新建</button></div>`;
+  let h=`<div class="sec-header"><span class="sec-title">生活</span></div>`;
 
   // 3个子分类tab
   const lifeSubs=[{key:'meal',label:'餐食'},{key:'checkin',label:'打卡'},{key:'plan',label:'计划'}];
@@ -1314,6 +1311,33 @@ function editRecord(type,id){
   const found=findRecord(type,id);
   if(!found)return;
   openModal(type,found.record);
+}
+
+// ===== FAB Smart Add =====
+function fabAdd(){
+  switch(curTab){
+    case 'diary': openModal('diary'); break;
+    case 'finance':
+      if(curFinSub==='subscribe') openModal('subscribe');
+      else if(curFinSub==='asset') openModal('asset');
+      else openModal('expense');
+      break;
+    case 'todo': openModal('todo'); break;
+    case 'time':
+      if(curTimeSub==='countdown') openModal('countdown');
+      else if(curTimeSub==='birthday') openModal('birthday');
+      else if(curTimeSub==='anniversary') openModal('anniversary');
+      else if(curTimeSub==='festival') openModal('festival');
+      else openTypePanel(); // "全部" → show type panel
+      break;
+    case 'life':
+      if(curLifeSub==='meal') openModal('meal');
+      else if(curLifeSub==='checkin') openModal('checkin');
+      else if(curLifeSub==='plan') openModal('plan');
+      else openModal('meal');
+      break;
+    default: openTypePanel(); break; // "全部" tab → show all types
+  }
 }
 
 // ===== Type Panel =====
@@ -1442,10 +1466,10 @@ async function submitDiary(){
   const tags=$('f_tags').value.split(/[,，]/).map(s=>s.trim()).filter(Boolean);
   if(editId){
     const d=D.diaries.find(x=>String(x.id)===String(editId)&&x.type==='diary');
-    if(d){d.title=title||'未命名日记';d.text=text||'';d.mood=pickedMood;d.tags=tags}
+    if(d){d.title=title||'无题日记';d.text=text||'';d.mood=pickedMood;d.tags=tags}
     save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();toast('日记已修改');
   }else{
-    const item={id:nid(),type:'diary',title:title||'未命名日记',text:text||'',time:fmtTime(),source:'手动记录',mood:pickedMood,tags,pinned:false};
+    const item={id:nid(),type:'diary',title:title||'无题日记',text:text||'',time:fmtTime(),source:'手动记录',mood:pickedMood,tags,pinned:false};
     D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();toast('日记已保存');
   }
 }
@@ -1619,10 +1643,10 @@ async function submitGeneric(){
   if(!title&&!text){toast('请填写内容');return}
   if(editId){
     const d=D.diaries.find(x=>String(x.id)===String(editId));
-    if(d){d.title=title||'未命名记录';d.text=text||''}
+    if(d){d.title=title||'无题';d.text=text||''}
     save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();toast('已修改');
   }else{
-    const item={id:nid(),type:'diary',title:title||'未命名记录',text:text||'',time:fmtTime(),source:'手动记录',mood:'📝',tags:[],pinned:false};
+    const item={id:nid(),type:'diary',title:title||'无题',text:text||'',time:fmtTime(),source:'手动记录',mood:'📝',tags:[],pinned:false};
     D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();toast('已保存');
   }
 }
