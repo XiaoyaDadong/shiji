@@ -1007,6 +1007,8 @@ function renderAllPage(){
   let allRecords=[];
   D.diaries.forEach(d=>{
     if(['birthday','anniversary','festival'].includes(d.type))return;
+    // 过滤空标题且无内容的垃圾记录
+    if(!d.title&&!d.text)return;
     allRecords.push({...d,_displayType:d.type,_sortTime:d.time||d.date||''});
   });
   D.expenses.forEach(e=>{allRecords.push({...e,_displayType:e.type,_sortTime:e.date||''})});
@@ -1057,7 +1059,7 @@ function renderAllPage(){
 
 // === 日记Tab ===
 function renderDiaries(){
-  let list=D.diaries.filter(d=>d.type==='diary');
+  let list=D.diaries.filter(d=>d.type==='diary'&&!(d.title===''&&d.text===''));
   list=sortByTime(list,'time');
   if(searchQ)list=list.filter(d=>(d.title||'').toLowerCase().includes(searchQ)||(d.text||'').toLowerCase().includes(searchQ)||(d.tags||[]).some(t=>t.toLowerCase().includes(searchQ)));
 
@@ -1462,14 +1464,14 @@ function closeModal(){$('modalOverlay').classList.remove('show');$('modal').clas
 
 async function submitDiary(){
   const title=$('f_title').value.trim(),text=$('f_text').value.trim();
-  if(!title&&!text){toast('请填写内容');return}
+  if(!title){toast('请填写标题');return}
   const tags=$('f_tags').value.split(/[,，]/).map(s=>s.trim()).filter(Boolean);
   if(editId){
     const d=D.diaries.find(x=>String(x.id)===String(editId)&&x.type==='diary');
-    if(d){d.title=title||'';d.text=text||'';d.mood=pickedMood;d.tags=tags}
+    if(d){d.title=title;d.text=text||'';d.mood=pickedMood;d.tags=tags}
     save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();toast('日记已修改');
   }else{
-    const item={id:nid(),type:'diary',title:title||'',text:text||'',time:fmtTime(),source:'手动记录',mood:pickedMood,tags,pinned:false};
+    const item={id:nid(),type:'diary',title:title,text:text||'',time:fmtTime(),source:'手动记录',mood:pickedMood,tags,pinned:false};
     D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();toast('日记已保存');
   }
 }
@@ -1640,13 +1642,13 @@ async function submitPlan(){
 
 async function submitGeneric(){
   const title=$('f_title').value.trim(),text=$('f_text').value.trim();
-  if(!title&&!text){toast('请填写内容');return}
+  if(!title){toast('请填写标题');return}
   if(editId){
     const d=D.diaries.find(x=>String(x.id)===String(editId));
-    if(d){d.title=title||'';d.text=text||''}
+    if(d){d.title=title;d.text=text||''}
     save();renderAll();await cloudUpdate('diaries',String(editId),d);closeModal();toast('已修改');
   }else{
-    const item={id:nid(),type:'diary',title:title||'',text:text||'',time:fmtTime(),source:'手动记录',mood:'📝',tags:[],pinned:false};
+    const item={id:nid(),type:'diary',title:title,text:text||'',time:fmtTime(),source:'手动记录',mood:'📝',tags:[],pinned:false};
     D.diaries.unshift(item);save();renderAll();await cloudAdd('diaries',item);closeModal();toast('已保存');
   }
 }
