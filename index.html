@@ -1240,11 +1240,13 @@ function homeActivitySection(){
   }
   const max=Math.max(...days,1);
   // 纵向柱状图：所有柱宽一致(16px)，用「高度」表达活跃度（对标参考图：同宽不同高的纵柱）
-  const CHART_H=150;
+  const CHART_H=150;       // 最高柱（满活跃）
+  const BAR_MIN=8;         // 空日占位高度（明显矮于有记录的柱子）
+  const BAR_BASE=18;       // 有记录时的最小可见高度（保证与空日区分）
   const bars=days.map((c,i)=>{
-    // 统一规则：所有柱同一套样式与等比高度；无记录的日期同样按比例显示，只是更矮
+    // 统一规则：所有柱同一套样式；空日显示占位矮柱，有记录则从 BASE 线性映射到满高
     const ratio=c/max;
-    const px=c===0?Math.max(8,Math.round(0.08*CHART_H)):Math.max(12,Math.round(ratio*CHART_H));
+    const px=c===0?BAR_MIN:Math.round(BAR_BASE+ratio*(CHART_H-BAR_BASE));
     // 4色阶：越高越深（0 → 浅米驼；1-25% 浅暖棕；25-50% 中暖棕；50-75% 深暖棕；>75% 最深）
     const ci=c===0?0:c/max<=0.25?1:c/max<=0.5?2:c/max<=0.75?3:4;
     return `<div class="activity-row"><span class="activity-day">${labels[i]}</span><div class="activity-bar" style="height:${px}px;--i:${i};background:${BAR_COLORS[ci]}" title="${labels[i]} ${c} 次"></div></div>`
