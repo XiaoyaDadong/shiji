@@ -91,15 +91,14 @@ a{text-decoration:none;color:inherit}
 
 /* ===== Home Insights (对标 life-board / DEADNOTE / cube-diary) ===== */
 .insight-card{background:var(--card);border-radius:var(--radius);padding:14px;border:1px solid var(--border)}
-.activity-bars{position:relative;display:flex;align-items:flex-end;gap:10px;height:76px;overflow:hidden;padding:0 4px}
-.activity-bar{flex:1;min-width:0;border-radius:10px 10px 10px 10px;cursor:pointer;align-self:flex-end;transition:filter .18s,opacity .18s}
-.activity-bar.empty{opacity:.45}
+.activity-bars{position:relative;display:flex;flex-direction:column;gap:10px;padding:6px 2px 2px}
+.activity-row{display:flex;align-items:center;gap:10px}
+.activity-day{width:22px;flex-shrink:0;text-align:center;font-size:11px;color:var(--text-3);font-weight:500;letter-spacing:.3px}
+.activity-bar{flex:0 0 auto;height:20px;border-radius:10px;cursor:pointer;transition:filter .18s,opacity .18s;min-width:8px}
+.activity-bar.empty{opacity:.5}
 .activity-bar:hover{filter:brightness(1.05)}
 .page-enter .activity-bar{animation:barIn .5s var(--ease-out) both;animation-delay:calc(var(--i,0)*45ms)}
-.activity-bar.empty{background:var(--border)}
 .activity-bar:active{opacity:.7}
-.activity-x{display:flex;gap:10px;margin-top:8px}
-.activity-x span{flex:1;text-align:center;font-size:10px;color:var(--text-3)}
 .activity-empty{display:flex;align-items:center;justify-content:center;height:80px;font-size:13px;color:var(--text-3);text-align:center;padding:0 12px}
 .mood-row-ov{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .mood-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
@@ -121,7 +120,7 @@ a{text-decoration:none;color:inherit}
 .insight-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .insight-title{font-family:var(--font);font-size:15px;font-weight:600;letter-spacing:0.5px}
 .insight-more{font-size:12px;color:var(--text-3);font-weight:500}
-@keyframes barIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes barIn{from{opacity:0;transform:scaleX(.2);transform-origin:left}to{opacity:1;transform:scaleX(1);transform-origin:left}}
 @keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes chipIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
 @keyframes fabIn{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
@@ -1241,21 +1240,20 @@ function homeActivitySection(){
     return `<div class="insight-card activity-card"><div class="insight-head"><span class="insight-title">近7天活跃</span><span class="insight-more">暂无记录</span></div><div class="activity-empty">最近七天还没有记录，去记一笔吧 ✍️</div></div>`;
   }
   const max=Math.max(...days,1);
-  // 像素高度 + 真线性比例：最高的一天满高(64px)，其余按真实计数占比精确缩放；
-  // 用像素而非百分比，避免 flex 子项百分比高度在部分浏览器解析失败导致柱子塌成等高
-  const CHART_H=64;
+  // 横向条形图：所有条高度一致(20px)，用「长度」表达活跃度（对标参考图：同宽不同长的横条）
+  // 用像素宽度而非百分比，避免 flex 子项百分比宽度在部分浏览器解析失败导致条子塌成等长
+  const CHART_W=260;
   const bars=days.map((c,i)=>{
-    // 统一规则：所有柱用同一套样式与等比高度；空日子画成一致的「零基线」细柱，不再突兀
+    // 统一规则：所有条同一套样式与等比长度；空日子画成一致的「零基线」短条
     const ratio=c/max;
-    const px=c===0?6:Math.max(10,Math.round(ratio*CHART_H));
-    // 4色阶：越高越深（0 → 浅米驼；1-25% 浅暖棕；25-50% 中暖棕；50-75% 深暖棕；>75% 最深）
+    const px=c===0?8:Math.max(16,Math.round(ratio*CHART_W));
+    // 4色阶：越长越深（0 → 浅米驼；1-25% 浅暖棕；25-50% 中暖棕；50-75% 深暖棕；>75% 最深）
     const ci=c===0?0:c/max<=0.25?1:c/max<=0.5?2:c/max<=0.75?3:4;
-    return `<div class="activity-bar ${c===0?'empty':''}" style="height:${px}px;--i:${i};background:${BAR_COLORS[ci]}" title="${labels[i]} ${c} 次"></div>`
+    return `<div class="activity-row"><span class="activity-day">${labels[i]}</span><div class="activity-bar ${c===0?'empty':''}" style="width:${px}px;--i:${i};background:${BAR_COLORS[ci]}" title="${labels[i]} ${c} 次"></div></div>`
   }).join('');
-  const xlab=labels.map(l=>`<span>${l}</span>`).join('');
   const streak=calcStreak();
   const more=streak>0?`🔥 连续 ${streak} 天 · 共 ${total} 次`:`近7天 ${total} 次`;
-  return `<div class="insight-card activity-card"><div class="insight-head"><span class="insight-title">近7天活跃</span><span class="insight-more">${more}</span></div><div class="activity-bars">${bars}</div><div class="activity-x">${xlab}</div></div>`;
+  return `<div class="insight-card activity-card"><div class="insight-head"><span class="insight-title">近7天活跃</span><span class="insight-more">${more}</span></div><div class="activity-bars">${bars}</div></div>`;
 }
 // 本月心情概览（对标 DEADNOTE 情绪仪表盘）—— 本月日记/餐食心情分布
 function homeMoodInner(){
