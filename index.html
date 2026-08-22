@@ -91,14 +91,14 @@ a{text-decoration:none;color:inherit}
 
 /* ===== Home Insights (对标 life-board / DEADNOTE / cube-diary) ===== */
 .insight-card{background:var(--card);border-radius:var(--radius);padding:14px;border:1px solid var(--border)}
-.activity-bars{position:relative;display:flex;align-items:flex-end;gap:8px;height:76px;overflow:hidden;padding-bottom:1px;border-bottom:1px solid var(--border)}
-.activity-bar{flex:1;min-width:0;border-radius:5px 5px 3px 3px;cursor:pointer;align-self:flex-end;transition:filter .18s,opacity .18s}
-.activity-bar.empty{opacity:.55}
-.activity-bar:hover{filter:brightness(1.07)}
+.activity-bars{position:relative;display:flex;align-items:flex-end;gap:10px;height:76px;overflow:hidden;padding:0 4px}
+.activity-bar{flex:1;min-width:0;border-radius:10px 10px 10px 10px;cursor:pointer;align-self:flex-end;transition:filter .18s,opacity .18s}
+.activity-bar.empty{opacity:.45}
+.activity-bar:hover{filter:brightness(1.05)}
 .page-enter .activity-bar{animation:barIn .5s var(--ease-out) both;animation-delay:calc(var(--i,0)*45ms)}
 .activity-bar.empty{background:var(--border)}
 .activity-bar:active{opacity:.7}
-.activity-x{display:flex;gap:8px;margin-top:7px}
+.activity-x{display:flex;gap:10px;margin-top:8px}
 .activity-x span{flex:1;text-align:center;font-size:10px;color:var(--text-3)}
 .activity-empty{display:flex;align-items:center;justify-content:center;height:80px;font-size:13px;color:var(--text-3);text-align:center;padding:0 12px}
 .mood-row-ov{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
@@ -1208,7 +1208,8 @@ function renderAllPage(){
 // === 首页洞察模块（对标 GitHub 同类开源项目） ===
 // 常见心情 emoji → 点缀色映射（对标 DEADNOTE 情绪可视化）
 const MOOD_COLOR={'😊':'var(--moss)','😋':'var(--clay)','😌':'#A08B72','😎':'var(--moss)','🥰':'var(--seal)','😇':'var(--moss)','😤':'var(--seal)','😢':'var(--indigo)','😴':'var(--indigo)','🌕':'var(--clay)','😍':'var(--seal)','🤔':'var(--earth)'};
-function barColor(c){if(c===0)return '#E2D6C2';if(c<=1)return '#E3D2B6';if(c<=2)return 'var(--clay)';return 'var(--seal)'}
+// 暖调大地棕系4色阶：0 → 浅米驼, 低 → 浅暖棕, 中 → 中暖棕, 高 → 深暖棕（柱子越高颜色越深，对标参考图）
+const BAR_COLORS=['#E8DCC8','#D9C5A3','#C2A67C','#A88B62','#8F7350'];
 // 连续记录天数（对标 life-board 的 habit streak）
 function calcStreak(){
   let s=0;
@@ -1240,14 +1241,16 @@ function homeActivitySection(){
     return `<div class="insight-card activity-card"><div class="insight-head"><span class="insight-title">近7天活跃</span><span class="insight-more">暂无记录</span></div><div class="activity-empty">最近七天还没有记录，去记一笔吧 ✍️</div></div>`;
   }
   const max=Math.max(...days,1);
-  // 像素高度 + 真线性比例：最高的一天满高(70px)，其余按真实计数占比精确缩放；
+  // 像素高度 + 真线性比例：最高的一天满高(64px)，其余按真实计数占比精确缩放；
   // 用像素而非百分比，避免 flex 子项百分比高度在部分浏览器解析失败导致柱子塌成等高
   const CHART_H=64;
   const bars=days.map((c,i)=>{
     // 统一规则：所有柱用同一套样式与等比高度；空日子画成一致的「零基线」细柱，不再突兀
     const ratio=c/max;
     const px=c===0?6:Math.max(10,Math.round(ratio*CHART_H));
-    return `<div class="activity-bar ${c===0?'empty':''}" style="height:${px}px;--i:${i};background:${barColor(c)}" title="${labels[i]} ${c} 次"></div>`
+    // 4色阶：越高越深（0 → 浅米驼；1-25% 浅暖棕；25-50% 中暖棕；50-75% 深暖棕；>75% 最深）
+    const ci=c===0?0:c/max<=0.25?1:c/max<=0.5?2:c/max<=0.75?3:4;
+    return `<div class="activity-bar ${c===0?'empty':''}" style="height:${px}px;--i:${i};background:${BAR_COLORS[ci]}" title="${labels[i]} ${c} 次"></div>`
   }).join('');
   const xlab=labels.map(l=>`<span>${l}</span>`).join('');
   const streak=calcStreak();
