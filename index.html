@@ -91,10 +91,10 @@ a{text-decoration:none;color:inherit}
 
 /* ===== Home Insights (对标 life-board / DEADNOTE / cube-diary) ===== */
 .insight-card{background:var(--card);border-radius:var(--radius);padding:14px;border:1px solid var(--border)}
-.activity-bars{position:relative;display:flex;flex-direction:column;gap:10px;padding:6px 2px 2px}
-.activity-row{display:flex;align-items:center;gap:10px}
-.activity-day{width:22px;flex-shrink:0;text-align:center;font-size:11px;color:var(--text-3);font-weight:500;letter-spacing:.3px}
-.activity-bar{flex:0 0 auto;height:20px;border-radius:10px;cursor:pointer;transition:filter .18s,opacity .18s;min-width:8px}
+.activity-bars{position:relative;display:flex;flex-direction:row;align-items:flex-end;gap:8px;padding:6px 2px 2px;height:200px}
+.activity-row{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;min-width:0;height:100%;justify-content:flex-end}
+.activity-day{flex-shrink:0;text-align:center;font-size:11px;color:var(--text-3);font-weight:500;letter-spacing:.3px}
+.activity-bar{flex:0 0 auto;width:16px;border-radius:8px;cursor:pointer;transition:filter .18s,opacity .18s;min-height:5px}
 .activity-bar:hover{filter:brightness(1.05)}
 .page-enter .activity-bar{animation:barIn .5s var(--ease-out) both;animation-delay:calc(var(--i,0)*45ms)}
 .activity-bar:active{opacity:.7}
@@ -119,7 +119,7 @@ a{text-decoration:none;color:inherit}
 .insight-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .insight-title{font-family:var(--font);font-size:15px;font-weight:600;letter-spacing:0.5px}
 .insight-more{font-size:12px;color:var(--text-3);font-weight:500}
-@keyframes barIn{from{opacity:0;transform:scaleX(.2);transform-origin:left}to{opacity:1;transform:scaleX(1);transform-origin:left}}
+@keyframes barIn{from{opacity:0;transform:scaleY(.15);transform-origin:bottom}to{opacity:1;transform:scaleY(1);transform-origin:bottom}}
 @keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes chipIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
 @keyframes fabIn{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
@@ -1239,16 +1239,15 @@ function homeActivitySection(){
     return `<div class="insight-card activity-card"><div class="insight-head"><span class="insight-title">近7天活跃</span><span class="insight-more">暂无记录</span></div><div class="activity-empty">最近七天还没有记录，去记一笔吧 ✍️</div></div>`;
   }
   const max=Math.max(...days,1);
-  // 横向条形图：所有条高度一致(20px)，用「长度」表达活跃度（对标参考图：同宽不同长的横条）
-  // 用像素宽度而非百分比，避免 flex 子项百分比宽度在部分浏览器解析失败导致条子塌成等长
-  const CHART_W=260;
+  // 纵向柱状图：所有柱宽一致(16px)，用「高度」表达活跃度（对标参考图：同宽不同高的纵柱）
+  const CHART_H=150;
   const bars=days.map((c,i)=>{
-    // 统一规则：所有条同一套样式与等比长度；无记录的日期同样按比例显示，只是更短
+    // 统一规则：所有柱同一套样式与等比高度；无记录的日期同样按比例显示，只是更矮
     const ratio=c/max;
-    const px=c===0?Math.max(10,Math.round(0.08*CHART_W)):Math.max(16,Math.round(ratio*CHART_W));
-    // 4色阶：越长越深（0 → 浅米驼；1-25% 浅暖棕；25-50% 中暖棕；50-75% 深暖棕；>75% 最深）
+    const px=c===0?Math.max(8,Math.round(0.08*CHART_H)):Math.max(12,Math.round(ratio*CHART_H));
+    // 4色阶：越高越深（0 → 浅米驼；1-25% 浅暖棕；25-50% 中暖棕；50-75% 深暖棕；>75% 最深）
     const ci=c===0?0:c/max<=0.25?1:c/max<=0.5?2:c/max<=0.75?3:4;
-    return `<div class="activity-row"><span class="activity-day">${labels[i]}</span><div class="activity-bar" style="width:${px}px;--i:${i};background:${BAR_COLORS[ci]}" title="${labels[i]} ${c} 次"></div></div>`
+    return `<div class="activity-row"><span class="activity-day">${labels[i]}</span><div class="activity-bar" style="height:${px}px;--i:${i};background:${BAR_COLORS[ci]}" title="${labels[i]} ${c} 次"></div></div>`
   }).join('');
   const streak=calcStreak();
   const more=streak>0?`🔥 连续 ${streak} 天 · 共 ${total} 次`:`近7天 ${total} 次`;
