@@ -14,8 +14,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>拾迹 · 生活值得你记录</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+
 <style>
 /* ===== Wabi-sabi Design Tokens ===== */
 :root {
@@ -30,8 +29,8 @@
   --shadow-sm: 0 1px 2px rgba(44,36,22,0.04);
   --shadow: 0 2px 8px rgba(44,36,22,0.06);
   --shadow-lg: 0 8px 24px rgba(44,36,22,0.1);
-  --font: "Noto Serif SC","Songti SC","SimSun","PingFang SC","Microsoft YaHei",serif;
-  --font-sans: -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --font: -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
+  --font-sans: -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --ease-out: cubic-bezier(.22,1,.36,1);
   --ease-back: cubic-bezier(.34,1.56,.64,1);
@@ -126,7 +125,78 @@ a{text-decoration:none;color:inherit}
 .insight-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .insight-title{font-family:var(--font);font-size:15px;font-weight:600;letter-spacing:0.5px}
 .insight-more{font-size:12px;color:var(--text-3);font-weight:500}
-/* ===== 统计中心（对标 拾光记统计中心 / DEADNOTE 情绪曲线） ===== */
+/* ===== 统计中心（对标 日迹统计 / DEADNOTE 情绪曲线） ===== */
+/* 统计页专用配色：薄荷绿马卡龙清新风 */
+:root{
+  --st-bg:#F7FBF9;          /* 统计页浅薄荷背景 */
+  --st-card:#FFFFFF;         /* 白卡片 */
+  --st-accent:#5B9D8E;       /* 薄荷绿主色 */
+  --st-accent-light:#A8D5C8; /* 浅薄荷 */
+  --st-blue:#6BA3C6;         /* 天蓝 */
+  --st-pink:#F0A8B6;         /* 樱花粉 */
+  --st-yellow:#F5C988;       /* 暖黄 */
+  --st-purple:#B8A4D4;       /* 淡紫 */
+  --st-text:#1A2B25;         /* 深墨绿文字 */
+  --st-text-2:#6B8A7E;       /* 次要文字 */
+  --st-text-3:#A0B5AC;       /* 辅助文字 */
+  --st-border:#E5F0EC;       /* 浅薄荷边框 */
+}
+[data-theme="dark"]{
+  --st-bg:#13201C; --st-card:#1A2B25;
+  --st-accent:#7BBFAE; --st-accent-light:#5B9D8E;
+  --st-blue:#8BC4E0; --st-pink:#F5B8C5; --st-yellow:#F5D5A0; --st-purple:#C8B4E4;
+  --st-text:#D4E8E0; --st-text-2:#8BAA9E; --st-text-3:#5B7570;
+  --st-border:#2A3D36;
+}
+#page-stats{background:var(--st-bg)}
+#page-stats .sec-header .sec-title{color:var(--st-text)}
+#page-stats .sec-sub{color:var(--st-text-3)}
+#page-stats .insight-card{background:var(--st-card);border-color:var(--st-border)}
+#page-stats .insight-title{color:var(--st-text)}
+#page-stats .insight-more{color:var(--st-text-3)}
+#page-stats .stat-card{background:var(--st-card);border-color:var(--st-border)}
+#page-stats .stat-val{color:var(--st-text)}
+#page-stats .stat-lbl{color:var(--st-text-2)}
+#page-stats .chart-empty{color:var(--st-text-3)}
+#page-stats .chart-foot,#page-stats .chart-scale{color:var(--st-text-2)}
+#page-stats .chart-grid{stroke:var(--st-border)}
+#page-stats .chart-xlab{fill:var(--st-text-3)}
+#page-stats .donut-ct{fill:var(--st-text)}
+#page-stats .donut-cb{fill:var(--st-text-3)}
+#page-stats .legend-name{color:var(--st-text-2)}
+#page-stats .legend-val{color:var(--st-text)}
+#page-stats .legend-pct{color:var(--st-text-3)}
+#page-stats .mbar{background:linear-gradient(180deg,var(--st-accent),var(--st-accent-light))}
+#page-stats .mbar-val{color:var(--st-text-2)}
+#page-stats .mbar-lab{color:var(--st-text-3)}
+#page-stats .dist-name{color:var(--st-text-2)}
+#page-stats .dist-track{background:var(--st-border)}
+#page-stats .dist-val{color:var(--st-text-3)}
+#page-stats .mood-avg{color:var(--st-accent)}
+#page-stats .guide-icon{color:var(--st-accent)}
+#page-stats .guide-title{color:var(--st-text)}
+#page-stats .guide-text{color:var(--st-text-3)}
+#page-stats .guide-btn{background:var(--st-accent)}
+/* 统计页新增模块样式 */
+.st-mood-ring-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.st-mood-ring{flex:0 0 auto}
+.st-mood-dots{display:flex;gap:8px;flex-wrap:wrap}
+.st-mood-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--st-bg);border:1px solid var(--st-border)}
+.st-mood-label{font-size:11px;color:var(--st-text-3);text-align:center;margin-top:4px}
+.st-heatmap{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:8px 0}
+.st-heat-cell{aspect-ratio:1;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;color:var(--st-text-3);background:var(--st-bg);border:1px solid var(--st-border);min-height:42px;overflow:hidden}
+.st-heat-day{font-size:10px;font-weight:600;color:var(--st-text);line-height:1}
+.st-heat-words{font-size:8px;color:var(--st-text-2);margin-top:1px;line-height:1}
+.st-heat-empty{color:var(--st-text-3);font-size:9px}
+.st-month-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.st-month-label{width:30px;flex:0 0 auto;font-size:11px;color:var(--st-text-2);font-weight:600}
+.st-month-track{flex:1;height:24px;border-radius:12px;background:var(--st-bg);overflow:hidden;position:relative}
+.st-month-fill{height:100%;border-radius:12px;background:linear-gradient(90deg,var(--st-accent-light),var(--st-accent));transition:width .6s var(--ease-out)}
+.st-month-val{font-size:10px;color:var(--st-text-3);white-space:nowrap}
+.st-stat-mini{display:flex;gap:16px;margin-top:10px}
+.st-stat-mini-item{text-align:center;flex:1}
+.st-stat-mini-val{font-size:16px;font-weight:700;color:var(--st-text)}
+.st-stat-mini-lbl{font-size:10px;color:var(--st-text-3);margin-top:2px}
 .stats-grid6{grid-template-columns:repeat(3,1fr);padding:12px 20px 4px}
 .stat-card.stat-static{cursor:default}
 .stat-card.stat-static:active{transform:none}
@@ -1749,7 +1819,7 @@ function renderAllPage(){
 // 常见心情 emoji → 点缀色映射（对标 DEADNOTE 情绪可视化）
 const MOOD_COLOR={'😊':'var(--moss)','😋':'var(--clay)','😌':'#A08B72','😎':'var(--moss)','🥰':'var(--seal)','😇':'var(--moss)','😤':'var(--seal)','😢':'var(--indigo)','😴':'var(--indigo)','🌕':'var(--clay)','😍':'var(--seal)','🤔':'var(--earth)'};
 // 暖调大地棕系4色阶：0 → 浅米驼, 低 → 浅暖棕, 中 → 中暖棕, 高 → 深暖棕（柱子越高颜色越深，对标参考图）
-const BAR_COLORS=['#E8DCC8','#D9C5A3','#C2A67C','#A88B62','#8F7350'];
+const BAR_COLORS=['#E8F0EC','#C8DDD4','#A8D5C8','#7BBFAE','#5B9D8E'];
 // 连续记录天数（对标 life-board 的 habit streak）
 function calcStreak(){
   let s=0;
@@ -2010,8 +2080,8 @@ function renderLife(){
 // ===== 统计中心 =====
 // 对标 GitHub 同类项目：拾光记「统计中心」/ DEADNOTE「情绪分析曲线」/ DayBook「归档统计」
 // 全部为纯 SVG 手绘，不引入任何图表库，保持单文件零依赖
-const CHART_PALETTE=['#C4956A','#5B6B8A','#6B8C6A','#C04851','#A08B72','#8C7E6D','#B8A99A','#7A8B9A'];
-const CAT_COLOR={'餐饮':'#C4956A','交通':'#5B6B8A','日用品':'#6B8C6A','娱乐':'#A08B72','购物':'#C04851','医疗':'#8C7E6D','订阅':'#B8A99A','其他':'#9B8E7D'};
+const CHART_PALETTE=['#5B9D8E','#6BA3C6','#F0A8B6','#F5C988','#B8A4D4','#A8D5C8','#A0B5AC','#8BAA9E'];
+const CAT_COLOR={'餐饮':'#F5C988','交通':'#6BA3C6','日用品':'#A8D5C8','娱乐':'#B8A4D4','购物':'#F0A8B6','医疗':'#8BAA9E','订阅':'#A0B5AC','其他':'#6B8A7E'};
 // 心情 emoji → 1~5 分值，用于绘制情绪趋势曲线
 const MOOD_SCORE={'😢':1,'😭':1,'😞':1,'😤':2,'😠':2,'😔':2,'😰':2,'🤔':3,'😐':3,'😌':3,'😴':3,'🫤':3,'🙂':4,'😊':4,'😋':4,'😎':4,'😇':4,'😏':4,'🥰':5,'😍':5,'🥳':5,'🤩':5};
 
@@ -2140,7 +2210,7 @@ function statsExpenseTrend(){
   const pts=days.map(k=>({label:k.slice(5).replace('-','/'),value:map[k]||0}));
   const total=pts.reduce((s,p)=>s+p.value,0);
   const active=pts.filter(p=>p.value>0).length;
-  const body=`<div class="chart-body">${lineSVG(pts,{h:120,color:'#C04851',fmt:v=>'¥'+v.toFixed(0)})}</div>
+  const body=`<div class="chart-body">${lineSVG(pts,{h:120,color:'#5B9D8E',fmt:v=>'¥'+v.toFixed(0)})}</div>
     <div class="chart-foot"><span>合计 ¥${total.toFixed(0)}</span><span>有支出 ${active} 天</span><span>日均 ¥${(active?total/active:0).toFixed(0)}</span></div>`;
   return chartCard('近30天消费趋势','',body);
 }
@@ -2162,7 +2232,7 @@ function statsMoodTrend(){
   if(!all.length)return chartCard('近30天心情趋势','',chartEmpty('近30天还没有心情记录',120));
   const avg=all.reduce((a,b)=>a+b,0)/all.length;
   const word=avg>=4.3?'愉悦':avg>=3.5?'平和':avg>=2.5?'一般':'低落';
-  const body=`<div class="chart-body">${lineSVG(pts,{h:120,min:1,max:5,color:'#6B8C6A',fmt:v=>v.toFixed(1)})} </div>
+  const body=`<div class="chart-body">${lineSVG(pts,{h:120,min:1,max:5,color:'#5B9D8E',fmt:v=>v.toFixed(1)})} </div>
     <div class="chart-foot"><span class="mood-avg">平均${word} ${avg.toFixed(1)}/5</span><span>${all.length} 天有记录</span></div>
     <div class="chart-scale"><span>低落</span><span>平和</span><span>愉悦</span></div>`;
   return chartCard('近30天心情趋势','',body);
@@ -2182,7 +2252,7 @@ function statsDiaryMonthly(){
   const totalCh=data.reduce((s,d)=>s+d.chars,0);
   if(!totalC)return chartCard('近半年记录量','',chartEmpty('还没有日记',120));
   const max=Math.max.apply(null,data.map(d=>d.count).concat([1]));
-  const bars=data.map(d=>`<div class="mbar-col"><div class="mbar-val">${d.count||''}</div><div class="mbar" style="height:${Math.max(4,Math.round(d.count/max*72))}px"></div><div class="mbar-lab">${d.label}</div></div>`).join('');
+  const bars=data.map(d=>`<div class="mbar-col"><div class="mbar-val">${d.count||''}</div><div class="mbar" style="height:${Math.max(4,Math.round(d.count/max*72))}px;background:linear-gradient(180deg,#5B9D8E,#A8D5C8)"></div><div class="mbar-lab">${d.label}</div></div>`).join('');
   const body=`<div class="mbar-chart">${bars}</div><div class="chart-foot"><span>近半年 ${totalC} 篇</span><span>共 ${totalCh.toLocaleString('zh-CN')} 字</span></div>`;
   return chartCard('近半年记录量','',body);
 }
@@ -2204,6 +2274,120 @@ function statsTypeDist(){
   }).join('');
   return chartCard('记录类型分布','共 '+total+' 条',`<div class="dist-list">${rows}</div>`);
 }
+// --- 本月心情环形进度图（对标日迹心情统计） ---
+function statsMoodRing(){
+  const now=new Date();
+  const monthStr=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+  const moods=[];
+  D.diaries.forEach(d=>{
+    if((d.type==='diary'||d.type==='meal')&&(d.time||'').startsWith(monthStr)&&d.mood&&MOOD_SCORE[d.mood]!=null)
+      moods.push(d.mood);
+  });
+  if(!moods.length)return chartCard('本月心情','','本月还没有心情记录');
+  const cnt={};moods.forEach(m=>cnt[m]=(cnt[m]||0)+1);
+  const entries=Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
+  const dominant=entries[0];
+  const pct=Math.round(dominant[1]/moods.length*100);
+  const moodColors={'😊':'#F5C988','😋':'#F5C988','😌':'#A8D5C8','😎':'#5B9D8E','🥰':'#F0A8B6',
+    '🙂':'#A8D5C8','😇':'#A8D5C8','😏':'#A8D5C8','😐':'#A0B5AC','😴':'#A0B5AC','🫤':'#A0B5AC',
+    '🤔':'#B8A4D4','😔':'#6BA3C6','😰':'#6BA3C6','😠':'#F0A8B6','😤':'#F0A8B6',
+    '😞':'#6BA3C6','😭':'#6BA3C6','😢':'#6BA3C6','😍':'#F0A8B6','🥳':'#F5C988','🤩':'#F5C988'};
+  const color=moodColors[dominant[0]]||'#5B9D8E';
+  // SVG 环形进度图
+  const size=120,ring=10,r=size/2,rr=r-ring/2,C=2*Math.PI*rr;
+  const fillLen=C*(pct/100);
+  const svg=`<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
+    <circle cx="${r}" cy="${r}" r="${rr}" fill="none" stroke="var(--st-border)" stroke-width="${ring}"/>
+    <circle cx="${r}" cy="${r}" r="${rr}" fill="none" stroke="${color}" stroke-width="${ring}"
+      stroke-dasharray="${fillLen.toFixed(2)} ${(C-fillLen).toFixed(2)}"
+      stroke-linecap="round" transform="rotate(-90 ${r} ${r})"/>
+    <text x="${r}" y="${r-2}" text-anchor="middle" font-size="22" font-weight="700" fill="var(--st-text)">${pct}%</text>
+    <text x="${r}" y="${r+16}" text-anchor="middle" font-size="11" fill="var(--st-text-3)">${dominant[0]} 主导</text>
+  </svg>`;
+  // 每日表情圆点
+  const days=lastDays(7);
+  const dayMoods=days.map(k=>{
+    const dayMs=D.diaries.filter(d=>(d.type==='diary'||d.type==='meal')&&String(d.time||'').slice(0,10)===k&&d.mood);
+    if(!dayMs.length)return{day:k,mood:null};
+    const c={};dayMs.forEach(d=>c[d.mood]=(c[d.mood]||0)+1);
+    return{day:k,mood:Object.entries(c).sort((a,b)=>b[1]-a[1])[0][0]};
+  });
+  const dayLabels=['日','一','二','三','四','五','六'];
+  const dots=dayMoods.map(dm=>{
+    const dt=new Date(dm.day);const dl=dayLabels[dt.getDay()];
+    return`<div style="text-align:center"><div class="st-mood-dot" style="${dm.mood?'':'opacity:.3'}">${dm.mood||'·'}</div><div class="st-mood-label">${dl}</div></div>`;
+  }).join('');
+  const body=`<div class="st-mood-ring-wrap"><div class="st-mood-ring">${svg}</div><div class="st-mood-dots">${dots}</div></div>
+    <div class="st-stat-mini"><div class="st-stat-mini-item"><div class="st-stat-mini-val">${moods.length}</div><div class="st-stat-mini-lbl">本月心情记录</div></div><div class="st-stat-mini-item"><div class="st-stat-mini-val">${entries.length}</div><div class="st-stat-mini-lbl">种情绪</div></div><div class="st-stat-mini-item"><div class="st-stat-mini-val">${dominant[0]}</div><div class="st-stat-mini-lbl">主导情绪</div></div></div>`;
+  return chartCard('本月心情','主导：'+dominant[0],body);
+}
+// --- 本月写作热力图（对标日迹写作趋势月历） ---
+function statsWritingHeatmap(){
+  const now=new Date();
+  const year=now.getFullYear(),month=now.getMonth();
+  const monthStr=year+'-'+String(month+1).padStart(2,'0');
+  const firstDay=new Date(year,month,1);
+  const lastDay=new Date(year,month+1,0);
+  const daysInMonth=lastDay.getDate();
+  // 按日统计字数和篇数
+  const dayData={};
+  D.diaries.forEach(d=>{
+    if(d.type==='diary'){const k=String(d.time||'').slice(0,10);if(k.startsWith(monthStr)){if(!dayData[k])dayData[k]={chars:0,count:0};dayData[k].chars+=(d.text||'').length;dayData[k].count++}}
+  });
+  const maxChars=Math.max(1,...Object.values(dayData).map(d=>d.chars));
+  const startWeekday=firstDay.getDay();
+  const cells=[];
+  // 前置空格
+  for(let i=0;i<startWeekday;i++)cells.push('<div class="st-heat-cell" style="visibility:hidden"></div>');
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=monthStr+'-'+String(d).padStart(2,'0');
+    const dd=dayData[ds];
+    if(dd){
+      const intensity=dd.chars/maxChars;
+      const opacity=0.2+intensity*0.8;
+      cells.push(`<div class="st-heat-cell" style="background:rgba(91,157,142,${opacity.toFixed(2)});border-color:transparent">
+        <div class="st-heat-day">${d}</div><div class="st-heat-words">${dd.chars}字</div></div>`);
+    }else{
+      cells.push(`<div class="st-heat-cell"><div class="st-heat-day">${d}</div><div class="st-heat-empty">—</div></div>`);
+    }
+  }
+  const totalChars=Object.values(dayData).reduce((s,d)=>s+d.chars,0);
+  const totalDays=Object.keys(dayData).length;
+  const weekdayLabels=['日','一','二','三','四','五','六'].map(l=>`<div style="text-align:center;font-size:9px;color:var(--st-text-3);width:100%">${l}</div>`).join('');
+  const body=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px">${weekdayLabels}</div><div class="st-heatmap">${cells.join('')}</div>
+    <div class="st-stat-mini"><div class="st-stat-mini-item"><div class="st-stat-mini-val">${totalChars.toLocaleString('zh-CN')}</div><div class="st-stat-mini-lbl">本月字数</div></div><div class="st-stat-mini-item"><div class="st-stat-mini-val">${totalDays}</div><div class="st-stat-mini-lbl">记录天数</div></div><div class="st-stat-mini-item"><div class="st-stat-mini-val">${maxChars}</div><div class="st-stat-mini-lbl">单日最高</div></div></div>`;
+  return chartCard('本月写作热力图',String(month+1)+'月',body);
+}
+// --- 年度分月进度条（对标日迹年度写作趋势） ---
+function statsYearlyBars(){
+  const now=new Date(),year=now.getFullYear();
+  const months=[];
+  for(let m=0;m<12;m++){
+    const ms=year+'-'+String(m+1).padStart(2,'0');
+    const list=D.diaries.filter(d=>d.type==='diary'&&String(d.time||'').startsWith(ms));
+    const chars=list.reduce((s,d)=>s+((d.text||'').length),0);
+    const imgs=list.reduce((s,d)=>s+((d.tags||[]).length),0); // 近似：用tags长度近似图片数
+    months.push({m:m+1,chars,count:list.length,imgs});
+  }
+  const totalChars=months.reduce((s,m)=>s+m.chars,0);
+  const totalDays=new Set();
+  D.diaries.forEach(d=>{if(d.type==='diary'){const k=String(d.time||'').slice(0,10);if(k.startsWith(String(year)))totalDays.add(k)}});
+  if(!totalChars)return chartCard('年度写作趋势',String(year)+'年',chartEmpty('今年还没有日记',120));
+  const maxChars=Math.max(...months.map(m=>m.chars),1);
+  const bars=months.map(m=>{
+    const pct=maxChars>0?Math.round(m.chars/maxChars*100):0;
+    const isActive=m.chars>0;
+    return`<div class="st-month-bar">
+      <div class="st-month-label">${m.m}月</div>
+      <div class="st-month-track">${isActive?`<div class="st-month-fill" style="width:${pct}%"></div>`:''}</div>
+      <div class="st-month-val">${isActive?m.chars.toLocaleString('zh-CN')+'字 · '+m.count+'篇':'—'}</div>
+    </div>`;
+  }).join('');
+  const avgPerDay=totalDays.size>0?Math.round(totalChars/totalDays.size):0;
+  const body=`${bars}
+    <div class="st-stat-mini" style="margin-top:14px"><div class="st-stat-mini-item"><div class="st-stat-mini-val">${totalChars.toLocaleString('zh-CN')}</div><div class="st-stat-mini-lbl">累计字数</div></div><div class="st-stat-mini-item"><div class="st-stat-mini-val">${totalDays.size}</div><div class="st-stat-mini-lbl">记录天数</div></div><div class="st-stat-mini-item"><div class="st-stat-mini-val">${avgPerDay}</div><div class="st-stat-mini-lbl">日均字数</div></div></div>`;
+  return chartCard('年度写作趋势',String(year)+'年',body);
+}
 function renderStats(){
   let h=`<div class="sec-header"><span class="sec-title">统计</span><span class="sec-sub">数据只属于你</span></div>`;
   if(recordCount(D)===0){
@@ -2212,10 +2396,13 @@ function renderStats(){
   }
   h+=statsSummary();
   h+=`<div class="stats-stack">`;
+  h+=statsMoodRing();
+  h+=statsWritingHeatmap();
   h+=statsExpenseDonut();
   h+=statsExpenseTrend();
   h+=statsMoodTrend();
   h+=statsDiaryMonthly();
+  h+=statsYearlyBars();
   h+=statsTypeDist();
   h+=`</div>`;
   $('statsContent').innerHTML=h;
