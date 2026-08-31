@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<meta name="theme-color" id="themeColor" content="#F5F0EB" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#1A1612" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" id="themeColor" content="#F7FBF9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#13201C" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="拾迹">
@@ -16,19 +16,20 @@
 <title>拾迹 · 生活值得你记录</title>
 
 <style>
-/* ===== Wabi-sabi Design Tokens ===== */
+/* ===== Fresh Macaron Design Tokens (inspired by 日迹 APP) ===== */
 :root {
-  --bg: #F5F0EB; --bg-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  --card: #FEFCF9; --card-hover: #F7F2EC;
-  --text: #2C2416; --text-2: #8C7E6D; --text-3: #B8A99A;
-  --accent: #C04851; --accent-light: #D4726A; --accent-bg: rgba(192,72,81,0.08);
-  --ink: #3D3425; --ink-light: #6B5D4D;
-  --seal: #C04851; --earth: #A08B72; --moss: #6B8C6A; --clay: #C4956A; --indigo: #5B6B8A;
-  --border: #E8DFD4; --border-strong: #D4C9BC;
+  --bg: #F7FBF9; --bg-grain: none;
+  --card: #FFFFFF; --card-hover: #F0F7F4;
+  --text: #1A2B25; --text-2: #6B8A7E; --text-3: #A0B5AC;
+  --accent: #5B9D8E; --accent-light: #A8D5C8; --accent-bg: rgba(91,157,142,0.08);
+  --ink: #2C403A; --ink-light: #5B7570;
+  --seal: #5B9D8E; --earth: #6BA3C6; --moss: #6B8C6A; --clay: #F5C988; --indigo: #B8A4D4;
+  --blue: #6BA3C6; --pink: #F0A8B6; --purple: #B8A4D4; --yellow: #F5C988;
+  --border: #E5F0EC; --border-strong: #C8DDD4;
   --radius: 14px; --radius-lg: 20px; --radius-sm: 10px; --radius-xs: 6px;
-  --shadow-sm: 0 1px 2px rgba(44,36,22,0.04);
-  --shadow: 0 2px 8px rgba(44,36,22,0.06);
-  --shadow-lg: 0 8px 24px rgba(44,36,22,0.1);
+  --shadow-sm: 0 1px 2px rgba(26,43,37,0.04);
+  --shadow: 0 2px 8px rgba(26,43,37,0.06);
+  --shadow-lg: 0 8px 24px rgba(26,43,37,0.1);
   --font: -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
   --font-sans: -apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans SC",sans-serif;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -36,12 +37,14 @@
   --ease-back: cubic-bezier(.34,1.56,.64,1);
 }
 [data-theme="dark"] {
-  --bg: #1A1612; --bg-grain: none;
-  --card: #252019; --card-hover: #302A22;
-  --text: #E8DFD4; --text-2: #9B8E7D; --text-3: #5C5043;
-  --accent: #D4726A; --accent-light: #C04851; --accent-bg: rgba(212,114,106,0.1);
-  --ink: #E8DFD4; --ink-light: #9B8E7D;
-  --border: #3A332A; --border-strong: #4A4137;
+  --bg: #13201C; --bg-grain: none;
+  --card: #1A2B25; --card-hover: #243530;
+  --text: #D4E8E0; --text-2: #8BAA9E; --text-3: #5B7570;
+  --accent: #7BBFAE; --accent-light: #5B9D8E; --accent-bg: rgba(123,191,174,0.1);
+  --ink: #D4E8E0; --ink-light: #8BAA9E;
+  --seal: #7BBFAE; --earth: #8BC4E0; --moss: #7BBFAE; --clay: #F5D5A0; --indigo: #C8B4E4;
+  --blue: #8BC4E0; --pink: #F5B8C5; --purple: #C8B4E4; --yellow: #F5D5A0;
+  --border: #2A3D36; --border-strong: #3A4F46;
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.2); --shadow: 0 2px 8px rgba(0,0,0,0.25);
   --shadow-lg: 0 8px 24px rgba(0,0,0,0.4);
 }
@@ -51,12 +54,12 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 ::-webkit-scrollbar{width:0;height:0}
 body{font-family:var(--font-sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .4s,color .4s;position:relative}
-body::after{content:'';position:fixed;inset:0;background:var(--bg-grain);pointer-events:none;z-index:0;opacity:0.6}
+body::after{content:'';position:fixed;inset:0;background:var(--bg-grain);pointer-events:none;z-index:0;display:none}
 a{text-decoration:none;color:inherit}
 
 /* ===== App Shell ===== */
 .app{max-width:430px;margin:0 auto;min-height:100vh;position:relative;padding-bottom:calc(80px + var(--safe-bottom));z-index:1}
-@media(min-width:431px){.app{box-shadow:0 0 60px rgba(44,36,22,0.08)}}
+@media(min-width:431px){.app{box-shadow:0 0 60px rgba(26,43,37,0.08)}}
 
 /* ===== Header ===== */
 .header{display:flex;justify-content:space-between;align-items:flex-end;padding:20px 24px 10px;position:sticky;top:0;z-index:30;background:var(--bg);transition:background .4s}
@@ -126,77 +129,26 @@ a{text-decoration:none;color:inherit}
 .insight-title{font-family:var(--font);font-size:15px;font-weight:600;letter-spacing:0.5px}
 .insight-more{font-size:12px;color:var(--text-3);font-weight:500}
 /* ===== 统计中心（对标 日迹统计 / DEADNOTE 情绪曲线） ===== */
-/* 统计页专用配色：薄荷绿马卡龙清新风 */
-:root{
-  --st-bg:#F7FBF9;          /* 统计页浅薄荷背景 */
-  --st-card:#FFFFFF;         /* 白卡片 */
-  --st-accent:#5B9D8E;       /* 薄荷绿主色 */
-  --st-accent-light:#A8D5C8; /* 浅薄荷 */
-  --st-blue:#6BA3C6;         /* 天蓝 */
-  --st-pink:#F0A8B6;         /* 樱花粉 */
-  --st-yellow:#F5C988;       /* 暖黄 */
-  --st-purple:#B8A4D4;       /* 淡紫 */
-  --st-text:#1A2B25;         /* 深墨绿文字 */
-  --st-text-2:#6B8A7E;       /* 次要文字 */
-  --st-text-3:#A0B5AC;       /* 辅助文字 */
-  --st-border:#E5F0EC;       /* 浅薄荷边框 */
-}
-[data-theme="dark"]{
-  --st-bg:#13201C; --st-card:#1A2B25;
-  --st-accent:#7BBFAE; --st-accent-light:#5B9D8E;
-  --st-blue:#8BC4E0; --st-pink:#F5B8C5; --st-yellow:#F5D5A0; --st-purple:#C8B4E4;
-  --st-text:#D4E8E0; --st-text-2:#8BAA9E; --st-text-3:#5B7570;
-  --st-border:#2A3D36;
-}
-#page-stats{background:var(--st-bg)}
-#page-stats .sec-header .sec-title{color:var(--st-text)}
-#page-stats .sec-sub{color:var(--st-text-3)}
-#page-stats .insight-card{background:var(--st-card);border-color:var(--st-border)}
-#page-stats .insight-title{color:var(--st-text)}
-#page-stats .insight-more{color:var(--st-text-3)}
-#page-stats .stat-card{background:var(--st-card);border-color:var(--st-border)}
-#page-stats .stat-val{color:var(--st-text)}
-#page-stats .stat-lbl{color:var(--st-text-2)}
-#page-stats .chart-empty{color:var(--st-text-3)}
-#page-stats .chart-foot,#page-stats .chart-scale{color:var(--st-text-2)}
-#page-stats .chart-grid{stroke:var(--st-border)}
-#page-stats .chart-xlab{fill:var(--st-text-3)}
-#page-stats .donut-ct{fill:var(--st-text)}
-#page-stats .donut-cb{fill:var(--st-text-3)}
-#page-stats .legend-name{color:var(--st-text-2)}
-#page-stats .legend-val{color:var(--st-text)}
-#page-stats .legend-pct{color:var(--st-text-3)}
-#page-stats .mbar{background:linear-gradient(180deg,var(--st-accent),var(--st-accent-light))}
-#page-stats .mbar-val{color:var(--st-text-2)}
-#page-stats .mbar-lab{color:var(--st-text-3)}
-#page-stats .dist-name{color:var(--st-text-2)}
-#page-stats .dist-track{background:var(--st-border)}
-#page-stats .dist-val{color:var(--st-text-3)}
-#page-stats .mood-avg{color:var(--st-accent)}
-#page-stats .guide-icon{color:var(--st-accent)}
-#page-stats .guide-title{color:var(--st-text)}
-#page-stats .guide-text{color:var(--st-text-3)}
-#page-stats .guide-btn{background:var(--st-accent)}
 /* 统计页新增模块样式 */
 .st-mood-ring-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
 .st-mood-ring{flex:0 0 auto}
 .st-mood-dots{display:flex;gap:8px;flex-wrap:wrap}
-.st-mood-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--st-bg);border:1px solid var(--st-border)}
-.st-mood-label{font-size:11px;color:var(--st-text-3);text-align:center;margin-top:4px}
+.st-mood-dot{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;background:var(--bg);border:1px solid var(--border)}
+.st-mood-label{font-size:11px;color:var(--text-3);text-align:center;margin-top:4px}
 .st-heatmap{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:8px 0}
-.st-heat-cell{aspect-ratio:1;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;color:var(--st-text-3);background:var(--st-bg);border:1px solid var(--st-border);min-height:42px;overflow:hidden}
-.st-heat-day{font-size:10px;font-weight:600;color:var(--st-text);line-height:1}
-.st-heat-words{font-size:8px;color:var(--st-text-2);margin-top:1px;line-height:1}
-.st-heat-empty{color:var(--st-text-3);font-size:9px}
+.st-heat-cell{aspect-ratio:1;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;color:var(--text-3);background:var(--bg);border:1px solid var(--border);min-height:42px;overflow:hidden}
+.st-heat-day{font-size:10px;font-weight:600;color:var(--text);line-height:1}
+.st-heat-words{font-size:8px;color:var(--text-2);margin-top:1px;line-height:1}
+.st-heat-empty{color:var(--text-3);font-size:9px}
 .st-month-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.st-month-label{width:30px;flex:0 0 auto;font-size:11px;color:var(--st-text-2);font-weight:600}
-.st-month-track{flex:1;height:24px;border-radius:12px;background:var(--st-bg);overflow:hidden;position:relative}
-.st-month-fill{height:100%;border-radius:12px;background:linear-gradient(90deg,var(--st-accent-light),var(--st-accent));transition:width .6s var(--ease-out)}
-.st-month-val{font-size:10px;color:var(--st-text-3);white-space:nowrap}
+.st-month-label{width:30px;flex:0 0 auto;font-size:11px;color:var(--text-2);font-weight:600}
+.st-month-track{flex:1;height:24px;border-radius:12px;background:var(--bg);overflow:hidden;position:relative}
+.st-month-fill{height:100%;border-radius:12px;background:linear-gradient(90deg,var(--accent-light),var(--accent));transition:width .6s var(--ease-out)}
+.st-month-val{font-size:10px;color:var(--text-3);white-space:nowrap}
 .st-stat-mini{display:flex;gap:16px;margin-top:10px}
 .st-stat-mini-item{text-align:center;flex:1}
-.st-stat-mini-val{font-size:16px;font-weight:700;color:var(--st-text)}
-.st-stat-mini-lbl{font-size:10px;color:var(--st-text-3);margin-top:2px}
+.st-stat-mini-val{font-size:16px;font-weight:700;color:var(--text)}
+.st-stat-mini-lbl{font-size:10px;color:var(--text-3);margin-top:2px}
 .stats-grid6{grid-template-columns:repeat(3,1fr);padding:12px 20px 4px}
 .stat-card.stat-static{cursor:default}
 .stat-card.stat-static:active{transform:none}
@@ -230,7 +182,7 @@ a{text-decoration:none;color:inherit}
 .mbar-chart{display:flex;align-items:flex-end;gap:8px;height:112px}
 .mbar-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px;height:100%;min-width:0}
 .mbar-val{font-size:11px;color:var(--text-2);font-variant-numeric:tabular-nums;height:14px}
-.mbar{width:100%;max-width:30px;border-radius:6px 6px 3px 3px;background:linear-gradient(180deg,#C4956A,#A88B62)}
+.mbar{width:100%;max-width:30px;border-radius:6px 6px 3px 3px;background:linear-gradient(180deg,#F5C988,#E0B070)}
 .mbar-lab{font-size:10px;color:var(--text-3);white-space:nowrap}
 .dist-list{display:flex;flex-direction:column;gap:9px}
 .dist-row{display:flex;align-items:center;gap:10px;font-size:12px}
@@ -281,7 +233,7 @@ a{text-decoration:none;color:inherit}
 .attach-op:active{background:var(--bg)}
 .attach-op .lucide{display:block}
 .attach-op.danger{color:var(--seal)}
-.preview-overlay{position:fixed;inset:0;background:rgba(15,12,9,.92);z-index:600;display:none;align-items:center;justify-content:center;cursor:zoom-out;padding:16px}
+.preview-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:600;display:none;align-items:center;justify-content:center;cursor:zoom-out;padding:16px}
 .preview-overlay.show{display:flex}
 .preview-overlay img{max-width:100%;max-height:100%;object-fit:contain;border-radius:var(--radius-sm)}
 
@@ -315,7 +267,7 @@ a{text-decoration:none;color:inherit}
 /* ===== Expense Summary Card ===== */
 .expense-summary{margin:0 24px;background:var(--card);border-radius:var(--radius);padding:16px;border:1px solid var(--border);display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform .15s}
 .expense-summary:active{transform:scale(0.98)}
-.expense-summary-icon{width:44px;height:44px;border-radius:var(--radius-sm);background:rgba(192,72,81,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.expense-summary-icon{width:44px;height:44px;border-radius:var(--radius-sm);background:rgba(91,157,142,0.1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .expense-summary-info{flex:1;min-width:0}
 .expense-summary-label{font-size:12px;color:var(--text-3);letter-spacing:0.5px}
 .expense-summary-val{font-family:var(--font);font-size:22px;font-weight:700;color:var(--seal);margin-top:2px}
@@ -336,11 +288,11 @@ a{text-decoration:none;color:inherit}
 .diary-card .dc-meta{font-size:11px;color:var(--text-3);margin-top:3px;letter-spacing:0.3px}
 .diary-card .dc-text{font-size:13px;color:var(--text-2);line-height:1.7;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:8px;letter-spacing:0.2px}
 .diary-card .dc-tags{display:flex;gap:6px;flex-wrap:wrap}
-.diary-card .dc-tag{font-size:11px;color:var(--earth);background:rgba(160,139,114,0.12);padding:3px 10px;border-radius:10px;font-weight:500}
+.diary-card .dc-tag{font-size:11px;color:var(--earth);background:rgba(107,163,198,0.12);padding:3px 10px;border-radius:10px;font-weight:500}
 
 /* ===== Meal Card ===== */
 .meal-card .dc-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.meal-card .dc-mood{width:36px;height:36px;border-radius:var(--radius-sm);background:rgba(196,149,106,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.meal-card .dc-mood{width:36px;height:36px;border-radius:var(--radius-sm);background:rgba(245,201,136,0.15);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .meal-card .dc-info{flex:1;min-width:0}
 .meal-card .dc-title{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--font)}
 .meal-card .dc-meta{font-size:11px;color:var(--text-3);margin-top:3px;letter-spacing:0.3px}
@@ -356,7 +308,7 @@ a{text-decoration:none;color:inherit}
 
 /* ===== Subscribe Card ===== */
 .subscribe-card{display:flex;align-items:center;gap:12px}
-.subscribe-card .sub-icon{width:40px;height:40px;border-radius:var(--radius-sm);background:rgba(160,139,114,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.subscribe-card .sub-icon{width:40px;height:40px;border-radius:var(--radius-sm);background:rgba(107,163,198,0.12);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .subscribe-card .exp-info{flex:1;min-width:0}
 .subscribe-card .exp-name{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .subscribe-card .exp-detail{font-size:12px;color:var(--text-3);margin-top:2px}
@@ -400,14 +352,14 @@ a{text-decoration:none;color:inherit}
 .checkin-streak-label{font-size:10px;color:var(--text-3);font-weight:400}
 
 /* ===== Asset Summary (有数风格净资产概览) ===== */
-.asset-summary{margin:4px 0 14px;padding:18px 20px;border-radius:var(--radius);background:linear-gradient(135deg,#5B6B8A,#3C4A66);color:#F5F0EB;box-shadow:0 6px 18px rgba(60,74,102,.18)}
+.asset-summary{margin:4px 0 14px;padding:18px 20px;border-radius:var(--radius);background:linear-gradient(135deg,#5B9D8E,#3A7B6E);color:#F7FBF9;box-shadow:0 6px 18px rgba(26,43,37,.18)}
 .asset-summary-label{font-size:13px;opacity:.82;letter-spacing:1.5px}
 .asset-summary-total{font-family:var(--font);font-size:30px;font-weight:700;margin-top:4px;letter-spacing:.5px;line-height:1.1}
 .asset-summary-meta{font-size:12px;opacity:.72;margin-top:7px}
 
 /* ===== Asset Card ===== */
 .asset-item-card{display:flex;align-items:center;gap:14px;padding:14px 16px}
-.asset-item-icon{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(91,107,138,.12);color:#5B6B8A;transition:transform .25s ease}
+.asset-item-icon{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(184,164,212,.12);color:#B8A4D4;transition:transform .25s ease}
 .record-list .asset-item-card:hover .asset-item-icon{transform:scale(1.06)}
 .asset-item-info{flex:1;min-width:0}
 .asset-item-name{font-size:15px;font-weight:600;font-family:var(--font);display:flex;align-items:center;gap:6px}
@@ -431,24 +383,24 @@ a{text-decoration:none;color:inherit}
 
 /* ===== Hero Card (Unified Dark) ===== */
 .hero-card{margin:0 24px 16px;background:var(--text);border-radius:var(--radius-lg);padding:24px 20px;color:var(--bg);position:relative;overflow:hidden}
-.hero-card::before{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:rgba(192,72,81,0.2);border-radius:50%}
-.hero-card::after{content:'';position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;background:rgba(160,139,114,0.15);border-radius:50%}
-.hero-label{font-size:12px;color:rgba(245,240,235,0.5);font-weight:400;letter-spacing:1px}
+.hero-card::before{content:'';position:absolute;top:-30px;right:-30px;width:100px;height:100px;background:rgba(91,157,142,0.2);border-radius:50%}
+.hero-card::after{content:'';position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;background:rgba(107,163,198,0.15);border-radius:50%}
+.hero-label{font-size:12px;color:rgba(247,251,249,0.5);font-weight:400;letter-spacing:1px}
 .hero-total{font-family:var(--font);font-size:32px;font-weight:700;margin:6px 0 16px;letter-spacing:-0.5px}
 .hero-sub{display:flex;gap:8px}
-.hero-sub-item{flex:1;background:rgba(245,240,235,0.1);border-radius:var(--radius-sm);padding:10px 6px;text-align:center}
-.hero-sub-label{font-size:10px;color:rgba(245,240,235,0.4);display:flex;align-items:center;justify-content:center;gap:4px}
+.hero-sub-item{flex:1;background:rgba(247,251,249,0.1);border-radius:var(--radius-sm);padding:10px 6px;text-align:center}
+.hero-sub-label{font-size:10px;color:rgba(247,251,249,0.4);display:flex;align-items:center;justify-content:center;gap:4px}
 .hero-sub-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
 .hero-sub-val{font-size:14px;font-weight:600;margin-top:4px}
 /* 有数app 风格：日均成本 + 剩余天数 + 预算进度 */
 .hero-meta{display:flex;gap:22px;margin:2px 0 14px}
 .hero-meta-item{display:flex;flex-direction:column}
-.hero-meta-label{font-size:11px;color:rgba(245,240,235,.5);letter-spacing:.5px}
+.hero-meta-label{font-size:11px;color:rgba(247,251,249,.5);letter-spacing:.5px}
 .hero-meta-val{font-size:17px;font-weight:600;margin-top:3px;font-family:var(--font)}
-.hero-asset{margin-top:14px;font-size:12px;color:rgba(245,240,235,.45);letter-spacing:.5px}
+.hero-asset{margin-top:14px;font-size:12px;color:rgba(247,251,249,.45);letter-spacing:.5px}
 .budget-bar{margin-top:14px}
-.budget-bar-head{display:flex;justify-content:space-between;font-size:11px;color:rgba(245,240,235,.5);margin-bottom:6px;letter-spacing:.3px}
-.budget-track{height:6px;border-radius:3px;background:rgba(245,240,235,.12);overflow:hidden}
+.budget-bar-head{display:flex;justify-content:space-between;font-size:11px;color:rgba(247,251,249,.5);margin-bottom:6px;letter-spacing:.3px}
+.budget-track{height:6px;border-radius:3px;background:rgba(247,251,249,.12);overflow:hidden}
 .budget-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--clay),var(--seal));transition:width .6s cubic-bezier(.22,1,.36,1)}
 .budget-fill.over{background:var(--seal)}
 
@@ -558,7 +510,7 @@ a{text-decoration:none;color:inherit}
 .mdli{margin:.25em 0}
 .mdcode{font-family:"SF Mono",Monaco,monospace;font-size:.92em;background:var(--bg);color:var(--accent);padding:2px 5px;border-radius:var(--radius-xs)}
 .mda{color:var(--indigo);text-decoration:underline}
-.hl{background:rgba(196,149,106,.35);color:var(--text);border-radius:3px;padding:0 2px}
+.hl{background:rgba(245,201,136,.35);color:var(--text);border-radius:3px;padding:0 2px}
 .draft-hint{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(107,140,106,.1);border:1px solid rgba(107,140,106,.25);border-radius:var(--radius-sm);padding:10px 12px;margin:-4px 0 12px;font-size:12px;color:var(--moss)}
 .draft-hint-btn{padding:4px 10px;border-radius:12px;background:transparent;border:1px solid var(--moss);color:var(--moss);font-size:11px;cursor:pointer}
 
@@ -575,13 +527,13 @@ a{text-decoration:none;color:inherit}
 .mood-row{display:flex;gap:10px;flex-wrap:wrap}
 .mood-opt{width:46px;height:46px;border-radius:50%;border:2px solid var(--border);background:transparent;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s}
 .mood-opt:active{transform:scale(0.9)}
-.mood-opt.active{border-color:var(--accent);background:var(--accent-bg);transform:scale(1.08);box-shadow:0 2px 12px rgba(192,72,81,0.18)}
+.mood-opt.active{border-color:var(--accent);background:var(--accent-bg);transform:scale(1.08);box-shadow:0 2px 12px rgba(91,157,142,0.18)}
 .pri-row{display:flex;gap:10px}
 .pri-opt{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:24px;border:1.5px solid var(--border);background:transparent;cursor:pointer;font-size:13px;transition:all .25s;letter-spacing:0.5px}
 .pri-opt:active{transform:scale(0.95)}
 .pri-opt.active{border-color:var(--accent);background:var(--accent-bg)}
 .pri-dot{width:8px;height:8px;border-radius:50%}
-.form-submit{width:100%;padding:16px;border:none;border-radius:var(--radius);background:var(--seal);color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:12px;font-family:var(--font-sans);letter-spacing:2px;box-shadow:0 4px 16px rgba(192,72,81,0.2)}
+.form-submit{width:100%;padding:16px;border:none;border-radius:var(--radius);background:var(--seal);color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:12px;font-family:var(--font-sans);letter-spacing:2px;box-shadow:0 4px 16px rgba(91,157,142,0.2)}
 .form-submit:active{transform:scale(0.97);opacity:0.9}
 .form-cancel{width:100%;padding:14px;border:none;border-radius:var(--radius);background:transparent;color:var(--text-3);font-size:14px;cursor:pointer;margin-top:8px;letter-spacing:1px}
 
@@ -589,7 +541,7 @@ a{text-decoration:none;color:inherit}
 .cat-chips{display:flex;gap:8px;flex-wrap:wrap}
 .cat-chip{padding:8px 16px;border-radius:24px;border:1.5px solid var(--border);background:transparent;font-size:13px;cursor:pointer;transition:all .25s;letter-spacing:0.5px}
 .cat-chip:active{transform:scale(0.95)}
-.cat-chip.active{border-color:var(--earth);background:rgba(160,139,114,0.12);color:var(--ink)}
+.cat-chip.active{border-color:var(--earth);background:rgba(107,163,198,0.12);color:var(--ink)}
 
 /* ===== Settings ===== */
 .settings-panel{position:fixed;top:0;right:-100%;width:100%;max-width:430px;height:100vh;background:var(--bg);z-index:300;transition:right .35s cubic-bezier(0.32,0.72,0,1);overflow-y:auto}
@@ -656,8 +608,8 @@ a{text-decoration:none;color:inherit}
 
 /* ===== Login ===== */
 .login-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg);padding:40px 24px;position:relative;overflow:hidden}
-.login-page::before{content:'';position:absolute;top:-80px;right:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(192,72,81,0.1) 0%,transparent 70%);border-radius:50%}
-.login-page::after{content:'';position:absolute;bottom:-60px;left:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(160,139,114,0.08) 0%,transparent 70%);border-radius:50%}
+.login-page::before{content:'';position:absolute;top:-80px;right:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(91,157,142,0.1) 0%,transparent 70%);border-radius:50%}
+.login-page::after{content:'';position:absolute;bottom:-60px;left:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(107,163,198,0.08) 0%,transparent 70%);border-radius:50%}
 .login-logo{font-size:64px;margin-bottom:8px;z-index:1;color:var(--earth)}
 .login-title{font-family:var(--font);font-size:36px;font-weight:700;color:var(--text);z-index:1;letter-spacing:2px}
 .login-slogan{font-size:13px;color:var(--text-3);margin:6px 0 40px;z-index:1;letter-spacing:3px;font-weight:400}
@@ -958,18 +910,18 @@ const TABS=[
 ];
 
 const TYPES=[
-  {key:'diary',icon:icon('feather',20),bg:'rgba(196,149,106,0.15)',color:'#C4956A',label:'日记',desc:'纸短情长，落笔生花'},
-  {key:'expense',icon:icon('receipt',20),bg:'rgba(192,72,81,0.12)',color:'#C04851',label:'消费',desc:'一文一物，皆有所值'},
-  {key:'meal',icon:icon('utensils',20),bg:'rgba(196,149,106,0.15)',color:'#C4956A',label:'餐食',desc:'人间烟火，食之有味'},
-  {key:'countdown',icon:icon('calendar',20),bg:'rgba(91,107,138,0.12)',color:'#5B6B8A',label:'倒数日',desc:'翘首以盼，不负归期'},
-  {key:'birthday',icon:icon('cake',20),bg:'rgba(160,139,114,0.12)',color:'#A08B72',label:'生日',desc:'年年岁岁，生辰如歌'},
-  {key:'anniversary',icon:icon('heart',20),bg:'rgba(192,72,81,0.12)',color:'#C04851',label:'纪念日',desc:'此情可待，岁岁年年'},
+  {key:'diary',icon:icon('feather',20),bg:'rgba(245,201,136,0.15)',color:'#F5C988',label:'日记',desc:'纸短情长，落笔生花'},
+  {key:'expense',icon:icon('receipt',20),bg:'rgba(91,157,142,0.12)',color:'#5B9D8E',label:'消费',desc:'一文一物，皆有所值'},
+  {key:'meal',icon:icon('utensils',20),bg:'rgba(245,201,136,0.15)',color:'#F5C988',label:'餐食',desc:'人间烟火，食之有味'},
+  {key:'countdown',icon:icon('calendar',20),bg:'rgba(184,164,212,0.12)',color:'#B8A4D4',label:'倒数日',desc:'翘首以盼，不负归期'},
+  {key:'birthday',icon:icon('cake',20),bg:'rgba(107,163,198,0.12)',color:'#6BA3C6',label:'生日',desc:'年年岁岁，生辰如歌'},
+  {key:'anniversary',icon:icon('heart',20),bg:'rgba(91,157,142,0.12)',color:'#5B9D8E',label:'纪念日',desc:'此情可待，岁岁年年'},
   {key:'checkin',icon:icon('checkCircle',20),bg:'rgba(107,140,106,0.15)',color:'#6B8C6A',label:'打卡',desc:'日日不断，功不唐捐'},
-  {key:'asset',icon:icon('wallet',20),bg:'rgba(91,107,138,0.12)',color:'#5B6B8A',label:'资产',desc:'身外之物，亦需记之'},
-  {key:'subscribe',icon:icon('refresh',20),bg:'rgba(160,139,114,0.12)',color:'#A08B72',label:'订阅',desc:'月月有约，按时而至'},
+  {key:'asset',icon:icon('wallet',20),bg:'rgba(184,164,212,0.12)',color:'#B8A4D4',label:'资产',desc:'身外之物，亦需记之'},
+  {key:'subscribe',icon:icon('refresh',20),bg:'rgba(107,163,198,0.12)',color:'#6BA3C6',label:'订阅',desc:'月月有约，按时而至'},
   {key:'plan',icon:icon('clipboard',20),bg:'rgba(107,140,106,0.15)',color:'#6B8C6A',label:'计划',desc:'谋定后动，行且坚毅'},
-  {key:'todo',icon:icon('bookmark',20),bg:'rgba(196,149,106,0.15)',color:'#C4956A',label:'待办',desc:'待办之事，逐一了之'},
-  {key:'festival',icon:icon('sparkles',20),bg:'rgba(192,72,81,0.1)',color:'#C04851',label:'节日',desc:'节庆之时，人间值得'}
+  {key:'todo',icon:icon('bookmark',20),bg:'rgba(245,201,136,0.15)',color:'#F5C988',label:'待办',desc:'待办之事，逐一了之'},
+  {key:'festival',icon:icon('sparkles',20),bg:'rgba(91,157,142,0.1)',color:'#5B9D8E',label:'节日',desc:'节庆之时，人间值得'}
 ];
 
 const TYPE_META=(function(){
@@ -979,8 +931,8 @@ const TYPE_META=(function(){
 })();
 
 const CAT_EMOJI={'餐饮':icon('utensils',20),'交通':icon('car',20),'日用品':icon('cart',20),'娱乐':icon('gamepad',20),'购物':icon('bag',20),'医疗':icon('pulse',20),'订阅':icon('refresh',20),'其他':icon('tag',20)};
-const CAT_BG={'餐饮':'rgba(196,149,106,0.15)','交通':'rgba(91,107,138,0.12)','日用品':'rgba(107,140,106,0.15)','娱乐':'rgba(160,139,114,0.12)','购物':'rgba(192,72,81,0.1)','医疗':'rgba(192,72,81,0.1)','订阅':'rgba(160,139,114,0.12)','其他':'rgba(184,169,154,0.12)'};
-const PRI_COLOR={high:'#C04851',medium:'#C4956A',low:'#6B8C6A'};
+const CAT_BG={'餐饮':'rgba(245,201,136,0.15)','交通':'rgba(184,164,212,0.12)','日用品':'rgba(107,140,106,0.15)','娱乐':'rgba(107,163,198,0.12)','购物':'rgba(91,157,142,0.1)','医疗':'rgba(91,157,142,0.1)','订阅':'rgba(107,163,198,0.12)','其他':'rgba(160,181,172,0.12)'};
+const PRI_COLOR={high:'#5B9D8E',medium:'#F5C988',low:'#6B8C6A'};
 
 // 首页展示数量、同步策略等可调参数集中管理
 const CONFIG={recentLimit:6,todoLimit:4,useBatchSync:false,monthBudget:3000};
@@ -1539,7 +1491,7 @@ function mealCard(d){
   return `<div class="record-card meal-card" data-type="meal" data-id="${d.id}" ontouchstart="startLongPress('meal','${d.id}')" ontouchend="onRecordTouchEnd()" ontouchmove="onRecordMove()" oncontextmenu="event.preventDefault();showActionSheet('meal','${d.id}')" onclick="if(!wasLongPress())showActionSheet('meal','${d.id}')">
     ${typeBadge('meal')}
     <div class="dc-top">
-      <div class="dc-mood" style="background:rgba(196,149,106,0.15)">${icon('utensils',18)}</div>
+      <div class="dc-mood" style="background:rgba(245,201,136,0.15)">${icon('utensils',18)}</div>
       <div class="dc-info"><div class="dc-title">${hl(esc(d.title||'餐食'))}${metaBadges(d)}</div><div class="dc-meta">${d.mood||''} ${esc(d.time||'')}</div></div>
     </div>
     ${d.text?`<div class="dc-text${useMarkdown()?' md':''}">${renderText(d.text)}</div>`:''}
@@ -1549,7 +1501,7 @@ function mealCard(d){
 function expenseCard(e){
   return `<div class="record-card exp-card" data-type="expense" data-id="${e.id}" ontouchstart="startLongPress('expense','${e.id}')" ontouchend="onRecordTouchEnd()" ontouchmove="onRecordMove()" oncontextmenu="event.preventDefault();showActionSheet('expense','${e.id}')" onclick="if(!wasLongPress())showActionSheet('expense','${e.id}')">
     ${typeBadge('expense')}
-    <div class="exp-icon" style="background:${CAT_BG[e.category]||'rgba(184,169,154,0.12)'}">${CAT_EMOJI[e.category]||icon('tag',20)}</div>
+    <div class="exp-icon" style="background:${CAT_BG[e.category]||'rgba(160,181,172,0.12)'}">${CAT_EMOJI[e.category]||icon('tag',20)}</div>
     <div class="exp-info"><div class="exp-name">${hl(esc(e.name))}${metaBadges(e)}</div><div class="exp-detail">${esc(e.category)} · ${esc(e.date)}</div></div>
     <div class="exp-amount">-¥${(e.amount||0).toFixed(2)}</div>
   </div>`;
@@ -1558,7 +1510,7 @@ function expenseCard(e){
 function subscribeCard(e){
   return `<div class="record-card subscribe-card" data-type="subscribe" data-id="${e.id}" ontouchstart="startLongPress('subscribe','${e.id}')" ontouchend="onRecordTouchEnd()" ontouchmove="onRecordMove()" oncontextmenu="event.preventDefault();showActionSheet('subscribe','${e.id}')" onclick="if(!wasLongPress())showActionSheet('subscribe','${e.id}')">
     ${typeBadge('subscribe')}
-    <div class="sub-icon" style="background:rgba(160,139,114,0.12)">${icon('refresh',20)}</div>
+    <div class="sub-icon" style="background:rgba(107,163,198,0.12)">${icon('refresh',20)}</div>
     <div class="exp-info"><div class="exp-name">${hl(esc(e.name))}${metaBadges(e)}</div><div class="exp-detail">月费订阅</div></div>
     <div class="sub-amount">¥${(e.amount||0).toFixed(2)}/月</div>
   </div>`;
@@ -1572,7 +1524,7 @@ function todoCard(t){
     ${typeBadge('todo')}
     <div class="todo-cb ${t.done?'checked':''}" onclick="event.stopPropagation();toggleTodo('${t.id}')">${t.done?icon('check',14):''}</div>
     <div class="todo-body" ontouchstart="startLongPress('todo','${t.id}')" ontouchend="onRecordTouchEnd()" ontouchmove="onRecordMove()" oncontextmenu="event.preventDefault();showActionSheet('todo','${t.id}')" onclick="if(!wasLongPress())showActionSheet('todo','${t.id}')" style="cursor:pointer;flex:1;min-width:0"><div class="todo-title ${t.done?'done':''}">${hl(esc(t.title))}${metaBadges(t)}</div>${t.date?`<div class="todo-date ${overdue?'overdue':''}">${esc(t.date)}${overdue?' · 逾期 '+overdueDays+' 天':''}</div>`:''}</div>
-    <div class="todo-pri" style="background:${PRI_COLOR[t.priority]||'#A08B72'}"></div>
+    <div class="todo-pri" style="background:${PRI_COLOR[t.priority]||'#6BA3C6'}"></div>
   </div>`;
 }
 
@@ -1632,12 +1584,12 @@ function checkinCard(d){
 // 资产分类：按名称关键词智能归类（图标/色均取自已存在的 _I 图标库）
 function assetCat(title){
   const t=title||'';
-  if(/现金|零钱|钱包/.test(t))return {label:'现金',ic:'tag',color:'#C4956A',bg:'rgba(196,149,106,.14)'};
-  if(/银行|卡|储蓄|存款|信用/.test(t))return {label:'银行卡',ic:'wallet',color:'#5B6B8A',bg:'rgba(91,107,138,.14)'};
+  if(/现金|零钱|钱包/.test(t))return {label:'现金',ic:'tag',color:'#F5C988',bg:'rgba(245,201,136,.14)'};
+  if(/银行|卡|储蓄|存款|信用/.test(t))return {label:'银行卡',ic:'wallet',color:'#B8A4D4',bg:'rgba(184,164,212,.14)'};
   if(/基金|股票|理财|投资|证券|黄金|币/.test(t))return {label:'投资',ic:'target',color:'#6B8C6A',bg:'rgba(107,140,106,.16)'};
-  if(/房|地产|商铺|铺/.test(t))return {label:'不动产',ic:'home',color:'#C04851',bg:'rgba(192,72,81,.12)'};
-  if(/车|车辆/.test(t))return {label:'车辆',ic:'car',color:'#A08B72',bg:'rgba(160,139,114,.16)'};
-  return {label:'其他',ic:'wallet',color:'#5B6B8A',bg:'rgba(91,107,138,.12)'};
+  if(/房|地产|商铺|铺/.test(t))return {label:'不动产',ic:'home',color:'#5B9D8E',bg:'rgba(91,157,142,.12)'};
+  if(/车|车辆/.test(t))return {label:'车辆',ic:'car',color:'#6BA3C6',bg:'rgba(107,163,198,.16)'};
+  return {label:'其他',ic:'wallet',color:'#B8A4D4',bg:'rgba(184,164,212,.12)'};
 }
 // 预计使用年限（年）：可摊销资产有年限，现金/银行卡/投资等非贬值资产返回 0
 function assetLifeYears(d){
@@ -1817,7 +1769,7 @@ function renderAllPage(){
 
 // === 首页洞察模块（对标 GitHub 同类开源项目） ===
 // 常见心情 emoji → 点缀色映射（对标 DEADNOTE 情绪可视化）
-const MOOD_COLOR={'😊':'var(--moss)','😋':'var(--clay)','😌':'#A08B72','😎':'var(--moss)','🥰':'var(--seal)','😇':'var(--moss)','😤':'var(--seal)','😢':'var(--indigo)','😴':'var(--indigo)','🌕':'var(--clay)','😍':'var(--seal)','🤔':'var(--earth)'};
+const MOOD_COLOR={'😊':'var(--moss)','😋':'var(--clay)','😌':'#6BA3C6','😎':'var(--moss)','🥰':'var(--seal)','😇':'var(--moss)','😤':'var(--seal)','😢':'var(--indigo)','😴':'var(--indigo)','🌕':'var(--clay)','😍':'var(--seal)','🤔':'var(--earth)'};
 // 暖调大地棕系4色阶：0 → 浅米驼, 低 → 浅暖棕, 中 → 中暖棕, 高 → 深暖棕（柱子越高颜色越深，对标参考图）
 const BAR_COLORS=['#E8F0EC','#C8DDD4','#A8D5C8','#7BBFAE','#5B9D8E'];
 // 连续记录天数（对标 life-board 的 habit streak）
@@ -2122,7 +2074,7 @@ function smoothPath(p){
 // 折线 + 面积图：pts=[{label,value|null}]，value 为 null 时断开
 function lineSVG(pts,opts){
   opts=opts||{};
-  const color=opts.color||'#C4956A';
+  const color=opts.color||'#F5C988';
   const w=320,h=opts.h||120,pl=8,pr=8,pt=14,pb=opts.pb||18;
   const vals=pts.map(p=>p.value).filter(v=>v!=null&&!isNaN(v));
   if(!vals.length)return chartEmpty('暂无数据',h);
@@ -2197,7 +2149,7 @@ function statsExpenseDonut(){
   const total=list.reduce((s,e)=>s+(e.amount||0),0);
   if(!total)return chartCard('本月消费结构','',chartEmpty('本月还没有记账',132));
   const m={};list.forEach(e=>{const k=e.category||'其他';m[k]=(m[k]||0)+(e.amount||0)});
-  const items=Object.entries(m).map(([k,v])=>({label:k,value:v,color:CAT_COLOR[k]||'#9B8E7D'})).sort((a,b)=>b.value-a.value);
+  const items=Object.entries(m).map(([k,v])=>({label:k,value:v,color:CAT_COLOR[k]||'#8BAA9E'})).sort((a,b)=>b.value-a.value);
   const legend=items.map(i=>`<div class="legend-row"><span class="legend-dot" style="background:${i.color}"></span><span class="legend-name">${esc(i.label)}</span><span class="legend-val">¥${i.value.toFixed(0)}</span><span class="legend-pct">${(i.value/total*100).toFixed(0)}%</span></div>`).join('');
   const body=`<div class="donut-wrap"><div class="donut-box">${donutSVG(items,132,20,'¥'+moneyShort(total),'本月支出')}</div><div class="legend">${legend}</div></div>`;
   return chartCard('本月消费结构',items.length+' 个分类',body);
@@ -2297,12 +2249,12 @@ function statsMoodRing(){
   const size=120,ring=10,r=size/2,rr=r-ring/2,C=2*Math.PI*rr;
   const fillLen=C*(pct/100);
   const svg=`<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
-    <circle cx="${r}" cy="${r}" r="${rr}" fill="none" stroke="var(--st-border)" stroke-width="${ring}"/>
+    <circle cx="${r}" cy="${r}" r="${rr}" fill="none" stroke="var(--border)" stroke-width="${ring}"/>
     <circle cx="${r}" cy="${r}" r="${rr}" fill="none" stroke="${color}" stroke-width="${ring}"
       stroke-dasharray="${fillLen.toFixed(2)} ${(C-fillLen).toFixed(2)}"
       stroke-linecap="round" transform="rotate(-90 ${r} ${r})"/>
-    <text x="${r}" y="${r-2}" text-anchor="middle" font-size="22" font-weight="700" fill="var(--st-text)">${pct}%</text>
-    <text x="${r}" y="${r+16}" text-anchor="middle" font-size="11" fill="var(--st-text-3)">${dominant[0]} 主导</text>
+    <text x="${r}" y="${r-2}" text-anchor="middle" font-size="22" font-weight="700" fill="var(--text)">${pct}%</text>
+    <text x="${r}" y="${r+16}" text-anchor="middle" font-size="11" fill="var(--text-3)">${dominant[0]} 主导</text>
   </svg>`;
   // 每日表情圆点
   const days=lastDays(7);
@@ -2353,7 +2305,7 @@ function statsWritingHeatmap(){
   }
   const totalChars=Object.values(dayData).reduce((s,d)=>s+d.chars,0);
   const totalDays=Object.keys(dayData).length;
-  const weekdayLabels=['日','一','二','三','四','五','六'].map(l=>`<div style="text-align:center;font-size:9px;color:var(--st-text-3);width:100%">${l}</div>`).join('');
+  const weekdayLabels=['日','一','二','三','四','五','六'].map(l=>`<div style="text-align:center;font-size:9px;color:var(--text-3);width:100%">${l}</div>`).join('');
   const body=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:4px">${weekdayLabels}</div><div class="st-heatmap">${cells.join('')}</div>
     <div class="st-stat-mini"><div class="st-stat-mini-item"><div class="st-stat-mini-val">${totalChars.toLocaleString('zh-CN')}</div><div class="st-stat-mini-lbl">本月字数</div></div><div class="st-stat-mini-item"><div class="st-stat-mini-val">${totalDays}</div><div class="st-stat-mini-lbl">记录天数</div></div><div class="st-stat-mini-item"><div class="st-stat-mini-val">${maxChars}</div><div class="st-stat-mini-lbl">单日最高</div></div></div>`;
   return chartCard('本月写作热力图',String(month+1)+'月',body);
@@ -2727,7 +2679,7 @@ function openModal(type,editData){
     const er=$('emojiRow');
     if(er){const es=['🌕','🎉','🎂','💝','✈️','🎄','🏮','⭐','🎓','🏠'];const ce=editData?.emoji||'🌕';pickedEmoji=ce;er.innerHTML=es.map(m=>`<div class="mood-opt ${m===ce?'active':''}" onclick="pickMood(this,'${m}')">${m}</div>`).join('')}
     const pr=$('priRow');
-    if(pr){const cp=editData?.priority||'medium';pickedPri=cp;pr.innerHTML=[{k:'low',l:'从容',c:'#6B8C6A'},{k:'medium',l:'寻常',c:'#C4956A'},{k:'high',l:'紧迫',c:'#C04851'}].map(p=>`<div class="pri-opt ${p.k===cp?'active':''}" onclick="pickPri(this,'${p.k}')"><div class="pri-dot" style="background:${p.c}"></div>${p.l}</div>`).join('')}
+    if(pr){const cp=editData?.priority||'medium';pickedPri=cp;pr.innerHTML=[{k:'low',l:'从容',c:'#6B8C6A'},{k:'medium',l:'寻常',c:'#F5C988'},{k:'high',l:'紧迫',c:'#5B9D8E'}].map(p=>`<div class="pri-opt ${p.k===cp?'active':''}" onclick="pickPri(this,'${p.k}')"><div class="pri-dot" style="background:${p.c}"></div>${p.l}</div>`).join('')}
     const cc=$('catChips');
     if(cc){const cats=['餐饮','交通','日用品','娱乐','购物','医疗','订阅','其他'];const cur=$('f_cat').value||'餐饮';cc.innerHTML=cats.map(c=>`<div class="cat-chip ${c===cur?'active':''}" onclick="pickCat(this,'${c}')">${c}</div>`).join('')}
     const fi=B.querySelector('input,textarea');if(fi)fi.focus();
@@ -2950,7 +2902,7 @@ async function submitPin(){
 
 // ===== Settings =====
 function toggleSettings(){$('settingsPanel').classList.toggle('show')}
-function toggleTheme(){const isDark=document.documentElement.getAttribute('data-theme')==='dark';const next=isDark?'light':'dark';document.documentElement.setAttribute('data-theme',next);$('darkToggle').classList.toggle('on',!isDark);localStorage.setItem('shiji_theme',next);const tm=$('themeColor');if(tm)tm.setAttribute('content',next==='dark'?'#1A1612':'#F5F0EB')}
+function toggleTheme(){const isDark=document.documentElement.getAttribute('data-theme')==='dark';const next=isDark?'light':'dark';document.documentElement.setAttribute('data-theme',next);$('darkToggle').classList.toggle('on',!isDark);localStorage.setItem('shiji_theme',next);const tm=$('themeColor');if(tm)tm.setAttribute('content',next==='dark'?'#13201C':'#F7FBF9')}
 function loadTheme(){const t=localStorage.getItem('shiji_theme');if(t==='dark'){document.documentElement.setAttribute('data-theme','dark');$('darkToggle').classList.add('on')}
   const m=$('mdStatus');if(m)m.textContent=useMarkdown()?'开启':'关闭'}
 // 月度预算：原本写死在 CONFIG 里无法修改，现支持在设置中调整并持久化
